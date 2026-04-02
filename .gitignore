@@ -1,0 +1,30 @@
+# OpenClaw Workspace Gitignore
+
+# Sensitive files
+TOOLS.md
+MEMORY.md
+memory/
+*.key
+*.secret
+.env
+
+# Node modules
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Large binaries
+*.exe
+*.dll
+*.bin

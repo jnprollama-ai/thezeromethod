@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPENCLAW v2.1 | Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --border-color: #2d2d44;
+            --text-primary: #e0e0ff;
+            --text-secondary: #8b8bb0;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #b829dd;
+            --accent-amber: #ff9500;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --accent-blue: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Scanlines */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.03),
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-name {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .brand-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--accent-green);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .uptime {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .uptime-value {
+            color: var(--accent-cyan);
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+        }
+
+        .tab-button {
+            padding: 14px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-button:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-button.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.05);
+        }
+
+        .tab-badge {
+            background: var(--accent-red);
+            color: var(--bg-primary);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .tab-panel {
+            display: none;
+            height: 100%;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Panel Styles */
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .panel-header {
+            background: var(--bg-tertiary);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-sm:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            height: calc(100% - 20px);
+        }
+
+        .dashboard-left, .dashboard-right {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Metrics Panel */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+
+        .metric-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+        }
+
+        .metric-bar {
+            height: 4px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.5s;
+        }
+
+        /* Mission Feed */
+        .mission-feed {
+            padding: 12px;
+            font-size: 12px;
+            line-height: 1.6;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(45, 45, 68, 0.5);
+            display: flex;
+            gap: 12px;
+        }
+
+        .log-timestamp {
+            color: var(--text-secondary);
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .log-level {
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .log-level.info { color: var(--accent-cyan); background: rgba(0, 212, 255, 0.1); }
+        .log-level.success { color: var(--accent-green); background: rgba(0, 255, 136, 0.1); }
+        .log-level.warn { color: var(--accent-amber); background: rgba(255, 149, 0, 0.1); }
+        .log-level.error { color: var(--accent-red); background: rgba(255, 51, 102, 0.1); }
+
+        .log-message {
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        /* Agents / Kanban Board */
+        .kanban-board {
+            display: flex;
+            gap: 16px;
+            height: calc(100% - 60px);
+            padding: 16px;
+            overflow-x: auto;
+        }
+
+        .kanban-column {
+            min-width: 280px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kanban-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kanban-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .kanban-count {
+            background: var(--bg-primary);
+            color: var(--text-secondary);
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .kanban-column.active .kanban-title { color: var(--accent-green); }
+        .kanban-column.idle .kanban-title { color: var(--accent-amber); }
+        .kanban-column.error .kanban-title { color: var(--accent-red); }
+
+        .kanban-items {
+            flex: 1;
+            padding: 12px;
+            overflow-y: auto;
+        }
+
+        .agent-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .agent-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .agent-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .agent-avatar.coder { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .agent-avatar.writer { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .agent-avatar.designer { background: rgba(255, 51, 102, 0.2); color: #ff3366; }
+        .agent-avatar.analyst { background: rgba(0, 255, 136, 0.2); color: #00ff88; }
+        .agent-avatar.researcher { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+        .agent-avatar.image { background: rgba(184, 41, 221, 0.2); color: #b829dd; }
+        .agent-avatar.social { background: rgba(255, 0, 255, 0.2); color: #ff00ff; }
+        .agent-avatar.seo { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .agent-role {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .agent-status-badge {
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .agent-status-badge.active {
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--accent-green);
+        }
+
+        .agent-status-badge.idle {
+            background: rgba(255, 149, 0, 0.15);
+            color: var(--accent-amber);
+        }
+
+        .agent-status-badge.error {
+            background: rgba(255, 51, 102, 0.15);
+            color: var(--accent-red);
+        }
+
+        .agent-task {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .agent-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .agent-progress-bar {
+            height: 3px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .agent-progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+
+        /* Approvals Panel */
+        .approvals-list {
+            padding: 16px;
+        }
+
+        .approval-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .approval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .approval-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .approval-urgent {
+            font-size: 10px;
+            padding: 2px 8px;
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--accent-red);
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .approval-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-approval {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-approval.approve {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .btn-approval.approve:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-approval.deny {
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--accent-red);
+        }
+
+        .btn-approval.deny:hover {
+            background: rgba(255, 51, 102, 0.3);
+        }
+
+        /* Daily Intel Panel */
+        .news-list {
+            padding: 16px;
+        }
+
+        .news-item {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .news-category {
+            font-size: 10px;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .news-time {
+            font-size: 10px;
+            color: var(--text-secondary);
+        }
+
+        .news-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .news-preview {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .news-actions {
+            margin-top: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .news-btn {
+            padding: 4px 12px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .news-btn:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Command Input */
+        .command-bar {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .command-prompt {
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .command-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .command-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .command-hint {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .kanban-board {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-name">◈ OPENCLAW v2.1</div>
+                <div class="brand-status">
+                    <div class="status-dot"></div>
+                    <span>LIVE</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="uptime">
+                    UPTIME: <span class="uptime-value" id="uptime">00:00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav class="tab-nav">
+            <button class="tab-button active" data-tab="dashboard">
+                <span>◈</span> Dashboard
+            </button>
+            <button class="tab-button" data-tab="agents">
+                <span>◈</span> Agents <span class="tab-badge" id="agentCount">8</span>
+            </button>
+            <button class="tab-button" data-tab="approvals">
+                <span>◈</span> Approvals <span class="tab-badge" id="approvalCount">3</span>
+            </button>
+            <button class="tab-button" data-tab="intel">
+                <span>◈</span> Daily Intel
+            </button>
+            <button class="tab-button" data-tab="mission">
+                <span>◈</span> Mission Feed
+            </button>
+        </nav>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Tab -->
+            <div class="tab-panel active" id="dashboard">
+                <div class="dashboard-grid">
+                    <div class="dashboard-left">
+                        <!-- System Metrics -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">System Metrics</span>
+                            </div>
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <div class="metric-label">CPU Load</div>
+                                    <div class="metric-value" id="cpuValue">42%</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 42%; background: linear-gradient(90deg, #00d4ff, #b829dd);"></div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Memory</div>
+                                    <div class="metric-value" id="memValue">6.2GB</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 52%; background: linear-gradient(90deg, #b829dd, #ff9500);"></div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Tokens</div>
+                                    <div class="metric-value" id="tokenValue">78%</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 78%; background: linear-gradient(90deg, #ff9500, #00ff88);"></div>
+                                    </div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-label">Network</div>
+                                    <div class="metric-value" id="netValue">24MB/s</div>
+                                    <div class="metric-bar">
+                                        <div class="metric-bar-fill" style="width: 35%; background: linear-gradient(90deg, #3b82f6, #00d4ff);"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Approvals Preview -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">Pending Approvals</span>
+                                <div class="panel-actions">
+                                    <button class="btn-sm" onclick="refreshDashboard()" title="Refresh">↻</button>
+                                <button class="btn-sm" onclick="switchTab('approvals')">View All</button>
+                                </div>
+                            </div>
+                            <div class="approvals-list">
+                                <div class="approval-item">
+                                    <div class="approval-header">
+                                        <span class="approval-title">Budget Request: $25</span>
+                                        <span class="approval-urgent">Urgent</span>
+                                    </div>
+                                    <div class="approval-desc">Week 1 spend approval for domain + Canva Pro</div>
+                                    <div class="approval-actions">
+                                        <button class="btn-approval approve" onclick="quickApprove(1)">APPROVE</button>
+                                        <button class="btn-approval deny" onclick="quickDeny(1)">DENY</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-right">
+                        <!-- Live Tasks -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">Live Tasks</span>
+                                <div class="panel-actions">
+                                    <button class="btn-sm">Refresh</button>
+                                </div>
+                            </div>
+                            <div class="approvals-list" style="max-height: 250px;">
+                                <div class="approval-item" style="border-left: 3px solid #00ff88;">
+                                    <div class="approval-header">
+                                        <span class="approval-title">Website Deployment</span>
+                                        <span style="font-size: 10px; color: #00ff88;">IN PROGRESS</span>
+                                    </div>
+                                    <div class="approval-desc">Deploying to thezeromethod.com via Netlify</div>
+                                    <div class="agent-progress-bar" style="margin-top: 8px;">
+                                        <div class="agent-progress-fill" style="width: 78%; background: linear-gradient(90deg, #00ff88, #00d4ff);"></div>
+                                    </div>
+                                </div>
+                                <div class="approval-item" style="border-left: 3px solid #f59e0b;">
+                                    <div class="approval-header">
+                                        <span class="approval-title">Content Generation</span>
+                                        <span style="font-size: 10px; color: #f59e0b;">QUEUED</span>
+                                    </div>
+                                    <div class="approval-desc">3 blog posts via Gemini API</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Mission Logs -->
+                        <div class="panel">
+                            <div class="panel-header">
+                                <span class="panel-title">Recent Activity</span>
+                            </div>
+                            <div class="mission-feed" id="dashboardLogs">
+                                <!-- Logs populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agents Tab (Kanban Board) -->
+            <div class="tab-panel" id="agents">
+                <div class="panel" style="height: calc(100% - 20px);">
+                    <div class="panel-header">
+                        <span class="panel-title">Agent Kanban Board</span>
+                        <div class="panel-actions">
+                            <button class="btn-sm" onclick="refreshAgents()">Refresh</button>
+                            <button class="btn-sm" onclick="showAgentList()">All Agents</button>
+                        </div>
+                    </div>
+                    <div class="kanban-board" id="kanbanBoard">
+                        <!-- Kanban columns populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Approvals Tab -->
+            <div class="tab-panel" id="approvals">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Pending Approvals</span>
+                        <div class="panel-actions">
+                            <button class="btn-sm" onclick="approveAll()">Approve All</button>
+                            <button class="btn-sm" onclick="clearApproved()">Clear Completed</button>
+                        </div>
+                    </div>
+                    <div class="approvals-list" id="approvalsList">
+                        <!-- Approvals populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Intel Tab -->
+            <div class="tab-panel" id="intel">
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-title">Daily Intelligence Feed</span>
+                        <div class="panel-actions">
+                            <button class="btn-sm">Mark All Read</button>
+                            <button class="btn-sm">Settings</button>
+                        </div>
+                    </div>
+                    <div class="news-list" id="newsList">
+                        <!-- News items populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mission Feed Tab -->
+            <div class="tab-panel" id="mission">
+                <div class="panel" style="height: calc(100% - 20px);">
+                    <div class="panel-header">
+                        <span class="panel-title">Full Mission Log</span>
+                        <div class="panel-actions">
+                            <button class="btn-sm" onclick="clearLogs()">Clear</button>
+                            <button class="btn-sm" onclick="exportLogs()">Export</button>
+                        </div>
+                    </div>
+                    <div class="mission-feed" id="fullMissionLog" style="max-height: calc(100% - 50px);">
+                        <!-- Full logs populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Command Bar -->
+        <div class="command-bar">
+            <span class="command-prompt">></span>
+            <input type="text" class="command-input" id="commandInput" placeholder="Enter directive... (try: 'help', 'status', 'agents', 'approve')" autocomplete="off">
+            <span class="command-hint">Press ENTER to execute</span>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.dataset.tab;
+                switchTab(tabId);
+            });
+        });
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+            
+            document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Uptime Counter
+        let startTime = Date.now();
+        function updateUptime() {
+            const diff = Date.now() - startTime;
+            const hours = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const minutes = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const seconds = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            document.getElementById('uptime').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateUptime, 1000);
+
+        // Agent Data with Names
+        const agents = [
+            { id: 'Z-01', name: 'Zero', role: 'Coder Agent', type: 'coder', status: 'active', task: 'Building Astro website', progress: 78, column: 'active' },
+            { id: 'Z-02', name: 'Visio', role: 'Image Gen Agent', type: 'image', status: 'active', task: 'Generating brand assets', progress: 65, column: 'active' },
+            { id: 'Z-03', name: 'Atlas', role: 'Research Agent', type: 'researcher', status: 'idle', task: 'Standby for next task', progress: 0, column: 'idle' },
+            { id: 'Z-04', name: 'Scribe', role: 'Content Agent', type: 'writer', status: 'active', task: 'Writing blog posts', progress: 45, column: 'active' },
+            { id: 'Z-05', name: 'Pulse', role: 'SEO Agent', type: 'seo', status: 'active', task: 'Optimizing meta tags', progress: 92, column: 'active' },
+            { id: 'Z-06', name: 'Echo', role: 'Social Agent', type: 'social', status: 'idle', task: 'Waiting for content', progress: 0, column: 'idle' },
+            { id: 'Z-07', name: 'Cipher', role: 'Analytics Agent', type: 'analyst', status: 'active', task: 'Processing metrics', progress: 34, column: 'active' },
+            { id: 'Z-08', name: 'Muse', role: 'Design Agent', type: 'designer', status: 'error', task: 'Connection timeout', progress: 12, column: 'error' }
+        ];
+
+        // Render Kanban Board
+        function renderKanban() {
+            const board = document.getElementById('kanbanBoard');
+            const columns = {
+                active: { title: 'Active', color: '#00ff88', agents: agents.filter(a => a.status === 'active') },
+                idle: { title: 'Idle', color: '#f59e0b', agents: agents.filter(a => a.status === 'idle') },
+                error: { title: 'Error', color: '#ff3366', agents: agents.filter(a => a.status === 'error') }
+            };
+
+            board.innerHTML = Object.entries(columns).map(([key, col]) => `
+                <div class="kanban-column ${key}">
+                    <div class="kanban-header">
+                        <span class="kanban-title" style="color: ${col.color}">${col.title}</span>
+                        <span class="kanban-count">${col.agents.length}</span>
+                    </div>
+                    <div class="kanban-items">
+                        ${col.agents.map(agent => `
+                            <div class="agent-card" onclick="showAgentDetails('${agent.id}')">
+                                <div class="agent-header">
+                                    <div class="agent-avatar ${agent.type}">${agent.id}</div>
+                                    <div class="agent-info">
+                                        <div class="agent-name">${agent.name}</div>
+                                        <div class="agent-role">${agent.role}</div>
+                                    </div>
+                                    <span class="agent-status-badge ${agent.status}">${agent.status}</span>
+                                </div>
+                                <div class="agent-task">${agent.task}</div>
+                                <div class="agent-meta">
+                                    <span>Progress: ${agent.progress}%</span>
+                                    <span>Type: ${agent.type}</span>
+                                </div>
+                                <div class="agent-progress-bar">
+                                    <div class="agent-progress-fill" style="width: ${agent.progress}%; background: ${col.color}"></div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Approvals Data
+        const approvals = [
+            { id: 1, title: 'Budget Request: $25', desc: 'Week 1 spend approval for domain + Canva Pro', urgent: true },
+            { id: 2, title: 'Deploy Website', desc: 'Approve deployment to thezeromethod.com', urgent: true },
+            { id: 3, title: 'Subagent Spawn', desc: 'Image Gen Agent requesting additional compute', urgent: false }
+        ];
+
+        function renderApprovals() {
+            const list = document.getElementById('approvalsList');
+            list.innerHTML = approvals.map(app => `
+                <div class="approval-item" data-id="${app.id}">
+                    <div class="approval-header">
+                        <span class="approval-title">${app.title}</span>
+                        ${app.urgent ? '<span class="approval-urgent">Urgent</span>' : ''}
+                    </div>
+                    <div class="approval-desc">${app.desc}</div>
+                    <div class="approval-actions">
+                        <button class="btn-approval approve" onclick="handleApproval(${app.id}, 'approved')">APPROVE</button>
+                        <button class="btn-approval deny" onclick="handleApproval(${app.id}, 'denied')">DENY</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('approvalCount').textContent = approvals.length;
+        }
+
+        function handleApproval(id, action) {
+            const item = document.querySelector(`.approval-item[data-id="${id}"]`);
+            item.style.opacity = '0.5';
+            setTimeout(() => {
+                item.remove();
+                addLog('success', `Approval #${id} ${action.toUpperCase()} by operator`);
+                const idx = approvals.findIndex(a => a.id === id);
+                if (idx > -1) approvals.splice(idx, 1);
+                document.getElementById('approvalCount').textContent = approvals.length;
+            }, 300);
+        }
+
+        // News Data
+        const newsItems = [
+            { category: 'AI Update', title: 'Claude 3.5 Sonnet Released', preview: 'Enhanced coding capabilities and longer context window...', time: '2m ago' },
+            { category: 'Project Status', title: 'Zero Method Progress', preview: 'Website build at 78% completion. Stripe integration pending...', time: '15m ago' },
+            { category: 'System Alert', title: 'Token Usage Spike', preview: 'Design Agent exceeded expected token consumption...', time: '32m ago' },
+            { category: 'Deployment', title: 'Command Center v2.1', preview: 'New tabbed interface deployed successfully...', time: '1h ago' }
+        ];
+
+        function renderNews() {
+            const list = document.getElementById('newsList');
+            list.innerHTML = newsItems.map(news => `
+                <div class="news-item">
+                    <div class="news-header">
+                        <span class="news-category">${news.category}</span>
+                        <span class="news-time">${news.time}</span>
+                    </div>
+                    <div class="news-title">${news.title}</div>
+                    <div class="news-preview">${news.preview}</div>
+                    <div class="news-actions">
+                        <button class="news-btn">Read More</button>
+                        <button class="news-btn">Archive</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Mission Logs
+        function addLog(level, message) {
+            const feed = document.getElementById('dashboardLogs');
+            const fullLog = document.getElementById('fullMissionLog');
+            const time = new Date().toTimeString().split(' ')[0];
+            
+            const entry = `
+                <div class="log-entry">
+                    <span class="log-timestamp">${time}</span>
+                    <span class="log-level ${level}">${level}</span>
+                    <span class="log-message">${message}</span>
+                </div>
+            `;
+            
+            if (feed) feed.insertAdjacentHTML('afterbegin', entry);
+            if (fullLog) fullLog.insertAdjacentHTML('afterbegin', entry);
+        }
+
+        // Initialize
+        renderKanban();
+        renderApprovals();
+        renderNews();
+
+        // Sample logs
+        addLog('info', 'Command Center v3.0 initialized');
+        addLog('success', '8 agents loaded into kanban board');
+        addLog('info', '3 pending approvals require attention');
+
+        // Command Input
+        document.getElementById('commandInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const cmd = this.value.trim();
+                if (cmd) {
+                    addLog('info', `Command: ${cmd}`);
+                    this.value = '';
+                    
+                    if (cmd === 'help') {
+                        addLog('info', 'Commands: help, status, agents, approvals, clear, reload');
+                    } else if (cmd === 'status') {
+                        addLog('success', 'System: ONLINE | Agents: 8 | Approvals: 3');
+                    } else if (cmd === 'agents') {
+                        switchTab('agents');
+                    } else if (cmd === 'approvals') {
+                        switchTab('approvals');
+                    } else if (cmd === 'clear') {
+                        document.getElementById('fullMissionLog').innerHTML = '';
+                        addLog('success', 'Mission log cleared');
+                    } else if (cmd === 'reload') {
+                        location.reload();
+                    }
+                }
+            }
+        });
+
+        // Update metrics
+        setInterval(() => {
+            document.getElementById('cpuValue').textContent = Math.floor(Math.random() * 30 + 30) + '%';
+            document.getElementById('memValue').textContent = (Math.random() * 2 + 5).toFixed(1) + 'GB';
+            document.getElementById('tokenValue').textContent = Math.floor(Math.random() * 20 + 70) + '%';
+            document.getElementById('netValue').textContent = Math.floor(Math.random() * 50 + 10) + 'MB/s';
+        }, 3000);
+
+        // Quick actions
+        function quickApprove(id) { handleApproval(id, 'approved'); }
+        function quickDeny(id) { handleApproval(id, 'denied'); }
+        function approveAll() { approvals.forEach(a => handleApproval(a.id, 'approved')); }
+        function clearApproved() { addLog('info', 'Cleared completed approvals'); }
+        function clearLogs() { document.getElementById('fullMissionLog').innerHTML = ''; }
+        function exportLogs() { addLog('success', 'Mission logs exported'); }
+        function refreshAgents() { addLog('info', 'Agent status refreshed'); renderKanban(); }
+        function refreshDashboard() { 
+            addLog('info', 'Dashboard refreshed'); 
+            renderKanban();
+            renderApprovals();
+            renderNews();
+            // Update metrics
+            document.getElementById('cpuValue').textContent = Math.floor(Math.random() * 30 + 30) + '%';
+            document.getElementById('memValue').textContent = (Math.random() * 2 + 5).toFixed(1) + 'GB';
+            document.getElementById('tokenValue').textContent = Math.floor(Math.random() * 20 + 70) + '%';
+            document.getElementById('netValue').textContent = Math.floor(Math.random() * 50 + 10) + 'MB/s';
+        }
+        function showAgentList() { addLog('info', 'All 8 agents: Zero, Visio, Atlas, Scribe, Pulse, Echo, Cipher, Muse'); }
+        function showAgentDetails(id) { 
+            const agent = agents.find(a => a.id === id);
+            addLog('info', `${agent.name} (${agent.role}): ${agent.task} - ${agent.progress}%`);
+        }
+    </script>
+</body>
+</html>

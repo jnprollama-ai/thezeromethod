@@ -1,0 +1,48 @@
+---
+interface Props {
+	title: string;
+	description: string;
+	keywords?: string;
+}
+
+const { title, description, keywords = "AI productivity, prompts, templates, workflow automation" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<meta name="keywords" content={keywords} />
+		<meta name="author" content="Zero Method" />
+		
+		<!-- Open Graph -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.site} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={`${Astro.site}/og-image.jpg`} />
+		
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.site} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={`${Astro.site}/og-image.jpg`} />
+		
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+		
+		<!-- Favicon -->
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		
+		<title>{title}</title>
+	</head>
+	<body class="bg-navy-950 text-white font-sans antialiased">
+		<slot />
+	</body>
+</html>

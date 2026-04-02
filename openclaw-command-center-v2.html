@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPENCLAW v2.1 | Live Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --border-color: #2d2d44;
+            --text-primary: #e0e0ff;
+            --text-secondary: #8b8bb0;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #b829dd;
+            --accent-amber: #ff9500;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --accent-blue: #3b82f6;
+            --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.03),
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Grid background */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            display: grid;
+            grid-template-areas:
+                "header header header"
+                "alerts alerts alerts"
+                "agents agents news"
+                "metrics metrics approvals"
+                "feed feed feed"
+                "input input input";
+            grid-template-columns: 1fr 1fr 300px;
+            grid-template-rows: auto auto 1fr 1fr 1fr auto;
+            gap: 16px;
+            padding: 20px;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            grid-area: header;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), var(--glow-cyan);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .system-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .system-name {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .uptime {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .uptime-value {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.9); }
+        }
+
+        .status-text {
+            color: var(--accent-green);
+            font-weight: 500;
+        }
+
+        /* Panel Base */
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
+            opacity: 0.5;
+        }
+
+        .panel-header {
+            background: var(--bg-tertiary);
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Alerts Panel */
+        .alerts-panel {
+            grid-area: alerts;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .alert.ok {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--accent-green);
+        }
+
+        .alert.warning {
+            background: rgba(255, 204, 0, 0.1);
+            border: 1px solid var(--accent-amber);
+        }
+
+        .alert.critical {
+            background: rgba(255, 51, 102, 0.1);
+            border: 1px solid var(--accent-red);
+            animation: criticalPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes criticalPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(255, 51, 102, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 51, 102, 0.6); }
+        }
+
+        .alert-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-icon {
+            font-size: 18px;
+        }
+
+        .alert.ok .alert-icon { color: var(--accent-green); }
+        .alert.warning .alert-icon { color: var(--accent-amber); }
+        .alert.critical .alert-icon { color: var(--accent-red); }
+
+        .alert-text {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .alert.ok .alert-text { color: var(--accent-green); }
+        .alert.warning .alert-text { color: var(--accent-amber); }
+        .alert.critical .alert-text { color: var(--accent-red); }
+
+        .alert-time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .alert-dismiss {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 4px;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+
+        .alert-dismiss:hover {
+            color: var(--text-primary);
+        }
+
+        /* Agent Grid with Avatars */
+        .agents-panel {
+            grid-area: agents;
+        }
+
+        .agent-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            padding: 16px;
+            height: calc(100% - 45px);
+            overflow-y: auto;
+        }
+
+        .agent-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: var(--glow-cyan);
+            transform: translateY(-2px);
+        }
+
+        .agent-card.active { border-left: 3px solid var(--accent-green); }
+        .agent-card.idle { border-left: 3px solid var(--accent-amber); }
+        .agent-card.error { border-left: 3px solid var(--accent-red); }
+
+        .agent-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-primary);
+        }
+
+        /* Animated Avatar Styles */
+        .avatar-coder {
+            background: linear-gradient(135deg, #1e3a5f, #0a192f);
+            border: 1px solid var(--accent-blue);
+        }
+
+        .avatar-coder::before {
+            content: '{ }';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-blue);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .avatar-coder.working::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-blue);
+            animation: codeScroll 1s linear infinite;
+        }
+
+        @keyframes codeScroll {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .avatar-image {
+            background: linear-gradient(135deg, #4a1a6b, #1a0a2e);
+            border: 1px solid var(--accent-purple);
+        }
+
+        .avatar-image::before {
+            content: '◈';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-purple);
+            font-size: 24px;
+        }
+
+        .avatar-image.working::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(184, 41, 221, 0.3), transparent);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        .avatar-research {
+            background: linear-gradient(135deg, #0a3a3a, #001a1a);
+            border: 1px solid var(--accent-cyan);
+        }
+
+        .avatar-research::before {
+            content: '◎';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-cyan);
+            font-size: 22px;
+        }
+
+        .avatar-research.working {
+            animation: scanLine 2s ease-in-out infinite;
+        }
+
+        @keyframes scanLine {
+            0%, 100% { box-shadow: inset 0 0 0 rgba(0, 212, 255, 0); }
+            50% { box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.3); }
+        }
+
+        .avatar-content {
+            background: linear-gradient(135deg, #3a2a0a, #1a1000);
+            border: 1px solid var(--accent-amber);
+        }
+
+        .avatar-content::before {
+            content: '✎';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-amber);
+            font-size: 22px;
+        }
+
+        .avatar-content.working::after {
+            content: '|';
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            color: var(--accent-amber);
+            animation: blink 0.8s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .avatar-seo {
+            background: linear-gradient(135deg, #1a3a0a, #0a1a00);
+            border: 1px solid var(--accent-green);
+        }
+
+        .avatar-seo::before {
+            content: '⚡';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-green);
+            font-size: 22px;
+        }
+
+        .avatar-social {
+            background: linear-gradient(135deg, #3a1a3a, #1a0a1a);
+            border: 1px solid #ff00ff;
+        }
+
+        .avatar-social::before {
+            content: '◎';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff00ff;
+            font-size: 22px;
+        }
+
+        .avatar-analytics {
+            background: linear-gradient(135deg, #1a1a3a, #0a0a1a);
+            border: 1px solid #00ffff;
+        }
+
+        .avatar-analytics::before {
+            content: '◈';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ffff;
+            font-size: 22px;
+        }
+
+        .avatar-design {
+            background: linear-gradient(135deg, #3a0a1a, #1a000a);
+            border: 1px solid #ff3366;
+        }
+
+        .avatar-design::before {
+            content: '◉';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff3366;
+            font-size: 22px;
+        }
+
+        .agent-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .agent-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .agent-status {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .agent-status.active {
+            color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.15);
+        }
+
+        .agent-status.idle {
+            color: var(--accent-amber);
+            background: rgba(255, 149, 0, 0.15);
+        }
+
+        .agent-status.error {
+            color: var(--accent-red);
+            background: rgba(255, 51, 102, 0.15);
+        }
+
+        .agent-task {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .agent-progress {
+            height: 3px;
+            background: var(--bg-primary);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .agent-progress-bar {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s;
+            position: relative;
+        }
+
+        .agent-progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        .agent-card.active .agent-progress-bar {
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+        }
+
+        .agent-card.idle .agent-progress-bar {
+            background: var(--accent-amber);
+        }
+
+        .agent-card.error .agent-progress-bar {
+            background: var(--accent-red);
+        }
+
+        /* Metrics Panel */
+        .metrics-panel {
+            grid-area: metrics;
+        }
+
+        .metrics-content {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            height: calc(100% - 45px);
+        }
+
+        .resource-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .resource-name {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .resource-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .resource-bar-container {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .resource-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease-out;
+            position: relative;
+        }
+
+        .resource-bar.cpu {
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+        }
+
+        .resource-bar.memory {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-amber));
+        }
+
+        .resource-bar.tokens {
+            background: linear-gradient(90deg, var(--accent-amber), var(--accent-green));
+        }
+
+        .resource-bar.network {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        /* News Feed Panel */
+        .news-panel {
+            grid-area: news;
+        }
+
+        .news-content {
+            padding: 12px;
+            height: calc(100% - 45px);
+            overflow-y: auto;
+        }
+
+        .news-item {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(45, 45, 68, 0.5);
+        }
+
+        .news-time {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .news-title {
+            font-size: 12px;
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .news-preview {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Approvals Panel */
+        .approvals-panel {
+            grid-area: approvals;
+        }
+
+        .approval-item {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .approval-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .approval-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .approval-urgent {
+            font-size: 9px;
+            padding: 2px 6px;
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--accent-red);
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .approval-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .approval-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .approval-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .approval-btn.approve {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--accent-green);
+        }
+
+        .approval-btn.approve:hover {
+            background: rgba(0, 255, 136, 0.3);
+        }
+
+        .approval-btn.deny {
+            background: rgba(255, 51, 102, 0.2);
+            color: var(--accent-red);
+        }
+
+        .approval-btn.deny:hover {
+            background: rgba(255, 51, 102, 0.3);
+        }
+
+        /* Mission Feed */
+        .mission-panel {
+            grid-area: feed;
+        }
+
+        .mission-feed {
+            height: calc(100% - 45px);
+            overflow-y: auto;
+            padding: 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .mission-feed::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .mission-feed::-webkit-scrollbar-track {
+            background: var(--bg-tertiary);
+        }
+
+        .mission-feed::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .log-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(45, 45, 68, 0.5);
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-timestamp {
+            color: var(--text-secondary);
+            font-size: 10px;
+            white-space: nowrap;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .log-level {
+            font-weight: 600;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        .log-level.info {
+            color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.1);
+        }
+
+        .log-level.success {
+            color: var(--accent-green);
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .log-level.warn {
+            color: var(--accent-amber);
+            background: rgba(255, 149, 0, 0.1);
+        }
+
+        .log-level.error {
+            color: var(--accent-red);
+            background: rgba(255, 51, 102, 0.1);
+        }
+
+        .log-level.approval {
+            color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .log-message {
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        /* Command Input */
+        .command-panel {
+            grid-area: input;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .command-prompt {
+            color: var(--accent-green);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .command-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .command-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .command-hint {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* WebSocket Status */
+        .websocket-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .ws-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .container {
+                grid-template-columns: 1fr 1fr 250px;
+            }
+            .agent-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-areas:
+                    "header"
+                    "alerts"
+                    "agents"
+                    "metrics"
+                    "news"
+                    "approvals"
+                    "feed"
+                    "input";
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            .agent-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="system-info">
+                <div class="system-name">◈ OPENCLAW v2.1</div>
+                <div class="uptime">
+                    UPTIME: <span class="uptime-value" id="uptime">00:00:00</span>
+                </div>
+                <div class="websocket-indicator">
+                    <div class="ws-dot"></div>
+                    <span>LIVE WS</span>
+                </div>
+            </div>
+            <div class="connection-status">
+                <div class="status-dot"></div>
+                <span class="status-text">SYSTEM ONLINE</span>
+            </div>
+        </div>
+
+        <!-- Alerts Panel -->
+        <div class="alerts-panel" id="alertsPanel">
+            <div class="alert ok" data-id="1">
+                <div class="alert-content">
+                    <span class="alert-icon">✓</span>
+                    <span class="alert-text">All systems operational</span>
+                </div>
+                <span class="alert-time">00:00:42</span>
+                <button class="alert-dismiss" onclick="dismissAlert(this)">×</button>
+            </div>
+            <div class="alert warning" data-id="2">
+                <div class="alert-content">
+                    <span class="alert-icon">⚠</span>
+                    <span class="alert-text">Token usage: 82% of daily limit</span>
+                </div>
+                <span class="alert-time">00:00:18</span>
+                <button class="alert-dismiss" onclick="dismissAlert(this)">×</button>
+            </div>
+        </div>
+
+        <!-- Agent Grid with Animated Avatars -->
+        <div class="panel agents-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>◈</span>
+                    Active Agents (8)
+                </div>
+            </div>
+            <div class="agent-grid" id="agentGrid">
+                <!-- Agents will be rendered here -->
+            </div>
+        </div>
+
+        <!-- Metrics Monitor -->
+        <div class="panel metrics-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>◈</span>
+                    Resource Monitor
+                </div>
+            </div>
+            <div class="metrics-content">
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <span class="resource-name">CPU Load</span>
+                        <span class="resource-value" id="cpuValue">0%</span>
+                    </div>
+                    <div class="resource-bar-container">
+                        <div class="resource-bar cpu" id="cpuBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <span class="resource-name">Memory Usage</span>
+                        <span class="resource-value" id="memoryValue">0%</span>
+                    </div>
+                    <div class="resource-bar-container">
+                        <div class="resource-bar memory" id="memoryBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <span class="resource-name">Token Consumption</span>
+                        <span class="resource-value" id="tokensValue">0%</span>
+                    </div>
+                    <div class="resource-bar-container">
+                        <div class="resource-bar tokens" id="tokensBar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="resource-item">
+                    <div class="resource-header">
+                        <span class="resource-name">Network I/O</span>
+                        <span class="resource-value" id="networkValue">0 MB/s</span>
+                    </div>
+                    <div class="resource-bar-container">
+                        <div class="resource-bar network" id="networkBar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- News Feed -->
+        <div class="panel news-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>◈</span>
+                    Daily Intel
+                </div>
+            </div>
+            <div class="news-content" id="newsFeed">
+                <!-- News items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Approvals Panel -->
+        <div class="panel approvals-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>◈</span>
+                    Pending Approvals
+                </div>
+            </div>
+            <div class="news-content" id="approvalsFeed">
+                <!-- Approval items will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Mission Feed -->
+        <div class="panel mission-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <span>◈</span>
+                    Mission Feed
+                </div>
+            </div>
+            <div class="mission-feed" id="missionFeed">
+                <!-- Logs will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Command Input -->
+        <div class="command-panel">
+            <span class="command-prompt">></span>
+            <input type="text" class="command-input" id="commandInput" placeholder="Enter directive..." autocomplete="off">
+            <span class="command-hint">Press ENTER to execute | type 'help' for commands</span>
+        </div>
+    </div>
+
+    <script>
+        // Uptime Counter
+        let startTime = Date.now() - (Math.random() * 86400000);
+        
+        function updateUptime() {
+            const now = Date.now();
+            const diff = now - startTime;
+            const hours = Math.floor(diff / 3600000).toString().padStart(2, '0');
+            const minutes = Math.floor((diff % 3600000) / 60000).toString().padStart(2, '0');
+            const seconds = Math.floor((diff % 60000) / 1000).toString().padStart(2, '0');
+            document.getElementById('uptime').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        setInterval(updateUptime, 1000);
+
+        // Agent Data with Avatars
+        const agents = [
+            { id: 'Z-01', name: 'Coder Agent', status: 'active', task: 'Building Astro website', progress: 78, avatar: 'coder', type: 'Development' },
+            { id: 'Z-02', name: 'Image Gen Agent', status: 'active', task: 'Generating brand assets', progress: 65, avatar: 'image', type: 'Creative' },
+            { id: 'Z-03', name: 'Research Agent', status: 'idle', task: 'Standby for next task', progress: 0, avatar: 'research', type: 'Analysis' },
+            { id: 'Z-04', name: 'Content Agent', status: 'active', task: 'Writing blog posts', progress: 45, avatar: 'content', type: 'Writing' },
+            { id: 'Z-05', name: 'SEO Agent', status: 'active', task: 'Optimizing meta tags', progress: 92, avatar: 'seo', type: 'Optimization' },
+            { id: 'Z-06', name: 'Social Agent', status: 'idle', task: 'Waiting for content', progress: 0, avatar: 'social', type: 'Distribution' },
+            { id: 'Z-07', name: 'Analytics Agent', status: 'active', task: 'Processing metrics', progress: 34, avatar: 'analytics', type: 'Data' },
+            { id: 'Z-08', name: 'Design Agent', status: 'error', task: 'Connection timeout', progress: 12, avatar: 'design', type: 'Visual' }
+        ];
+
+        function renderAgents() {
+            const grid = document.getElementById('agentGrid');
+            grid.innerHTML = agents.map(agent => {
+                const workingClass = agent.status === 'active' ? 'working' : '';
+                return `
+                    <div class="agent-card ${agent.status}" onclick="toggleAgentStatus('${agent.id}')">
+                        <div class="agent-avatar avatar-${agent.avatar} ${workingClass}"></div>
+                        <div class="agent-header">
+                            <span class="agent-name">${agent.name}</span>
+                            <span class="agent-status ${agent.status}">${agent.status.toUpperCase()}</span>
+                        </div>
+                        <div class="agent-task">${agent.task}</div>
+                        <div class="agent-progress">
+                            <div class="agent-progress-bar" style="width: ${agent.progress}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleAgentStatus(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            const statuses = ['active', 'idle', 'error'];
+            const currentIndex = statuses.indexOf(agent.status);
+            agent.status = statuses[(currentIndex + 1) % statuses.length];
+            
+            if (agent.status === 'active') {
+                agent.progress = Math.floor(Math.random() * 50) + 50;
+                addLog('info', `Agent ${agentId} activated - ${agent.name}`);
+            } else if (agent.status === 'error') {
+                addLog('error', `Agent ${agentId} (${agent.name}) encountered runtime exception`);
+            } else {
+                agent.progress = Math.max(0, agent.progress - 20);
+                addLog('warn', `Agent ${agentId} (${agent.name}) entered idle state`);
+            }
+            renderAgents();
+        }
+
+        renderAgents();
+
+        // Resource Monitor Animation
+        function updateResources() {
+            const cpu = Math.floor(Math.random() * 30) + 40;
+            const memory = Math.floor(Math.random() * 20) + 35;
+            const tokens = Math.floor(Math.random() * 15) + 70;
+            const network = Math.floor(Math.random() * 50) + 10;
+
+            document.getElementById('cpuValue').textContent = `${cpu}%`;
+            document.getElementById('cpuBar').style.width = `${cpu}%`;
+
+            document.getElementById('memoryValue').textContent = `${memory}%`;
+            document.getElementById('memoryBar').style.width = `${memory}%`;
+
+            document.getElementById('tokensValue').textContent = `${tokens}%`;
+            document.getElementById('tokensBar').style.width = `${tokens}%`;
+
+            document.getElementById('networkValue').textContent = `${network} MB/s`;
+            document.getElementById('networkBar').style.width = `${network}%`;
+        }
+        setInterval(updateResources, 2000);
+        updateResources();
+
+        // News Feed
+        const newsItems = [
+            { time: '00:01', title: 'AI Market Update', preview: 'New Claude 3.5 Sonnet released with enhanced coding capabilities...' },
+            { time: '00:00', title: 'Daily Briefing', preview: 'Zero Method project on track. Website build 78% complete...' },
+            { time: '23:45', title: 'System Alert', preview: 'Token usage spike detected in Design Agent subtask...' },
+            { time: '23:30', title: 'Deployment Notice', preview: 'New version of Command Center v2.1 deployed successfully...' }
+        ];
+
+        function renderNews() {
+            const feed = document.getElementById('newsFeed');
+            feed.innerHTML = newsItems.map(item => `
+                <div class="news-item">
+                    <div class="news-time">${item.time}</div>
+                    <div class="news-title">${item.title}</div>
+                    <div class="news-preview">${item.preview}</div>
+                </div>
+            `).join('');
+        }
+        renderNews();
+
+        // Approvals Feed
+        const approvals = [
+            { id: 1, title: 'Budget Request: $25', desc: 'Week 1 spend approval for domain + Canva Pro', urgent: false },
+            { id: 2, title: 'Deploy Website', desc: 'Approve deployment to thezeromethod.com', urgent: true },
+            { id: 3, title: 'Subagent Spawn', desc: 'Image Gen Agent requesting additional compute', urgent: false }
+        ];
+
+        function renderApprovals() {
+            const feed = document.getElementById('approvalsFeed');
+            feed.innerHTML = approvals.map(approval => `
+                <div class="approval-item" data-id="${approval.id}">
+                    <div class="approval-header">
+                        <span class="approval-title">${approval.title}</span>
+                        ${approval.urgent ? '<span class="approval-urgent">Urgent</span>' : ''}
+                    </div>
+                    <div class="approval-desc">${approval.desc}</div>
+                    <div class="approval-actions">
+                        <button class="approval-btn approve" onclick="handleApproval(${approval.id}, 'approved')">APPROVE</button>
+                        <button class="approval-btn deny" onclick="handleApproval(${approval.id}, 'denied')">DENY</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function handleApproval(id, action) {
+            const item = document.querySelector(`.approval-item[data-id="${id}"]`);
+            item.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => {
+                item.remove();
+                addLog('approval', `Approval #${id} ${action.toUpperCase()} by operator`);
+            }, 300);
+        }
+        renderApprovals();
+
+        // Mission Feed
+        const logMessages = [
+            { level: 'info', message: 'WebSocket connection established: wss://openclaw.local/v2' },
+            { level: 'success', message: 'Agent Z-01 (Coder) completed website build task' },
+            { level: 'info', message: 'Token usage: 295.4k tokens consumed (267.7k in / 27.7k out)' },
+            { level: 'success', message: 'Domain thezeromethod.com DNS propagation complete' },
+            { level: 'info', message: 'Agent Z-02 (Image Gen) spawned and assigned brand assets' },
+            { level: 'warn', message: 'Token consumption rate: 82% of daily limit' },
+            { level: 'info', message: 'Memory checkpoint: 14.2 GB allocated to subagents' },
+            { level: 'success', message: 'CRM system documentation generated (9028 bytes)' },
+            { level: 'info', message: 'Command Center v2.1 deployed with live metrics' },
+            { level: 'success', message: 'Subagent task accepted: Design Agent (runId: 63d6ee77)' },
+            { level: 'info', message: 'Gateway restart completed: config-patch ok' },
+            { level: 'success', message: 'Auto-updates enabled for runtime v2026.3.23' },
+            { level: 'info', message: 'Daily check-in scheduled: 0 8 * * * Asia/Dubai' },
+            { level: 'success', message: 'Telegram channel connected: @zeromethod_bot' }
+        ];
+
+        function addLog(level, message) {
+            const feed = document.getElementById('missionFeed');
+            const now = new Date();
+            const time = now.toTimeString().split(' ')[0];
+            
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.innerHTML = `
+                <span class="log-timestamp">${time}</span>
+                <span class="log-level ${level}">${level}</span>
+                <span class="log-message">${message}</span>
+            `;
+            
+            feed.insertBefore(entry, feed.firstChild);
+            
+            while (feed.children.length > 50) {
+                feed.removeChild(feed.lastChild);
+            }
+        }
+
+        logMessages.reverse().forEach(log => addLog(log.level, log.message));
+
+        // Auto-add random logs
+        const randomLogs = [
+            { level: 'info', message: 'Garbage collection: 2.3 MB freed' },
+            { level: 'success', message: 'API response cached: thezeromethod.com' },
+            { level: 'info', message: 'Cron job executed: Daily Morning Check-in' },
+            { level: 'warn', message: 'Subagent runtime: 7m 53s (threshold: 10m)' },
+            { level: 'info', message: 'Memory flush: completed successfully' },
+            { level: 'success', message: 'File saved: WEBSITE_BRAND_GUIDELINES.md (12844 bytes)' },
+            { level: 'info', message: 'Subagent spawn requested: Image Gen Agent' },
+            { level: 'success', message: 'Domain SSL certificate validated' },
+            { level: 'warn', message: 'Token optimization: caching results' },
+            { level: 'info', message: 'Heartbeat: HEARTBEAT_OK received' }
+        ];
+
+        setInterval(() => {
+            const log = randomLogs[Math.floor(Math.random() * randomLogs.length)];
+            addLog(log.level, log.message);
+        }, 4000);
+
+        // Command Input
+        document.getElementById('commandInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const command = this.value.trim();
+                if (command) {
+                    addLog('info', `Command executed: ${command}`);
+                    this.value = '';
+                    
+                    if (command.toLowerCase().includes('status')) {
+                        setTimeout(() => addLog('success', 'System status: ALL OPERATIONAL | 8 agents | 2 idle | 1 error'), 500);
+                    } else if (command.toLowerCase().includes('agent')) {
+                        setTimeout(() => addLog('success', 'Agent roster: 8 total | 5 active | 2 idle | 1 error'), 500);
+                    } else if (command.toLowerCase().includes('clear')) {
+                        document.getElementById('missionFeed').innerHTML = '';
+                        addLog('success', 'Mission feed cleared');
+                    } else if (command.toLowerCase().includes('help')) {
+                        setTimeout(() => addLog('info', 'Available: status, agents, clear, approve, deny, reload, help'), 500);
+                    } else if (command.toLowerCase().includes('approve')) {
+                        setTimeout(() => addLog('approval', 'Manual approval triggered for pending task'), 500);
+                    } else if (command.toLowerCase().includes('reload')) {
+                        location.reload();
+                    }
+                }
+            }
+        });
+
+        // Alert Dismiss
+        function dismissAlert(button) {
+            const alert = button.parentElement;
+            alert.style.animation = 'fadeOut 0.3s ease-out';
+            setTimeout(() => alert.remove(), 300);
+        }
+
+        // Add fadeOut animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeOut {
+                from { opacity: 1; transform: translateX(0); }
+                to { opacity: 0; transform: translateX(20px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Simulate agent progress updates
+        setInterval(() => {
+            agents.forEach(agent => {
+                if (agent.status === 'active' && agent.progress < 100) {
+                    agent.progress = Math.min(100, agent.progress + Math.floor(Math.random() * 3));
+                }
+            });
+            renderAgents();
+        }, 3000);
+
+        // Simulate WebSocket reconnection
+        setInterval(() => {
+            if (Math.random() > 0.95) {
+                addLog('warn', 'WebSocket reconnection: refreshing live feed');
+                setTimeout(() => addLog('success', 'WebSocket reconnected: wss://openclaw.local/v2'), 1000);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

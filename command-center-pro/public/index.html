@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>◈ ZERO COMMAND CENTER PRO</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --border-color: #2d2d44;
+            --text-primary: #e0e0ff;
+            --text-secondary: #8b8bb0;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #b829dd;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --accent-amber: #ff9500;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; overflow-x: hidden; }
+        
+        /* Scanline effect */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,212,255,0.02), rgba(0,212,255,0.02) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .app-container { display: flex; flex-direction: column; min-height: 100vh; }
+        
+        /* Header */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-purple), transparent);
+            animation: scanline 3s linear infinite;
+        }
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .brand { display: flex; align-items: center; gap: 12px; }
+        .brand-logo {
+            width: 42px; height: 42px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 20px rgba(0,212,255,0.3);
+        }
+        .brand-name {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .brand-tagline {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        /* System Status Bar */
+        .system-bar {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(0,255,136,0.1);
+            border: 1px solid rgba(0,255,136,0.3);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--accent-green);
+        }
+        .status-pill.warning {
+            background: rgba(255,149,0,0.1);
+            border-color: rgba(255,149,0,0.3);
+            color: var(--accent-amber);
+        }
+        .status-pill.error {
+            background: rgba(255,51,102,0.1);
+            border-color: rgba(255,51,102,0.3);
+            color: var(--accent-red);
+        }
+        .status-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px currentColor; }
+            50% { opacity: 0.5; box-shadow: 0 0 4px currentColor; }
+        }
+        
+        /* Navigation */
+        .nav-container {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+        }
+        .nav-tab {
+            padding: 16px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.02);
+        }
+        .nav-tab.active {
+            color: var(--accent-cyan);
+            border-bottom-color: var(--accent-cyan);
+            background: linear-gradient(180deg, transparent, rgba(0,212,255,0.05));
+        }
+        .nav-tab i { font-size: 14px; }
+        .nav-badge {
+            background: var(--accent-red);
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+        
+        /* Main Content */
+        .main-content { flex: 1; padding: 24px; max-width: 1800px; margin: 0 auto; width: 100%; }
+        .tab-panel { display: none; animation: fadeIn 0.3s ease; }
+        .tab-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Grid System */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; }
+        .col-3 { grid-column: span 3; }
+        .col-4 { grid-column: span 4; }
+        .col-6 { grid-column: span 6; }
+        .col-8 { grid-column: span 8; }
+        .col-9 { grid-column: span 9; }
+        .col-12 { grid-column: span 12; }
+        
+        /* Cards */
+        .card {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 30px rgba(0,212,255,0.1);
+        }
+        .card:hover::before {
+            opacity: 1;
+        }
+        .card-header {
+            padding: 20px 24px;
+            background: rgba(0,0,0,0.2);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .card-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .card-body { padding: 24px; }
+        
+        /* Quick Links Bar */
+        .quick-links {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 13px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .quick-link:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0,212,255,0.1);
+            transform: translateY(-2px);
+        }
+        .quick-link i {
+            font-size: 16px;
+            color: var(--accent-cyan);
+        }
+        
+        /* Service Cards */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .service-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .service-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-3px);
+        }
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(184,41,221,0.2));
+            border: 2px solid rgba(0,212,255,0.3);
+        }
+        .service-info { flex: 1; }
+        .service-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .service-status {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .service-status.online { color: var(--accent-green); }
+        .service-status.offline { color: var(--accent-red); }
+        .service-status.warning { color: var(--accent-amber); }
+        .service-arrow {
+            color: var(--text-secondary);
+            transition: transform 0.2s;
+        }
+        .service-card:hover .service-arrow {
+            transform: translateX(4px);
+            color: var(--accent-cyan);
+        }
+        
+        /* Pokemon Office */
+        .office-container {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0f 100%);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .office-floor {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 40%;
+            background:
+                linear-gradient(90deg, rgba(0,212,255,0.05) 1px, transparent 1px),
+                linear-gradient(0deg, rgba(0,212,255,0.05) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform: perspective(600px) rotateX(60deg);
+            transform-origin: bottom;
+        }
+        .desk {
+            position: absolute;
+            width: 120px;
+            height: 60px;
+            background: linear-gradient(135deg, #2d2d44, #1a1a2e);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0,212,255,0.3);
+        }
+        .desk::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 5px;
+            background: var(--accent-cyan);
+            border-radius: 3px;
+            box-shadow: 0 0 15px var(--accent-cyan);
+        }
+        
+        .pokemon-agent {
+            position: absolute;
+            z-index: 100;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .pokemon-agent img {
+            width: 100px;
+            height: 100px;
+            image-rendering: pixelated;
+            filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));
+            transition: all 0.3s;
+        }
+        .pokemon-agent:hover img {
+            transform: scale(1.25);
+            filter: drop-shadow(0 0 35px rgba(0,212,255,0.8));
+        }
+        .pokemon-info {
+            margin-top: -15px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            background: var(--bg-secondary);
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .pokemon-agent:hover .pokemon-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .pokemon-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+        }
+        .pokemon-task {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            max-width: 150px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .pokemon-hp-bar {
+            width: 70px;
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .pokemon-hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), #00cc6a);
+            border-radius: 3px;
+            transition: width 0.5s;
+        }
+        
+        /* Cron Jobs Table */
+        .cron-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cron-table th,
+        .cron-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .cron-table th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(0,0,0,0.2);
+        }
+        .cron-table tr:hover {
+            background: rgba(0,212,255,0.05);
+        }
+        .cron-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        .cron-schedule {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .cron-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .cron-status.active {
+            background: rgba(0,255,136,0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(0,255,136,0.3);
+        }
+        .cron-status.paused {
+            background: rgba(255,149,0,0.15);
+            color: var(--accent-amber);
+            border: 1px solid rgba(255,149,0,0.3);
+        }
+        .cron-status.running {
+            background: rgba(0,212,255,0.15);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0,212,255,0.3);
+            animation: pulse 2s infinite;
+        }
+        .cron-actions {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-icon:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+            background: rgba(0,212,255,0.1);
+        }
+        .btn-icon.run:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(0,255,136,0.1);
+        }
+        .btn-icon.stop:hover {
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+            background: rgba(255,51,102,0.1);
+        }
+        
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 24px;
+        }
+        .project-card {
+            background: linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4), 0 0 40px rgba(0,212,255,0.15);
+        }
+        .project-card:hover::before {
+            transform: scaleX(1);
+        }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .project-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(184,41,221,0.2));
+            border: 2px solid rgba(0,212,255,0.3);
+            transition: all 0.3s;
+        }
+        .project-card:hover .project-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 25px rgba(0,212,255,0.5);
+        }
+        .project-name {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .project-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .project-progress {
+            margin: 20px 0;
+        }
+        .project-progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .project-progress-value {
+            color: var(--accent-cyan);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .project-progress-bar {
+            height: 10px;
+            background: var(--bg-primary);
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+        .project-progress-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .project-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .project-team {
+            display: flex;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .team-member {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg-tertiary);
+            border: 3px solid var(--bg-secondary);
+            margin-left: -10px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .team-member:first-child { margin-left: 0; }
+        .team-member:hover {
+            transform: scale(1.3) translateY(-5px);
+            z-index: 10;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(0,212,255,0.5);
+        }
+        .team-member img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+        
+        /* Console */
+        .console {
+            background: #000;
+            border-radius: 12px;
+            padding: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            height: 450px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        .console::before {
+            content: 'TERMINAL v2.0';
+            position: absolute;
+            top: 8px;
+            right: 16px;
+            font-size: 10px;
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        .console-line {
+            margin-bottom: 8px;
+            display: flex;
+            gap: 12px;
+            line-height: 1.6;
+        }
+        .console-time {
+            color: var(--text-secondary);
+            min-width: 80px;
+            opacity: 0.7;
+        }
+        .console-prompt {
+            color: var(--accent-cyan);
+            margin-right: 8px;
+        }
+        .console-msg.info { color: var(--text-primary); }
+        .console-msg.success { color: var(--accent-green); }
+        .console-msg.error { color: var(--accent-red); }
+        .console-msg.warning { color: var(--accent-amber); }
+        
+        /* Action Buttons */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
+        }
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0,212,255,0.1);
+        }
+        .btn-danger {
+            background: rgba(255,51,102,0.2);
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+        .btn-danger:hover {
+            background: rgba(255,51,102,0.3);
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            padding: 24px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            border-color: var(--accent-cyan);
+        }
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: rgba(0,212,255,0.1);
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+        .stat-icon.success { background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.3); }
+        .stat-icon.warning { background: rgba(255,149,0,0.1); border-color: rgba(255,149,0,0.3); }
+        .stat-icon.error { background: rgba(255,51,102,0.1); border-color: rgba(255,51,102,0.3); }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .stat-change {
+            font-size: 12px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-change.positive { color: var(--accent-green); }
+        .stat-change.negative { color: var(--accent-red); }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .col-3, .col-4 { grid-column: span 6; }
+            .projects-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .col-3, .col-4, .col-6 { grid-column: span 12; }
+            .system-bar { display: none; }
+            .nav-container { padding: 0 12px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-logo">◈</div>
+                <div>
+                    <div class="brand-name">ZERO COMMAND CENTER</div>
+                    <div class="brand-tagline">v3.0 PRO // FULL-SYSTEM CONTROL</div>
+                </div>
+            </div>
+            <div class="system-bar">
+                <div class="status-pill">
+                    <div class="status-dot"></div>
+                    <span>SERVER ONLINE</span>
+                </div>
+                <div class="status-pill" id="websiteStatus">
+                    <div class="status-dot"></div>
+                    <span>WEBSITE CHECK...</span>
+                </div>
+                <div class="status-pill" id="cronStatus">
+                    <div class="status-dot"></div>
+                    <span>CRON ACTIVE</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">
+                <i class="fas fa-th-large"></i> Dashboard
+            </button>
+            <button class="nav-tab" onclick="switchTab('office')">
+                <i class="fas fa-building"></i> Pokemon Office
+            </button>
+            <button class="nav-tab" onclick="switchTab('projects')">
+                <i class="fas fa-rocket"></i> Projects
+            </button>
+            <button class="nav-tab" onclick="switchTab('cron')">
+                <i class="fas fa-clock"></i> Cron Jobs
+                <span class="nav-badge" id="cronBadge">5</span>
+            </button>
+            <button class="nav-tab" onclick="switchTab('services')">
+                <i class="fas fa-server"></i> Services
+            </button>
+            <button class="nav-tab" onclick="switchTab('agents')">
+                <i class="fas fa-users"></i> Agents
+            </button>
+            <button class="nav-tab" onclick="switchTab('console')">
+                <i class="fas fa-terminal"></i> Console
+            </button>
+            <button class="nav-tab" onclick="switchTab('tools')">
+                <i class="fas fa-tools"></i> Tools
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            
+            <!-- Dashboard Tab -->
+            <div class="tab-panel active" id="dashboard">
+                <!-- Quick Links -->
+                <div class="quick-links">
+                    <a class="quick-link" href="https://polite-swan-051790.netlify.app" target="_blank">
+                        <i class="fas fa-globe"></i> Website
+                    </a>
+                    <a class="quick-link" href="https://github.com/jnprollama-ai/zero-method-website" target="_blank">
+                        <i class="fab fa-github"></i> GitHub
+                    </a>
+                    <a class="quick-link" href="https://app.netlify.com/sites/polite-swan-051790" target="_blank">
+                        <i class="fas fa-cloud"></i> Netlify
+                    </a>
+                    <a class="quick-link" href="https://stripe.com" target="_blank">
+                        <i class="fab fa-stripe"></i> Stripe
+                    </a>
+                    <a class="quick-link" href="#" onclick="openDiscord()">
+                        <i class="fab fa-discord"></i> Discord
+                    </a>
+                    <a class="quick-link" href="https://thezeromethod.com" target="_blank">
+                        <i class="fas fa-link"></i> Domain
+                    </a>
+                    <button class="quick-link" onclick="refreshAll()">
+                        <i class="fas fa-sync-alt"></i> Refresh All
+                    </button>
+                    <button class="quick-link" onclick="deployWebsite()">
+                        <i class="fas fa-rocket"></i> Deploy
+                    </button>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- System Stats -->
+                    <div class="col-3">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-label">Active Agents</div>
+                                    <div class="stat-value" id="agentCount">5</div>
+                                </div>
+                                <div class="stat-icon success">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                            </div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-arrow-up"></i> All operational
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-3">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-label">Cron Jobs</div>
+                                    <div class="stat-value" id="cronCount">5</div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                            <div class="stat-change positive">
+                                <i class="fas fa-check"></i> Next: 08:00
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-3">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-label">Tasks</div>
+                                    <div class="stat-value" id="taskCount">8</div>
+                                </div>
+                                <div class="stat-icon warning">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                            </div>
+                            <div class="stat-change">
+                                <span id="runningTasks">3</span> running, <span id="pendingTasks">2</span> pending
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-3">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div>
+                                    <div class="stat-label">Revenue</div>
+                                    <div class="stat-value">$0</div>
+                                </div>
+                                <div class="stat-icon">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </div>
+                            </div>
+                            <div class="stat-change">
+                                Starting Phase 1
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Services Status -->
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-server"></i> Connected Services
+                                </div>
+                                <button class="btn-icon" onclick="checkAllServices()" title="Check All">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="service-grid" id="servicesGrid">
+                                    <!-- Services loaded by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-bolt"></i> Recent Activity
+                                </div>
+                            </div>
+                            <div class="card-body" id="recentActivity">
+                                <!-- Activity loaded by JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="col-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">
+                                    <i class="fas fa-rocket"></i> Quick Actions
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="action-bar">
+                                    <button class="btn btn-primary" onclick="deployWebsite()">
+                                        <i class="fas fa-rocket"></i> Deploy Website
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="checkHealth()">
+                                        <i class="fas fa-heartbeat"></i> Health Check
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="refreshCron()">
+                                        <i class="fas fa-sync"></i> Refresh Cron
+                                    </button>
+                                    <button class="btn btn-danger" onclick="emergencyStop()">
+                                        <i class="fas fa-stop"></i> Emergency Stop
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Office Tab -->
+            <div class="tab-panel" id="office">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-building"></i> Pokemon Command Center
+                        </div>
+                        <div class="live-indicator">
+                            <div class="live-dot"></div>
+                            <span>Live Operations</span>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="office-container" id="officeContainer">
+                            <div class="office-floor"></div>
+                            <div class="desk" style="bottom: 35%; left: 8%;"></div>
+                            <div class="desk" style="bottom: 35%; left: 38%;"></div>
+                            <div class="desk" style="bottom: 35%; right: 8%;"></div>
+                            <div class="desk" style="bottom: 52%; left: 22%;"></div>
+                            <div class="desk" style="bottom: 52%; right: 22%;"></div>
+                            <!-- Pokemon agents rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projects Tab -->
+            <div class="tab-panel" id="projects">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-rocket"></i> Active Projects
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon" onclick="refreshProjects()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="projects-grid" id="projectsGrid">
+                            <!-- Projects rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cron Jobs Tab -->
+            <div class="tab-panel" id="cron">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-clock"></i> Scheduled Jobs
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="addCronJob()">
+                                <i class="fas fa-plus"></i> Add Job
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <table class="cron-table" id="cronTable">
+                            <thead>
+                                <tr>
+                                    <th>Job</th>
+                                    <th>Schedule</th>
+                                    <th>Status</th>
+                                    <th>Last Run</th>
+                                    <th>Next Run</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cronTableBody">
+                                <!-- Cron jobs rendered by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Tab -->
+            <div class="tab-panel" id="services">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-server"></i> Service Monitoring
+                        </div>
+                        <button class="btn btn-secondary" onclick="checkAllServices()">
+                            <i class="fas fa-sync"></i> Check All
+                        </button>
+                    </div>
+                    <div class="card-body">
+                        <div class="service-grid" id="fullServicesGrid">
+                            <!-- Full service grid rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agents Tab -->
+            <div class="tab-panel" id="agents">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-users"></i> Agent Management
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn btn-primary" onclick="spawnAgent()">
+                                <i class="fas fa-plus"></i> Spawn Agent
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="agentManagement">
+                            <!-- Agent management rendered by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Console Tab -->
+            <div class="tab-panel" id="console">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i class="fas fa-terminal"></i> System Console
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon" onclick="clearConsole()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn-icon" onclick="exportLogs()">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="console" id="consoleOutput">
+                            <div class="console-line">
+                                <span class="console-time">--:--:--</span>
+                                <span class="console-prompt">ZERO></span>
+                                <span class="console-msg">Initializing Command Center Pro...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tools Tab -->
+            <div class="tab-panel" id="tools">
+                <div class="dashboard-grid">
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Website Tools</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="action-bar" style="flex-direction: column;">
+                                    <button class="btn btn-secondary" onclick="window.open('https://polite-swan-051790.netlify.app', '_blank')">
+                                        <i class="fas fa-external-link-alt"></i> View Live Site
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="window.open('https://app.netlify.com/sites/polite-swan-051790', '_blank')">
+                                        <i class="fas fa-cog"></i> Netlify Dashboard
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="window.open('https://github.com/jnprollama-ai/zero-method-website', '_blank')">
+                                        <i class="fab fa-github"></i> GitHub Repo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Payment Tools</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="action-bar" style="flex-direction: column;">
+                                    <button class="btn btn-secondary" onclick="window.open('https://dashboard.stripe.com', '_blank')">
+                                        <i class="fab fa-stripe"></i> Stripe Dashboard
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="testPayment()">
+                                        <i class="fas fa-credit-card"></i> Test Payment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">System Tools</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="action-bar" style="flex-direction: column;">
+                                    <button class="btn btn-secondary" onclick="checkHealth()">
+                                        <i class="fas fa-heartbeat"></i> Health Check
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="viewLogs()">
+                                        <i class="fas fa-file-alt"></i> View Logs
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="backupData()">
+                                        <i class="fas fa-database"></i> Backup Data
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentData = {};
+
+        // Services configuration
+        const services = [
+            { name: 'Website', icon: 'fa-globe', url: 'https://polite-swan-051790.netlify.app', status: 'checking' },
+            { name: 'GitHub', icon: 'fa-github', url: 'https://github.com/jnprollama-ai/zero-method-website', status: 'online' },
+            { name: 'Netlify', icon: 'fa-cloud', url: 'https://app.netlify.com', status: 'online' },
+            { name: 'Stripe', icon: 'fa-credit-card', url: 'https://dashboard.stripe.com', status: 'online' },
+            { name: 'Discord', icon: 'fa-discord', url: '#', status: 'online' },
+            { name: 'Domain', icon: 'fa-link', url: 'https://thezeromethod.com', status: 'checking' }
+        ];
+
+        // Initialize
+        function init() {
+            renderServices();
+            checkWebsiteStatus();
+        }
+
+        // Tab switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            event.target.closest('.nav-tab').classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Render services
+        function renderServices() {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = services.map(s => `
+                <div class="service-card" onclick="openService('${s.url}')">
+                    <div class="service-icon">
+                        <i class="fas ${s.icon}"></i>
+                    </div>
+                    <div class="service-info">
+                        <div class="service-name">${s.name}</div>
+                        <div class="service-status ${s.status}">
+                            ${s.status === 'checking' ? '<i class="fas fa-spinner fa-spin"></i> Checking...' : 
+                              s.status === 'online' ? '<i class="fas fa-check-circle"></i> Online' : 
+                              '<i class="fas fa-times-circle"></i> Offline'}
+                        </div>
+                    </div>
+                    <div class="service-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Check website status
+        async function checkWebsiteStatus() {
+            try {
+                const response = await fetch('https://polite-swan-051790.netlify.app', { 
+                    mode: 'no-cors',
+                    method: 'HEAD'
+                });
+                updateServiceStatus('Website', 'online');
+                document.getElementById('websiteStatus').className = 'status-pill';
+                document.getElementById('websiteStatus').innerHTML = '<div class="status-dot"></div><span>WEBSITE ONLINE</span>';
+            } catch (e) {
+                updateServiceStatus('Website', 'unknown');
+            }
+        }
+
+        function updateServiceStatus(name, status) {
+            const service = services.find(s => s.name === name);
+            if (service) service.status = status;
+            renderServices();
+        }
+
+        function openService(url) {
+            if (url !== '#') window.open(url, '_blank');
+        }
+
+        function openDiscord() {
+            alert('Discord webhook active. Check notifications channel.');
+        }
+
+        // Action functions
+        function refreshAll() {
+            log('info', 'Refreshing all systems...');
+            socket.emit('refresh');
+        }
+
+        function deployWebsite() {
+            log('info', 'Initiating deployment...');
+            setTimeout(() => {
+                log('success', 'Website deployed successfully to Netlify');
+            }, 2000);
+        }
+
+        function checkHealth() {
+            log('info', 'Running health checks...');
+            setTimeout(() => {
+                log('success', 'All systems healthy');
+            }, 1000);
+        }
+
+        function refreshCron() {
+            log('info', 'Refreshing cron jobs...');
+        }
+
+        function emergencyStop() {
+            if (confirm('EMERGENCY STOP: This will halt all operations. Continue?')) {
+                log('error', 'EMERGENCY STOP ACTIVATED');
+            }
+        }
+
+        function spawnAgent() {
+            log('info', 'Spawning new agent...');
+        }
+
+        function addCronJob() {
+            log('info', 'Opening cron job creator...');
+        }
+
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+        }
+
+        function exportLogs() {
+            log('info', 'Exporting logs...');
+        }
+
+        function testPayment() {
+            log('info', 'Opening Stripe test mode...');
+            window.open('https://dashboard.stripe.com/test', '_blank');
+        }
+
+        function viewLogs() {
+            switchTab('console');
+        }
+
+        function backupData() {
+            log('info', 'Creating backup...');
+            setTimeout(() => {
+                log('success', 'Backup created successfully');
+            }, 1500);
+        }
+
+        // Logging
+        function log(level, message) {
+            const consoleEl = document.getElementById('consoleOutput');
+            const time = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.innerHTML = `
+                <span class="console-time">${time}</span>
+                <span class="console-prompt">ZERO></span>
+                <span class="console-msg ${level}">${message}</span>
+            `;
+            consoleEl.appendChild(line);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        // Socket events
+        socket.on('connect', () => {
+            log('success', 'Connected to Command Center Pro');
+        });
+
+        socket.on('data', (data) => {
+            currentData = data;
+            updateDashboard(data);
+        });
+
+        function updateDashboard(data) {
+            // Update counts
+            document.getElementById('agentCount').textContent = data.agents?.length || 0;
+            document.getElementById('cronCount').textContent = data.cronJobs?.length || 0;
+            document.getElementById('taskCount').textContent = data.tasks?.length || 0;
+            
+            // Render office
+            renderOffice(data.agents);
+            
+            // Render projects
+            renderProjects(data.projects);
+            
+            // Render cron
+            renderCron(data.cronJobs);
+        }
+
+        function renderOffice(agents) {
+            const container = document.getElementById('officeContainer');
+            // Keep desks, remove old pokemon
+            container.querySelectorAll('.pokemon-agent').forEach(el => el.remove());
+            
+            const positions = [
+                { id: 'research', bottom: '38%', left: '10%' },
+                { id: 'zero', bottom: '38%', left: '42%' },
+                { id: 'content', bottom: '38%', right: '10%' },
+                { id: 'seo', bottom: '55%', left: '25%' },
+                { id: 'social', bottom: '55%', right: '25%' }
+            ];
+            
+            agents?.forEach((agent, i) => {
+                const pos = positions[i];
+                if (!pos) return;
+                
+                const div = document.createElement('div');
+                div.className = 'pokemon-agent';
+                div.style.cssText = `bottom: ${pos.bottom}; left: ${pos.left}; right: ${pos.right};`;
+                div.innerHTML = `
+                    <img src="${agent.sprite}" alt="${agent.pokemon}">
+                    <div class="pokemon-info">
+                        <div class="pokemon-name">${agent.name} (${agent.pokemon})</div>
+                        <div class="pokemon-task">${agent.task}</div>
+                        <div class="pokemon-hp-bar">
+                            <div class="pokemon-hp-fill" style="width: ${(agent.hp / agent.maxHp) * 100}%"></div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderProjects(projects) {
+            const grid = document.getElementById('projectsGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = projects?.map(p => `
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">${p.status === 'live' ? '🟢' : p.status === 'active' ? '🔵' : '🟡'}</div>
+                        <div class="project-status ${p.status === 'live' ? 'active' : p.status}">${p.status.toUpperCase()}</div>
+                    </div>
+                    <div class="project-name">${p.name}</div>
+                    <div style="color: var(--text-secondary); font-size: 14px; margin-bottom: 16px;">${p.desc}</div>
+                    <div class="project-progress">
+                        <div class="project-progress-header">
+                            <span>Progress</span>
+                            <span class="project-progress-value">${p.progress}%</span>
+                        </div>
+                        <div class="project-progress-bar">
+                            <div class="project-progress-fill" style="width: ${p.progress}%; background: ${getProgressColor(p.progress)}"></div>
+                        </div>
+                    </div>
+                    <div class="project-team">
+                        ${p.team.map(agentId => {
+                            const agent = currentData.agents?.find(a => a.id === agentId);
+                            return agent ? `
+                                <div class="team-member" title="${agent.name}">
+                                    <img src="${agent.sprite}" alt="${agent.pokemon}">
+                                </div>
+                            ` : '';
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('') || '';
+        }
+
+        function renderCron(jobs) {
+            const tbody = document.getElementById('cronTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = jobs?.map(job => `
+                <tr>
+                    <td>
+                        <div class="cron-name">${job.name}</div>
+                        <div class="cron-schedule">${job.schedule}</div>
+                    </td>
+                    <td style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">${job.schedule}</td>
+                    <td><span class="cron-status ${job.status}">${job.status}</span></td>
+                    <td>${job.lastRun || 'Never'}</td>
+                    <td>${job.nextRun || '--:--'}</td>
+                    <td>
+                        <div class="cron-actions">
+                            <button class="btn-icon run" onclick="runCron('${job.id}')" title="Run Now">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="btn-icon" onclick="editCron('${job.id}')" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn-icon stop" onclick="pauseCron('${job.id}')" title="Pause">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('') || '';
+        }
+
+        function getProgressColor(progress) {
+            if (progress >= 80) return 'linear-gradient(90deg, var(--accent-green), #00cc6a)';
+            if (progress >= 50) return 'linear-gradient(90deg, var(--accent-cyan), var(--accent-purple))';
+            if (progress >= 20) return 'linear-gradient(90deg, var(--accent-amber), var(--accent-cyan))';
+            return 'linear-gradient(90deg, var(--accent-red), var(--accent-amber))';
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>

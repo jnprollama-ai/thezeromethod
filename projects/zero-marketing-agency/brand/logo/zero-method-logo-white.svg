@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
+  <defs>
+    <linearGradient id="logoGradientWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Dark background -->
+  <rect width="300" height="80" fill="#0B0F19" rx="8"/>
+  
+  <!-- Orbital Spiral Icon -->
+  <g transform="translate(40, 40)">
+    <!-- Outer orbit -->
+    <circle cx="0" cy="0" r="28" 
+            fill="none" 
+            stroke="url(#logoGradientWhite)" 
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-dasharray="140 15"
+            transform="rotate(-45)"/>
+    
+    <!-- Middle orbit -->
+    <circle cx="0" cy="0" r="18" 
+            fill="none" 
+            stroke="url(#logoGradientWhite)" 
+            stroke-width="3"
+            stroke-linecap="round"
+            stroke-dasharray="85 12"
+            transform="rotate(135)"/>
+    
+    <!-- Inner core -->
+    <circle cx="0" cy="0" r="8" 
+            fill="#3B82F6" 
+            opacity="0.9"/>
+    
+    <!-- Center dot -->
+    <circle cx="0" cy="0" r="3" 
+            fill="#FFFFFF"/>
+  </g>
+  
+  <!-- ZERO Text (White) -->
+  <text x="80" y="48" 
+        font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="32" 
+        font-weight="700" 
+        fill="#E2E8F0"
+        letter-spacing="-0.02em">ZERO</text>
+  
+  <!-- METHOD Text (Gray) -->
+  <text x="80" y="68" 
+        font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="13" 
+        font-weight="600" 
+        fill="#64748B"
+        letter-spacing="0.15em">METHOD</text>
+</svg>

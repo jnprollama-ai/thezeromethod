@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Zero Method | AI Productivity Suite</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0a0a0f; color: #fff; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        header { padding: 20px 0; border-bottom: 1px solid #2d2d44; }
+        .brand { font-size: 24px; font-weight: 700; background: linear-gradient(90deg, #00d4ff, #b829dd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero { padding: 100px 0; text-align: center; }
+        .hero h1 { font-size: 56px; font-weight: 700; margin-bottom: 24px; line-height: 1.1; }
+        .hero h1 span { background: linear-gradient(90deg, #00d4ff, #b829dd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { font-size: 20px; color: #8b8bb0; max-width: 600px; margin: 0 auto 40px; }
+        .btn { display: inline-block; padding: 16px 32px; background: linear-gradient(90deg, #00d4ff, #b829dd); color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; transition: transform 0.2s; }
+        .btn:hover { transform: translateY(-2px); }
+        .pricing { padding: 80px 0; background: #12121a; }
+        .pricing h2 { text-align: center; font-size: 36px; margin-bottom: 60px; }
+        .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+        .pricing-card { background: #1a1a2e; border: 1px solid #2d2d44; border-radius: 12px; padding: 32px; text-align: center; }
+        .pricing-card.featured { border-color: #00d4ff; position: relative; }
+        .featured-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: #00d4ff; color: #0a0a0f; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .pricing-card h3 { font-size: 20px; margin-bottom: 16px; }
+        .price { font-size: 48px; font-weight: 700; margin-bottom: 24px; }
+        .price span { font-size: 16px; color: #8b8bb0; }
+        .features { list-style: none; text-align: left; margin-bottom: 32px; }
+        .features li { padding: 8px 0; color: #8b8bb0; }
+        .features li::before { content: "✓"; color: #00ff88; margin-right: 8px; }
+        .btn-outline { background: transparent; border: 2px solid #2d2d44; }
+        .btn-outline:hover { border-color: #00d4ff; }
+        footer { padding: 40px 0; text-align: center; color: #8b8bb0; border-top: 1px solid #2d2d44; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="brand">◈ THE ZERO METHOD</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Master AI in <span>50 Prompts</span></h1>
+            <p>The complete AI productivity suite for professionals. Save 10+ hours every week with battle-tested prompts.</p>
+            <a href="#pricing" class="btn">Get Instant Access →</a>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2>Choose Your Plan</h2>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Essential</h3>
+                    <div class="price">$49<span>/one-time</span></div>
+                    <ul class="features">
+                        <li>50+ Core Prompts</li>
+                        <li>Email Templates</li>
+                        <li>Basic Tutorials</li>
+                        <li>PDF Guide</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/test_essential" class="btn btn-outline">Get Essential</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="featured-badge">MOST POPULAR</div>
+                    <h3>Professional</h3>
+                    <div class="price">$79<span>/one-time</span></div>
+                    <ul class="features">
+                        <li>150+ Advanced Prompts</li>
+                        <li>40+ Email Templates</li>
+                        <li>Full Video Course</li>
+                        <li>Community Access</li>
+                        <li>Lifetime Updates</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/test_professional" class="btn">Get Professional</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Agency</h3>
+                    <div class="price">$149<span>/one-time</span></div>
+                    <ul class="features">
+                        <li>Everything in Pro</li>
+                        <li>5 Team Seats</li>
+                        <li>White-Label Rights</li>
+                        <li>API Access</li>
+                        <li>Custom Development</li>
+                    </ul>
+                    <a href="https://buy.stripe.com/test_agency" class="btn btn-outline">Get Agency</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>© 2026 The Zero Method. Built with 🌀 by Zero.</p>
+        </div>
+    </footer>
+</body>
+</html>

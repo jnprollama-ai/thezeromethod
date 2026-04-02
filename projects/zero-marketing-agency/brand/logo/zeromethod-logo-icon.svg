@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B829DD;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="120" height="120" fill="#0A0A0F" rx="24"/>
+  
+  <!-- Spiral Icon -->
+  <path d="M60,20 
+           C88,20 100,42 100,60 
+           C100,88 78,100 60,100 
+           C32,100 20,78 20,60 
+           C20,32 42,20 60,20 
+           M60,40 
+           C74,40 82,50 82,60 
+           C82,74 72,82 60,82 
+           C46,82 38,72 38,60 
+           C38,46 48,40 60,40
+           M60,54
+           C63,54 66,57 66,60
+           C66,64 63,66 60,66
+           C56,66 54,63 54,60
+           C54,56 57,54 60,54"
+        fill="none"
+        stroke="url(#iconGradient)"
+        stroke-width="6"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+</svg>

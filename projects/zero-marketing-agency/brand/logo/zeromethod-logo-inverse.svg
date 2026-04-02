@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120">
+  <defs>
+    <linearGradient id="spiralGradientWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B829DD;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="120" fill="#0A0A0F" rx="8"/>
+  
+  <!-- Spiral -->
+  <path d="M60,25 
+           C85,25 95,45 95,60 
+           C95,85 75,95 60,95 
+           C35,95 25,75 25,60 
+           C25,35 45,25 60,25 
+           M60,42 
+           C70,42 78,50 78,60 
+           C78,72 68,78 60,78 
+           C48,78 42,68 42,60 
+           C42,48 52,42 60,42
+           M60,55
+           C63,55 65,57 65,60
+           C65,64 62,65 60,65
+           C56,65 55,62 55,60
+           C55,56 58,55 60,55"
+        fill="none"
+        stroke="url(#spiralGradientWhite)"
+        stroke-width="5"
+        stroke-linecap="round"
+        stroke-linejoin="round"/>
+  
+  <!-- ZERO TEXT (White) -->
+  <text x="110" y="58" 
+        font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="36" 
+        font-weight="700" 
+        fill="#FFFFFF">ZERO</text>
+  
+  <!-- METHOD TEXT (Light) -->
+  <text x="110" y="82" 
+        font-family="Inter, -apple-system, BlinkMacSystemFont, sans-serif" 
+        font-size="14" 
+        font-weight="500" 
+        fill="#8B8BB0"
+        letter-spacing="3">METHOD</text>
+</svg>

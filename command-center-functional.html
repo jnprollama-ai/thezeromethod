@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>◈ ZERO COMMAND CENTER LIVE</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --border-color: #2d2d44;
+            --text-primary: #e0e0ff;
+            --text-secondary: #8b8bb0;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #b829dd;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --accent-amber: #ff9500;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-primary); 
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 212, 255, 0.02), rgba(0, 212, 255, 0.02) 1px, transparent 1px, transparent 2px);
+            pointer-events: none; z-index: 1000;
+        }
+        
+        /* Approval Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999; opacity: 0; visibility: hidden;
+            transition: all 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        
+        .modal {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal { transform: translateY(0); }
+        
+        .modal-title {
+            font-size: 20px; font-weight: 700; color: var(--accent-cyan);
+            margin-bottom: 16px; display: flex; align-items: center; gap: 12px;
+        }
+        .modal-content { color: var(--text-secondary); margin-bottom: 24px; }
+        .modal-actions { display: flex; gap: 12px; }
+        .btn {
+            flex: 1; padding: 12px 24px; border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: white;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 20px rgba(0,212,255,0.4); }
+        .btn-secondary {
+            background: transparent; border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        .btn-secondary:hover { border-color: var(--accent-red); color: var(--accent-red); }
+        
+        /* Loading Spinner */
+        .spinner {
+            width: 20px; height: 20px;
+            border: 2px solid transparent;
+            border-top-color: var(--accent-cyan);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Status indicators */
+        .status-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.online { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+        .status-dot.offline { background: var(--accent-red); }
+        .status-dot.processing { 
+            background: var(--accent-amber); 
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        /* Result notification */
+        .notification {
+            position: fixed; top: 20px; right: 20px;
+            padding: 16px 24px; border-radius: 12px;
+            display: flex; align-items: center; gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s; z-index: 9998;
+        }
+        .notification.show { transform: translateX(0); }
+        .notification.success { 
+            background: rgba(0, 255, 136, 0.1); 
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+        }
+        .notification.error { 
+            background: rgba(255, 51, 102, 0.1); 
+            border: 1px solid var(--accent-red);
+            color: var(--accent-red);
+        }
+        
+        /* Logs */
+        .log-entry {
+            padding: 12px; border-radius: 8px;
+            margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+        .log-entry.success { background: rgba(0, 255, 136, 0.05); border-left: 3px solid var(--accent-green); }
+        .log-entry.error { background: rgba(255, 51, 102, 0.05); border-left: 3px solid var(--accent-red); }
+        .log-entry.info { background: rgba(0, 212, 255, 0.05); border-left: 3px solid var(--accent-cyan); }
+        .log-time { color: var(--text-secondary); font-size: 11px; }
+        .log-level { font-weight: 600; margin-right: 8px; }
+        
+        /* Action buttons with loading state */
+        .action-btn {
+            position: relative; padding: 12px 24px;
+            border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-tertiary); color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; gap: 8px;
+        }
+        .action-btn:hover { border-color: var(--accent-cyan); }
+        .action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .action-btn .spinner { display: none; }
+        .action-btn.loading .spinner { display: block; }
+        .action-btn.loading .btn-text { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Approval Modal -->
+    <div class="modal-overlay" id="approvalModal">
+        <div class="modal">
+            <div class="modal-title">
+                <span>⚡</span>
+                <span>Action Required</span>
+            </div>
+            <div class="modal-content" id="modalContent">
+                <!-- Dynamic content -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="denyAction()">Deny</button>
+                <button class="btn btn-primary" onclick="approveAction()" id="approveBtn">Approve</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <span id="notifIcon">✓</span>
+        <span id="notifMessage"></span>
+    </div>
+    
+    <!-- Your existing Command Center HTML here -->
+    <script>
+        // API Base URL
+        const API_BASE = 'http://localhost:3456';
+        
+        // Current pending action
+        let pendingAction = null;
+        let isProcessing = false;
+        
+        // Show approval modal
+        function showApproval(action, description, callback) {
+            pendingAction = { action, description, callback };
+            document.getElementById('modalContent').innerHTML = `
+                <p style="color: var(--text-primary); font-size: 18px; margin-bottom: 12px;">
+                    <strong>${action}</strong>
+                </p>
+                <p>${description}</p>
+            `;
+            document.getElementById('approvalModal').classList.add('active');
+        }
+        
+        // Approve action
+        async function approveAction() {
+            if (!pendingAction || isProcessing) return;
+            
+            isProcessing = true;
+            document.getElementById('approveBtn').innerHTML = '<div class="spinner" style="margin: 0 auto;"></div>';
+            document.getElementById('approveBtn').disabled = true;
+            
+            try {
+                await pendingAction.callback();
+                showNotification('success', `✓ ${pendingAction.action} completed successfully`);
+            } catch (error) {
+                showNotification('error', `✗ ${pendingAction.action} failed: ${error.message}`);
+            }
+            
+            closeModal();
+            isProcessing = false;
+            document.getElementById('approveBtn').innerHTML = 'Approve';
+            document.getElementById('approveBtn').disabled = false;
+        }
+        
+        // Deny action
+        function denyAction() {
+            pendingAction = null;
+            closeModal();
+            showNotification('error', '✗ Action denied by user');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('approvalModal').classList.remove('active');
+        }
+        
+        // Show notification
+        function showNotification(type, message) {
+            const notif = document.getElementById('notification');
+            document.getElementById('notifMessage').textContent = message;
+            notif.className = `notification ${type}`;
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 5000);
+        }
+        
+        // API Calls
+        async function apiCall(endpoint, method = 'GET', body = null) {
+            const options = {
+                method,
+                headers: { 'Content-Type': 'application/json' }
+            };
+            if (body) options.body = JSON.stringify(body);
+            
+            const response = await fetch(`${API_BASE}${endpoint}`, options);
+            if (!response.ok) throw new Error(await response.text());
+            return response.json();
+        }
+        
+        // Actions
+        async function deployWebsite() {
+            showApproval(
+                'Deploy Website',
+                'This will commit all changes and push to GitHub, triggering a Netlify deployment. Continue?',
+                async () => {
+                    const result = await apiCall('/api/website/deploy', 'POST');
+                    return result;
+                }
+            );
+        }
+        
+        async function checkHealth() {
+            const btn = event.target;
+            btn.classList.add('loading');
+            
+            try {
+                const result = await apiCall('/api/website/health');
+                showNotification('success', `✓ Website is ${result.status}`);
+            } catch (error) {
+                showNotification('error', `✗ Health check failed: ${error.message}`);
+            }
+            
+            btn.classList.remove('loading');
+        }
+        
+        async function refreshAll() {
+            showApproval(
+                'Refresh All Systems',
+                'This will refresh all system statuses and clear caches. Continue?',
+                async () => {
+                    const result = await apiCall('/api/system/refresh', 'POST');
+                    return result;
+                }
+            );
+        }
+        
+        async function buildSaaS(tool) {
+            showApproval(
+                `Build ${tool}`,
+                `This will build and deploy the ${tool} tool to production. Continue?`,
+                async () => {
+                    const result = await apiCall('/api/saas/build', 'POST', { tool });
+                    return result;
+                }
+            );
+        }
+        
+        // Load live data
+        async function loadStatus() {
+            try {
+                const data = await apiCall('/api/status');
+                console.log('Status loaded:', data);
+            } catch (error) {
+                console.error('Failed to load status:', error);
+            }
+        }
+        
+        // Load on startup
+        loadStatus();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadStatus, 30000);
+    </script>
+</body>
+</html>

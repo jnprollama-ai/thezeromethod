@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Method — Email Templates</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0f;
+            color: #e2e8f0;
+            padding: 40px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 40px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .template-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .email-preview {
+            width: 600px;
+            margin: 0 auto 40px;
+            background: #0b0f19;
+            border: 1px solid #1e2642;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Email Header */
+        .email-header {
+            background: linear-gradient(145deg, #141b2d, #0b0f19);
+            padding: 40px;
+            text-align: center;
+            border-bottom: 1px solid #1e2642;
+        }
+
+        .email-logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: #e2e8f0;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .email-tagline {
+            font-size: 12px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .email-divider {
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4);
+            margin: 0 40px;
+        }
+
+        /* Email Body */
+        .email-body {
+            padding: 40px;
+        }
+
+        .email-headline {
+            font-size: 28px;
+            font-weight: 700;
+            color: #e2e8f0;
+            line-height: 1.3;
+            margin-bottom: 24px;
+        }
+
+        .email-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #94a3b8;
+            margin-bottom: 20px;
+        }
+
+        .email-text strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* CTA Button */
+        .email-cta {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            color: #0b0f19;
+            padding: 16px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+        }
+
+        .email-cta:hover {
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Feature List */
+        .email-list {
+            margin: 24px 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .email-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #1e2642;
+            color: #94a3b8;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .email-list li:last-child {
+            border-bottom: none;
+        }
+
+        .email-list li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        /* Email Footer */
+        .email-footer {
+            background: #12121a;
+            padding: 30px 40px;
+            text-align: center;
+            border-top: 1px solid #1e2642;
+        }
+
+        .email-footer p {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .email-footer a {
+            color: #3b82f6;
+            text-decoration: none;
+        }
+
+        .email-social {
+            margin-top: 20px;
+        }
+
+        .email-social a {
+            display: inline-block;
+            margin: 0 8px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 13px;
+        }
+
+        /* HTML Export Box */
+        .code-block {
+            background: #12121a;
+            border: 1px solid #2d2d44;
+            border-radius: 6px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #94a3b8;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+
+        .export-note {
+            margin-top: 40px;
+            padding: 20px;
+            background: #12121a;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .export-note h3 {
+            color: #3b82f6;
+            margin-bottom: 12px;
+        }
+
+        .export-note p {
+            color: #64748b;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zero Method — Email Templates</h1>
+
+    <!-- Template 1: Welcome Email -->
+    <div class="template-section">
+        <div class="section-title">Welcome Email — Day 0</div>
+        
+        <div class="email-preview">
+            <div class="email-header">
+                <div class="email-logo">ZERO METHOD</div>
+                <div class="email-tagline">AI-POWERED PRODUCTIVITY</div>
+            </div>
+            <div class="email-divider"></div>
+            
+            <div class="email-body">
+                <div class="email-headline">Welcome to Zero Method</div>
+                
+                <p class="email-text">
+                    Hi there,
+                </p>
+                
+                <p class="email-text">
+                    Welcome to Zero Method. You've just taken the first step toward reclaiming 10+ hours a week.
+                </p>
+                
+                <p class="email-text">
+                    As promised, here's your <strong>free guide</strong> with 5 AI prompts that work immediately:
+                </p>
+                
+                <a href="#" class="email-cta">Download Free Guide →</a>
+                
+                <p class="email-text">
+                    Over the next two weeks, I'll share case studies, behind-the-scenes frameworks, and exclusive tips — all designed to help you work smarter.
+                </p>
+                
+                <p class="email-text">
+                    No fluff. Just actionable tactics that work.
+                </p>
+                
+                <p class="email-text">
+                    Talk soon,<br>
+                    The Zero Method Team
+                </p>
+            </div>
+            
+            <div class="email-footer">
+                <p>You're receiving this because you signed up at thezeromethod.com</p>
+                <p><a href="#">Unsubscribe</a> | <a href="#">Update Preferences</a></p>
+                
+                <div class="email-social">
+                    <a href="#">Twitter</a>
+                    <a href="#">LinkedIn</a>
+                    <a href="#">Website</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template 2: Product Launch -->
+    <div class="template-section">
+        <div class="section-title">Product Launch Email</div>
+        
+        <div class="email-preview">
+            <div class="email-header">
+                <div class="email-logo">ZERO METHOD</div>
+                <div class="email-tagline">AI-POWERED PRODUCTIVITY</div>
+            </div>
+            <div class="email-divider"></div>
+            
+            <div class="email-body">
+                <div class="email-headline">The AI Productivity Suite is here.</div>
+                
+                <p class="email-text">
+                    After 6 months of testing, refining, and validating with 100+ professionals...
+                </p>
+                
+                <p class="email-text">
+                    I'm thrilled to introduce <strong>The AI Productivity Suite</strong> — the complete system for saving 10+ hours a week with AI.
+                </p>
+                
+                <ul class="email-list">
+                    <li>The 80-page Strategic Playbook</li>
+                    <li>50+ plug-and-play prompt templates</li>
+                    <li>5 video walkthroughs (real screen recordings)</li>
+                    <li>The Prompt Builder Worksheet</li>
+                    <li>Lifetime updates</li>
+                </ul>
+                
+                <p class="email-text">
+                    <strong>Launch price: $49</strong> (reg. $79) — This week only.
+                </p>
+                
+                <a href="#" class="email-cta">Get Instant Access →</a>
+                
+                <p class="email-text">
+                    Questions? Just reply to this email.
+                </p>
+            </div>
+            
+            <div class="email-footer">
+                <p>© 2026 Zero Method. All rights reserved.</p>
+                <p><a href="#">Unsubscribe</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template 3: Weekly Newsletter -->
+    <div class="template-section">
+        <div class="section-title">Weekly Newsletter</div>
+        
+        <div class="email-preview">
+            <div class="email-header">
+                <div class="email-logo">ZERO METHOD</div>
+                <div class="email-tagline">WEEKLY PRODUCTIVITY INSIGHTS</div>
+            </div>
+            
+            <div class="email-body">
+                <div class="email-headline">This Week: The 3-Question Framework</div>
+                
+                <p class="email-text">
+                    Before any AI prompt, ask:
+                </p>
+                
+                <ul class="email-list">
+                    <li>What specific outcome do I need?</li>
+                    <li>What context does the AI need?</li>
+                    <li>What format should the answer be?</li>
+                </ul>
+                
+                <p class="email-text">
+                    Most people skip all three. That's why their prompts fail.
+                </p>
+                
+                <p class="email-text">
+                    <strong>Real example:</strong>
+                </p>
+                
+                <p class="email-text" style="background: #12121a; padding: 16px; border-radius: 6px; border-left: 3px solid #3b82f6;">
+                    ❌ "Write a marketing report"<br>
+                    ✅ "Analyze these metrics [data]. Identify 3 trends, 2 concerns, and format as bullet points for my CEO"
+                </p>
+                
+                <p class="email-text">
+                    See the difference?
+                </p>
+                
+                <a href="#" class="email-cta">Get 50 More Examples →</a>
+            </div>
+            
+            <div class="email-footer">
+                <p>You're receiving Zero Method Weekly</p>
+                <p><a href="#">View in browser</a> | <a href="#">Unsubscribe</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Template 4: Abandoned Cart -->
+    <div class="template-section">
+        <div class="section-title">Abandoned Cart — Follow-up</div>
+        
+        <div class="email-preview">
+            <div class="email-header">
+                <div class="email-logo">ZERO METHOD</div>
+                <div class="email-tagline">AI-POWERED PRODUCTIVITY</div>
+            </div>
+            
+            <div class="email-body">
+                <div class="email-headline">Did something go wrong?</div>
+                
+                <p class="email-text">
+                    I noticed you were checking out The AI Productivity Suite but didn't complete your order.
+                </p>
+                
+                <p class="email-text">
+                    Did you have questions? Hit reply and I'll personally help.
+                </p>
+                
+                <p class="email-text">
+                    Or if you're ready now:
+                </p>
+                
+                <a href="#" class="email-cta">Complete Your Order →</a>
+                
+                <p class="email-text">
+                    (Your cart is saved for 48 hours)
+                </p>
+            </div>
+            
+            <div class="email-footer">
+                <p>© 2026 Zero Method</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="export-note">
+        <h3>Export Instructions</h3>
+        <p>
+            These templates are designed for <strong>ConvertKit</strong>, <strong>Mailchimp</strong>, or any HTML-compatible email service.
+        </p>
+        <p style="margin-top: 12px;">
+            <strong>Key specs:</strong><br>
+            • Width: 600px (industry standard)<br>
+            • Background: #0b0f19 (dark mode optimized)<br>
+            • Fonts: Inter (web-safe fallback: Arial)<br>
+            • CTA Buttons: Gradient blue with high contrast
+        </p>
+    </div>
+</body>
+</html>

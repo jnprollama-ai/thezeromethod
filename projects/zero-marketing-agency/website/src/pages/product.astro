@@ -1,0 +1,438 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+
+const title = "Product | Zero Method - AI Productivity Suite";
+const description = "Choose your plan. Get instant access to 150+ proven AI prompts, templates, and workflows that save you 10+ hours every week.";
+
+const features = [
+  {
+    icon: "🚀",
+    title: "150+ Battle-Tested Prompts",
+    description: "Copy-paste ready prompts for ChatGPT, Claude, and Gemini that deliver consistent, high-quality results."
+  },
+  {
+    icon: "📄",
+    title: "40+ Done-For-You Templates",
+    description: "Professionally designed templates for emails, content, analysis, and automation. Just fill in the blanks."
+  },
+  {
+    icon: "🎥",
+    title: "Video Walkthroughs",
+    description: "Step-by-step video guides showing exactly how to use each prompt for maximum impact."
+  },
+  {
+    icon: "📊",
+    title: "Interactive Worksheets",
+    description: "Worksheets that help you identify time-wasters and build your personalized AI workflow."
+  },
+  {
+    icon: "🔄",
+    title: "Lifetime Updates",
+    description: "Get every new template, prompt, and update we release. Pay once, benefit forever."
+  },
+  {
+    icon: "💬",
+    title: "Community Access",
+    description: "Join our private community of productivity hackers sharing tips, tricks, and new discoveries."
+  }
+];
+
+const tiers = [
+  {
+    name: "Essential",
+    price: "$49",
+    priceId: "price_1TH9CFB0SuyNKPsMOgM021or",
+    tier: "essential",
+    description: "Perfect for individuals getting started with AI productivity",
+    features: [
+      "50+ Core Prompts",
+      "15 Email Templates",
+      "Basic Video Tutorials",
+      "PDF Worksheets",
+      "Email Support",
+      "Lifetime Updates"
+    ],
+    cta: "Get Essential",
+    popular: false
+  },
+  {
+    name: "Professional",
+    price: "$79",
+    priceId: "price_1TH9CkB0SuyNKPsMayNxCuCJ",
+    tier: "professional",
+    description: "For serious professionals who want the complete system",
+    features: [
+      "150+ Premium Prompts",
+      "40+ Done-For-You Templates",
+      "Full Video Course (10+ hrs)",
+      "Interactive Worksheets",
+      "Priority Support",
+      "Lifetime Updates",
+      "Private Community Access",
+      "Monthly Prompt Drops"
+    ],
+    cta: "Get Professional",
+    popular: true
+  },
+  {
+    name: "Agency",
+    price: "$149",
+    priceId: "price_1TH9D9B0SuyNKPsM3kx0be7k",
+    tier: "agency",
+    description: "For teams and agencies managing multiple clients",
+    features: [
+      "Everything in Professional",
+      "Agency License (5 seats)",
+      "White-Label Templates",
+      "Client Management System",
+      "Team Training Materials",
+      "API Access",
+      "Dedicated Support Channel",
+      "Custom Prompt Development"
+    ],
+    cta: "Get Agency",
+    popular: false
+  }
+];
+
+const faqs = [
+  {
+    question: "What's included in the suite?",
+    answer: "You get instant access to our complete library of AI prompts, templates, video tutorials, and worksheets. Everything is organized by use case so you can find exactly what you need, when you need it. Professional and Agency tiers include additional features like community access and team licenses."
+  },
+  {
+    question: "Do I need technical skills to use this?",
+    answer: "Not at all. Our prompts are designed to work with ChatGPT, Claude, and other AI tools. If you can copy and paste, you can use our system. We include video walkthroughs for every major use case."
+  },
+  {
+    question: "How quickly will I see results?",
+    answer: "Most users report saving 2-3 hours in their first week, and 10+ hours per week after fully implementing the system. Your results depend on how much you currently use AI and how quickly you adopt the workflows."
+  },
+  {
+    question: "Is this a subscription?",
+    answer: "No. You pay once and get lifetime access to the suite, including all future updates. No recurring fees, no surprises."
+  },
+  {
+    question: "What if I'm not satisfied?",
+    answer: "We offer a 30-day money-back guarantee. If you don't find value in the suite, email us for a full refund. No questions asked."
+  },
+  {
+    question: "Can I use this for my clients?",
+    answer: "The Professional tier is for personal use only. The Agency tier includes a commercial license allowing you to use templates with clients and share with up to 5 team members. For larger teams, contact us for enterprise pricing."
+  }
+];
+
+const whatsIncluded = [
+  { name: "AI Workflow Playbook (PDF)", desc: "150+ pages of proven strategies" },
+  { name: "Prompt Library (Notion + PDF)", desc: "Organized by use case" },
+  { name: "Email Template Pack", desc: "40+ professional email templates" },
+  {
+    name: "Content Creation System",
+    desc: "Blog posts, social, ads, and more"
+  },
+  { name: "Video Training Series", desc: "10+ hours of walkthroughs" },
+  { name: "Productivity Worksheets", desc: "Build your custom workflow" }
+];
+---
+
+<Layout title={title} description={description}>
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32">
+      <div class="absolute inset-0 bg-gradient-to-b from-navy-900/50 via-navy-950 to-navy-950"></div>
+
+      <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center max-w-4xl mx-auto">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+            The Complete <span class="bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">AI Productivity System</span>
+          </h1>
+          <p class="text-lg sm:text-xl text-navy-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            Everything you need to save 10+ hours every week with AI. Proven prompts, done-for-you templates, and step-by-step training.
+          </p>
+          <a
+            href="#pricing"
+            class="inline-flex items-center px-8 py-4 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-gold-500/20"
+          >
+            See Pricing
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="py-20 bg-navy-900/50">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Everything You Need to Automate Your Work
+          </h2>
+          <p class="text-navy-400 text-lg">
+            A complete system built by professionals, for professionals.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map(feature => (
+            <div class="p-8 bg-navy-900 rounded-2xl border border-navy-800 hover:border-gold-500/30 transition-colors duration-300">
+              <div class="text-4xl mb-4">{feature.icon}</div>
+              <h3 class="text-xl font-semibold text-white mb-3">{feature.title}</h3>
+              <p class="text-navy-400 leading-relaxed">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- What's Included -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
+              What's Inside the Box
+            </h2>
+            <p class="text-navy-400 text-lg mb-8">
+              A comprehensive toolkit that transforms how you work with AI. No fluff—just proven tools that deliver results.
+            </p>
+
+            <div class="space-y-4">
+              {whatsIncluded.map(item => (
+                <div class="flex items-start space-x-4 p-4 bg-navy-900/50 rounded-xl border border-navy-800">
+                  <div class="w-6 h-6 rounded-full bg-gold-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <svg class="w-4 h-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 class="text-white font-medium">{item.name}</h4>
+                    <p class="text-navy-400 text-sm">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-gold-500/20 to-gold-600/10 rounded-3xl blur-3xl"></div>
+            <div class="relative bg-navy-900 rounded-3xl p-8 border border-navy-800">
+              <div class="space-y-6">
+                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-navy-400 text-sm">Prompt Library</span>
+                    <span class="text-gold-500 text-sm font-medium">150+ prompts</span>
+                  </div>
+                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
+                    <div class="h-full w-3/4 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  </div>
+                </div>
+
+                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-navy-400 text-sm">Time Saved / Week</span>
+                    <span class="text-gold-500 text-sm font-medium">10+ hours</span>
+                  </div>
+                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
+                    <div class="h-full w-full bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  </div>
+                </div>
+
+                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-navy-400 text-sm">Templates</span>
+                    <span class="text-gold-500 text-sm font-medium">40+ ready to use</span>
+                  </div>
+                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
+                    <div class="h-full w-4/5 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  </div>
+                </div>
+
+                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="text-navy-400 text-sm">Active Users</span>
+                    <span class="text-gold-500 text-sm font-medium">5,000+</span>
+                  </div>
+                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
+                    <div class="h-full w-11/12 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-20 bg-navy-900/50">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Choose Your Plan
+          </h2>
+          <p class="text-navy-400 text-lg">
+            One-time payment. Lifetime access. No subscriptions.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {tiers.map(tier => (
+            <div class:list={[
+              "relative p-8 rounded-2xl",
+              tier.popular
+                ? "bg-navy-800 border-2 border-gold-500"
+                : "bg-navy-900 border border-navy-800"
+            ]}>
+              {tier.popular && (
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gold-500 text-navy-900 text-sm font-bold rounded-full">
+                  Most Popular
+                </div>
+              )}
+
+              <div class="mb-6">
+                <h3 class="text-2xl font-bold text-white mb-2">{tier.name}</h3>
+                <p class="text-navy-400 text-sm">{tier.description}</p>
+              </div>
+
+              <div class="mb-6">
+                <span class="text-5xl font-bold text-white">{tier.price}</span>
+                <span class="text-navy-400">one-time</span>
+              </div>
+
+              <ul class="space-y-4 mb-8">
+                {tier.features.map(feature => (
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-gold-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span class="text-navy-300">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <button
+                data-tier={tier.tier}
+                data-price={tier.priceId}
+                class="checkout-btn w-full text-center py-4 rounded-lg font-bold transition-all duration-200 block"
+                class:list={[
+                  tier.popular
+                    ? "bg-gold-500 hover:bg-gold-600 text-navy-900"
+                    : "bg-navy-800 hover:bg-navy-700 text-white border border-navy-700"
+                ]}
+              >
+                {tier.cta}
+              </button>
+            </div>
+          ))}
+        </div>
+
+        <p class="text-center text-navy-500 text-sm mt-12">
+          All plans include lifetime updates. 30-day money-back guarantee.
+        </p>
+      </div>
+
+      <!-- Stripe Checkout Script -->
+      <script>
+        document.querySelectorAll('.checkout-btn').forEach(button => {
+          button.addEventListener('click', async function() {
+            const tier = this.dataset.tier;
+            const priceId = this.dataset.price;
+
+            // Show loading state
+            const originalText = this.textContent;
+            this.textContent = 'Loading...';
+            this.disabled = true;
+
+            try {
+              const response = await fetch('/api/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  tier: tier,
+                }),
+              });
+
+              const data = await response.json();
+
+              if (data.url) {
+                // Redirect to Stripe Checkout
+                window.location.href = data.url;
+              } else {
+                throw new Error(data.error || 'Failed to create checkout session');
+              }
+            } catch (error) {
+              console.error('Checkout error:', error);
+              alert('Sorry, something went wrong. Please try again or contact support.');
+              this.textContent = originalText;
+              this.disabled = false;
+            }
+          });
+        });
+      </script>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-20">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Frequently Asked Questions
+          </h2>
+          <p class="text-navy-400 text-lg">
+            Everything you need to know about the AI Productivity Suite.
+          </p>
+        </div>
+
+        <div class="space-y-6">
+          {faqs.map(faq => (
+            <details class="group bg-navy-900 rounded-xl border border-navy-800 overflow-hidden">
+              <summary class="flex items-center justify-between p-6 cursor-pointer hover:bg-navy-800/50 transition-colors">
+                <span class="text-white font-medium pr-4">{faq.question}</span>
+                <svg class="w-5 h-5 text-gold-500 flex-shrink-0 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="px-6 pb-6 text-navy-400 leading-relaxed">
+                {faq.answer}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="py-20 bg-navy-900/50">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+          Start Saving Time Today
+        </h2>
+        <p class="text-navy-400 text-lg mb-10 max-w-2xl mx-auto">
+          Join 5,000+ professionals who've transformed their productivity. Get instant access to the complete suite.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            data-tier="professional"
+            data-price="price_professional"
+            class="checkout-btn inline-flex items-center px-10 py-5 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold text-xl rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-gold-500/20"
+          >
+            Get Professional - $79
+          </button>
+        </div>
+        <p class="text-navy-500 text-sm mt-6">
+          30-day money-back guarantee. Instant access.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
