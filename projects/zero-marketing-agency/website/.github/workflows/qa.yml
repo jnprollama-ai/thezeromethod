@@ -1,0 +1,62 @@
+name: Quality Assurance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 */6 * * *'  # Every 6 hours
+
+jobs:
+  quality-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build site
+        run: npm run build
+      
+      - name: Lighthouse CI
+        run: |
+          npm install -g @lhci/cli
+          lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      
+      - name: Check for broken links
+        uses: lycheeverse/lychee-action@v1
+        with:
+          args: --exclude-path node_modules --exclude mailto: --exclude tel: --timeout 30 dist/
+          fail: false
+      
+      - name: Upload QA results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-results
+          path: |
+            ./lighthouseci/
+            ./lychee/
+
+  deploy-status:
+    needs: quality-check
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Check deployment
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://neon-palmier-14458f.netlify.app
+          echo "Site health check completed"

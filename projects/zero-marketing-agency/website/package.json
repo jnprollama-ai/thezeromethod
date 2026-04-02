@@ -7,7 +7,11 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "qa": "npm run build && npm run qa:lighthouse && npm run qa:links",
+    "qa:lighthouse": "lhci autorun",
+    "qa:links": "lychee --exclude-path node_modules --exclude mailto: --exclude tel: dist/",
+    "qa:full": "npm run qa"
   },
   "dependencies": {
     "astro": "^4.15.0",
@@ -18,6 +22,8 @@
     "stripe": "^14.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "@lhci/cli": "^0.14.0",
+    "lychee": "^0.2.0"
   }
 }
