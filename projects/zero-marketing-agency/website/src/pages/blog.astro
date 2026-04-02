@@ -1,0 +1,81 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+
+const title = "Blog | Zero Method";
+const description = "Tips, insights, and strategies for using AI to boost productivity.";
+
+const posts = [
+  {
+    title: "5 AI Prompts That Actually Save Time",
+    excerpt: "Stop wasting time with generic prompts. Here are 5 battle-tested prompts that deliver real results.",
+    date: "April 2, 2026",
+    slug: "5-prompts-that-save-time"
+  },
+  {
+    title: "How to Write Better Emails with AI",
+    excerpt: "Transform your email game with these simple prompt techniques for clearer, more professional communication.",
+    date: "April 1, 2026",
+    slug: "write-better-emails-with-ai"
+  },
+  {
+    title: "AI for Reports: A Beginner's Guide",
+    excerpt: "Turn raw data into insights with these AI-powered reporting prompts.",
+    date: "March 28, 2026",
+    slug: "ai-for-reports-beginners-guide"
+  }
+];
+---
+
+<Layout title={title} description={description}>
+  <Header />
+
+  <main class="pt-32 pb-20">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
+          Zero Method Blog
+        </h1>
+        <p class="text-navy-400 text-lg">
+          Tips, insights, and strategies for using AI to boost productivity.
+        </p>
+      </div>
+
+      <div class="space-y-8">
+        {posts.map(post => (
+          <article class="p-8 bg-navy-900 rounded-2xl border border-navy-800 hover:border-gold-500/30 transition-colors duration-300">
+            <div class="text-gold-500 text-sm mb-2">{post.date}</div>
+            <h2 class="text-2xl font-bold text-white mb-3">
+              <a href={`/blog/${post.slug}`} class="hover:text-gold-500 transition-colors">
+                {post.title}
+              </a>
+            </h2>
+            <p class="text-navy-400 mb-4">{post.excerpt}</p>
+            <a 
+              href={`/blog/${post.slug}`}
+              class="inline-flex items-center text-gold-500 hover:text-gold-400 font-medium"
+            >
+              Read more
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-16 text-center">
+        <p class="text-navy-400 mb-4">Want more productivity tips?</p>
+        <a 
+          href="/product"
+          class="inline-flex items-center px-6 py-3 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold rounded-lg transition-colors"
+        >
+          Get 25 AI Prompts — $19
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
