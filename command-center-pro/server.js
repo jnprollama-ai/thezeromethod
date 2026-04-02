@@ -45,7 +45,13 @@ const liveData = {
     ],
     metrics: {
         website: { visitors: 0, pageViews: 0 },
-        revenue: { daily: 0, weekly: 0, monthly: 0, total: 0 },
+        revenue: { 
+            daily: 0, 
+            weekly: 0, 
+            monthly: 0, 
+            total: 0,
+            target: { monthly: 500, quarterly: 1500, yearly: 6000 }
+        },
         social: { twitter: { followers: 0 }, linkedin: { followers: 0 } },
         tasks: { completed: 0, pending: 0 }
     },
@@ -58,7 +64,38 @@ const liveData = {
             { symbol: 'TSLA', price: 245.60, change: 3.1 },
             { symbol: 'BTC', price: 68200, change: 2.5 }
         ],
-        alerts: []
+        alerts: [],
+        strategy: {
+            status: 'Research Phase',
+            winRate: 0,
+            totalTrades: 0,
+            profitableTrades: 0,
+            avgReturn: 0,
+            maxDrawdown: 0,
+            backtestComplete: false
+        }
+    },
+    goals: {
+        revenue: {
+            current: 0,
+            target: 500,
+            deadline: 'Month 3',
+            streams: {
+                zma: { current: 0, target: 200 },
+                affiliates: { current: 0, target: 100 },
+                ads: { current: 0, target: 75 },
+                pdftools: { current: 0, target: 100 },
+                other: { current: 0, target: 25 }
+            }
+        },
+        trading: {
+            strategyComplete: true,
+            backtestComplete: true,
+            paperTrading: false,
+            liveTrading: false,
+            targetAnnualReturn: 20,
+            maxDrawdown: 20
+        }
     },
     kanban: {
         columns: [
