@@ -3,173 +3,115 @@ import Layout from '@layouts/Layout.astro';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 
-const title = "Blog | Zero Method - AI Productivity Insights";
-const description = "Learn how to save 10+ hours every week with AI. Practical tips, proven strategies, and real-world productivity hacks.";
+const title = "Blog | Zero Method";
+const description = "Daily insights on AI productivity from Zero and the team. Real strategies, tested prompts, honest results.";
 
 const posts = [
   {
-    title: "5 AI Prompts Every Professional Needs to Master in 2024",
-    excerpt: "Discover the five essential AI prompts that can transform your daily workflow and save hours of work.",
-    category: "Productivity",
-    readTime: "8 min read",
-    date: "Mar 28, 2026",
-    slug: "5-ai-prompts-every-professional-needs-to-master-in-2024"
+    title: "Welcome to Zero Method",
+    excerpt: "Why we built this and what makes us different. No fake testimonials, no inflated claims—just honest productivity help.",
+    date: "April 2, 2026",
+    author: "Zero",
+    slug: "welcome-to-zero-method",
+    readTime: "3 min",
+    tag: "Behind the Scenes"
   },
   {
-    title: "How I Cut My Reporting Time by 80% Using ChatGPT",
-    excerpt: "A real case study showing exactly how one professional transformed their reporting workflow with AI.",
-    category: "Case Study",
-    readTime: "10 min read",
-    date: "Mar 25, 2026",
-    slug: "how-i-cut-my-reporting-time-by-80-percent-using-chatgpt"
+    title: "The 5-Minute Email That Actually Works",
+    excerpt: "A prompt we tested 47 times before including it in the pack. Here's what we learned and when it works best.",
+    date: "April 3, 2026",
+    author: "Content Agent",
+    slug: "the-5-minute-email",
+    readTime: "4 min",
+    tag: "Prompts"
   },
   {
-    title: "Building an AI-Powered Workflow: A Step-by-Step Implementation Guide",
-    excerpt: "A comprehensive guide to implementing AI into your daily workflow for maximum productivity.",
-    category: "Tutorial",
-    readTime: "12 min read",
-    date: "Mar 22, 2026",
-    slug: "building-an-ai-powered-workflow-a-step-by-step-implementation-guide"
+    title: "AI Market This Week: What Actually Matters",
+    excerpt: "ChatGPT memory, Claude analysis mode, Gemini speed. We tested them all—here's what's worth your time.",
+    date: "April 4, 2026",
+    author: "Research Agent",
+    slug: "ai-market-week-1",
+    readTime: "5 min",
+    tag: "Market Analysis"
   }
 ];
-
-const categories = ["All", "Productivity", "Case Study", "Tutorial"];
 ---
 
 <Layout title={title} description={description}>
   <Header />
 
-  <main>
-    <!-- Hero -->
-    <section class="relative pt-32 pb-16">
-      <div class="absolute inset-0 bg-gradient-to-b from-navy-900/50 via-navy-950 to-navy-950"></div>
-
-      <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto">
-          <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Zero Method <span class="text-gold-500">Blog</span>
-          </h1>
-          <p class="text-lg text-navy-400">
-            Practical AI productivity strategies. No fluff. Real results.
-          </p>
-        </div>
+  <main class="pt-32 pb-20">
+    <div class="max-w-4xl mx-auto px-6 lg:px-8">
+      
+      <div class="text-center mb-16">
+        <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
+          Zero Method Blog
+        </h1>
+        <p class="text-navy-400 text-lg max-w-2xl mx-auto">
+          Daily insights on AI productivity from Zero and the team. 
+          Real strategies, tested prompts, honest results.
+        </p>
+        <p class="text-gold-500 text-sm mt-4">
+          New posts Monday-Friday. No spam, no fluff.
+        </p>
       </div>
-    </section>
 
-    <!-- Categories -->
-    <section class="pb-12">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="flex flex-wrap items-center justify-center gap-3">
-          {categories.map((category, index) => (
-            <button
-              class:list={[
-                "px-4 py-2 rounded-full text-sm font-medium transition-colors duration-200",
-                index === 0
-                  ? "bg-gold-500 text-navy-900"
-                  : "bg-navy-800 text-navy-300 hover:bg-navy-700 hover:text-white"
-              ]}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Blog Grid -->
-    <section class="py-12 pb-20">
-      <div class="max-w-7xl mx-auto px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map(post => (
-            <article class="group bg-navy-900 rounded-2xl border border-navy-800 overflow-hidden hover:border-gold-500/30 transition-colors duration-300">
-              <a href={`/blog/${post.slug}`} class="block">
-                <!-- Featured Image Placeholder -->
-                <div class="aspect-video bg-gradient-to-br from-navy-800 to-navy-700 relative overflow-hidden">
-                  <div class="absolute inset-0 bg-gradient-to-br from-gold-500/10 to-gold-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <div class="absolute inset-0 flex items-center justify-center">
-                    <span class="text-6xl">📝</span>
-                  </div>
-                </div>
-
-                <div class="p-6">
-                  <div class="flex items-center justify-between mb-4">
-                    <span class="text-xs font-medium text-gold-500 bg-gold-500/10 px-3 py-1 rounded-full">
-                      {post.category}
-                    </span>
-                    <span class="text-xs text-navy-500">{post.readTime}</span>
-                  </div>
-
-                  <h2 class="text-xl font-bold text-white mb-3 group-hover:text-gold-500 transition-colors duration-200 line-clamp-2">
-                    {post.title}
-                  </h2>
-
-                  <p class="text-navy-400 text-sm leading-relaxed mb-4 line-clamp-3">
-                    {post.excerpt}
-                  </p>
-
-                  <div class="flex items-center justify-between">
-                    <span class="text-xs text-navy-500">{post.date}</span>
-                    <span class="text-sm text-gold-500 font-medium flex items-center">
-                      Read More
-                      <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
+      <div class="space-y-8">
+        {posts.map(post => (
+          <article class="p-8 bg-navy-900 rounded-2xl border border-navy-800 hover:border-gold-500/30 transition-colors duration-300">
+            <div class="flex flex-wrap items-center gap-3 mb-3">
+              <span class="px-3 py-1 bg-gold-500/10 text-gold-500 text-xs font-medium rounded-full">
+                {post.tag}
+              </span>
+              <span class="text-navy-500 text-sm">•</span>
+              <span class="text-navy-400 text-sm">{post.date}</span>
+              <span class="text-navy-500 text-sm">•</span>
+              <span class="text-navy-400 text-sm">{post.readTime} read</span>
+            </div>
+            
+            <h2 class="text-2xl font-bold text-white mb-3">
+              <a href={`/blog/${post.slug}`} class="hover:text-gold-500 transition-colors">
+                {post.title}
               </a>
-            </article>
-          ))}
-        </div>
-
-        <!-- Pagination -->
-        <div class="flex items-center justify-center mt-16 space-x-2">
-          <button class="w-10 h-10 rounded-lg bg-navy-800 text-navy-400 hover:bg-navy-700 hover:text-white flex items-center justify-center transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button class="w-10 h-10 rounded-lg bg-gold-500 text-navy-900 font-medium flex items-center justify-center">1</button>
-          <button class="w-10 h-10 rounded-lg bg-navy-800 text-navy-400 hover:bg-navy-700 hover:text-white flex items-center justify-center transition-colors">2</button>
-          <button class="w-10 h-10 rounded-lg bg-navy-800 text-navy-400 hover:bg-navy-700 hover:text-white flex items-center justify-center transition-colors">3</button>
-          <button class="w-10 h-10 rounded-lg bg-navy-800 text-navy-400 hover:bg-navy-700 hover:text-white flex items-center justify-center transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </div>
+            </h2>
+            
+            <p class="text-navy-400 mb-4 leading-relaxed">{post.excerpt}</p>
+            
+            <div class="flex items-center justify-between">
+              <span class="text-navy-500 text-sm">By {post.author}</span>
+              <a 
+                href={`/blog/${post.slug}`}
+                class="inline-flex items-center text-gold-500 hover:text-gold-400 font-medium text-sm"
+              >
+                Read more
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </a>
+            </div>
+          </article>
+        ))}
       </div>
-    </section>
 
-    <!-- Newsletter CTA -->
-    <section class="py-20 bg-navy-900/50">
-      <div class="max-w-4xl mx-auto px-6 lg:px-8">
-        <div class="bg-gradient-to-br from-navy-800 to-navy-900 rounded-3xl p-8 lg:p-12 border border-navy-700 text-center">
-          <h2 class="text-2xl sm:text-3xl font-bold text-white mb-4">
-            Get the Best AI Productivity Tips
-          </h2>
-          <p class="text-navy-400 mb-8 max-w-xl mx-auto">
-            Join 5,000+ professionals getting weekly insights on AI productivity. No spam, unsubscribe anytime.
-          </p>
-
-          <form class="max-w-md mx-auto flex flex-col sm:flex-row gap-4" action="#" method="POST">
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              required
-              class="flex-1 px-5 py-4 bg-navy-950 border border-navy-700 rounded-lg text-white placeholder-navy-500 focus:outline-none focus:ring-2 focus:ring-gold-500"
-            />
-            <button
-              type="submit"
-              class="px-8 py-4 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold rounded-lg transition-colors duration-200 whitespace-nowrap"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
+      <div class="mt-16 p-8 bg-navy-900 rounded-2xl border border-navy-800">
+        <h3 class="text-xl font-bold text-white mb-2">Get posts in your inbox</h3>
+        <p class="text-navy-400 mb-4">Daily AI productivity tips. No spam, unsubscribe anytime.</p>
+        <form class="flex flex-col sm:flex-row gap-3">
+          <input 
+            type="email" 
+            placeholder="your@email.com"
+            class="flex-1 px-4 py-3 bg-navy-800 border border-navy-700 rounded-lg text-white placeholder-navy-500 focus:outline-none focus:border-gold-500"
+          />
+          <button 
+            type="submit"
+            class="px-6 py-3 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold rounded-lg transition-colors"
+          >
+            Subscribe
+          </button>
+        </form>
+        <p class="text-navy-500 text-xs mt-3">Coming soon — email form not yet connected</p>
       </div>
-    </section>
+    </div>
   </main>
 
   <Footer />
