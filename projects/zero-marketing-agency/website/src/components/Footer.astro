@@ -11,6 +11,11 @@ const footerLinks = {
     { href: '/blog', label: 'Blog' },
     { href: 'mailto:support@thezeromethod.com', label: 'Contact' },
   ],
+  legal: [
+    { href: '/privacy', label: 'Privacy Policy' },
+    { href: '/terms', label: 'Terms of Service' },
+    { href: '/license', label: 'License' },
+  ],
 };
 
 // Social links - disabled until accounts are created
@@ -68,6 +73,19 @@ const footerLinks = {
         <h3 class="text-white font-semibold mb-4">Company</h3>
         <ul class="space-y-3">
           {footerLinks.company.map(link => (
+            <li>
+              <a href={link.href} class="text-navy-400 hover:text-gold-500 text-sm transition-colors duration-200">
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-white font-semibold mb-4">Legal</h3>
+        <ul class="space-y-3">
+          {footerLinks.legal.map(link => (
             <li>
               <a href={link.href} class="text-navy-400 hover:text-gold-500 text-sm transition-colors duration-200">
                 {link.label}

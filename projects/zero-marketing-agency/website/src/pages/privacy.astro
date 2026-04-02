@@ -1,0 +1,81 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+
+const title = "Privacy Policy | Zero Method";
+const description = "How we handle your data at Zero Method";
+---
+
+<Layout title={title} description={description}>
+  <Header />
+
+  <main class="pt-32 pb-20">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <h1 class="text-4xl font-bold text-white mb-8">Privacy Policy</h1>
+      
+      <div class="prose prose-invert max-w-none text-navy-300">
+        <p class="text-sm text-navy-400 mb-8">Last updated: April 2, 2026</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">1. What We Collect</h2>
+        <p>We collect only what's necessary:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li><strong>Email address</strong> — For order confirmation and product updates</li>
+          <li><strong>Name</strong> — Optional, for personalization</li>
+          <li><strong>Payment info</strong> — Processed securely by Stripe (we never see your card details)</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">2. What We Don't Collect</h2>
+        <p>We don't:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li>Track you across the web</li>
+          <li>Sell your data to anyone</li>
+          <li>Use creepy retargeting ads</li>
+          <li>Store your payment details (Stripe handles that)</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">3. How We Use Your Data</h2>
+        <p>Your email is used for:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li>Sending your purchase confirmation</li>
+          <li>Product updates (only if you bought something)</li>
+          <li>Support responses (when you contact us)</li>
+        </ul>
+        <p>That's it. No marketing spam. No sharing with partners.</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">4. Your Rights</h2>
+        <p>You can:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li>Request a copy of your data</li>
+          <li>Ask us to delete your data</li>
+          <li>Unsubscribe from emails anytime</li>
+        </ul>
+        <p>Just email <a href="mailto:support@thezeromethod.com" class="text-gold-500 hover:text-gold-400">support@thezeromethod.com</a></p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">5. Security</h2>
+        <p>We use industry-standard security:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li>HTTPS everywhere</li>
+          <li>Stripe for payments (PCI compliant)</li>
+          <li>No plaintext storage of sensitive data</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">6. Cookies</h2>
+        <p>We use minimal cookies:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li>Essential site functionality only</li>
+          <li>No tracking cookies</li>
+          <li>No advertising cookies</li>
+        </ul>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">7. Changes</h2>
+        <p>If we change this policy, we'll email you. We won't sneak in changes.</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">8. Contact</h2>
+        <p>Questions? <a href="mailto:support@thezeromethod.com" class="text-gold-500 hover:text-gold-400">support@thezeromethod.com</a></p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,78 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+
+const title = "License | Zero Method";
+const description = "How you can use Zero Method content";
+---
+
+<Layout title={title} description={description}>
+  <Header />
+
+  <main class="pt-32 pb-20">
+    <div class="max-w-3xl mx-auto px-6 lg:px-8">
+      <h1 class="text-4xl font-bold text-white mb-8">License Agreement</h1>
+      
+      <div class="prose prose-invert max-w-none text-navy-300">
+        <p class="text-sm text-navy-400 mb-8">Last updated: April 2, 2026</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">What You Get</h2>
+        <p>When you purchase Zero Method, you receive a <strong>Personal Use License</strong>.</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">Permitted Uses</h2>
+        <div class="bg-green-500/10 border border-green-500/20 rounded-lg p-4 mb-4">
+          <p class="text-green-400 font-medium mb-2">✓ You CAN:</p>
+          <ul class="list-disc pl-6 text-navy-300">
+            <li>Use prompts and templates for your own work</li>
+            <li>Share with up to 5 team members</li>
+            <li>Modify prompts for your specific needs</li>
+            <li>Print for personal reference</li>
+            <li>Use with AI tools (ChatGPT, Claude, Gemini, etc.)</li>
+          </ul>
+        </div>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">Prohibited Uses</h2>
+        <div class="bg-red-500/10 border border-red-500/20 rounded-lg p-4 mb-4">
+          <p class="text-red-400 font-medium mb-2">✗ You CANNOT:</p>
+          <ul class="list-disc pl-6 text-navy-300">
+            <li>Resell the prompts or templates</li>
+            <li>Include in products you sell</li>
+            <li>Post publicly on websites or social media</li>
+            <li>Create derivative prompt packs for sale</li>
+            <li>Share with unlimited people (that's what Agency license is for)</li>
+            <li>Claim authorship of the content</li>
+          </ul>
+        </div>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">Examples</h2>
+        
+        <h3 class="text-lg font-medium text-white mt-6 mb-2">✓ OK: Using for client work</h3>
+        <p class="text-navy-400">You're a consultant. You use our email templates to communicate with your clients. That's fine.</p>
+
+        <h3 class="text-lg font-medium text-white mt-6 mb-2">✓ OK: Sharing with your team</h3>
+        <p class="text-navy-400">You have 4 employees. You share the prompts with them. That's fine.</p>
+
+        <h3 class="text-lg font-medium text-white mt-6 mb-2">✗ NOT OK: Reselling</h3>
+        <p class="text-navy-400">You create a "50 AI Prompts" pack using our content and sell it. That's not fine.</p>
+
+        <h3 class="text-lg font-medium text-white mt-6 mb-2">✗ NOT OK: Public posting</h3>
+        <p class="text-navy-400">You post all 25 prompts on your blog "for free." That's not fine.</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">Questions?</h2>
+        <p>Not sure if your use case is covered? <a href="mailto:support@thezeromethod.com" class="text-gold-500 hover:text-gold-400">Ask us</a>. We're reasonable people.</p>
+
+        <h2 class="text-xl font-semibold text-white mt-8 mb-4">Violations</h2>
+        <p>If you violate this license, we may:</p>
+        <ul class="list-disc pl-6 mb-4">
+          <li>Revoke your access</li>
+          <li>Request you cease the prohibited use</li>
+          <li>Pursue legal remedies if necessary</li>
+        </ul>
+        <p>But honestly, just don't be that person. Use it for your work, get value, everyone's happy.</p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
