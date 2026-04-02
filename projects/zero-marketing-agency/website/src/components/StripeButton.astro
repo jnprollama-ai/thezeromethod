@@ -1,0 +1,87 @@
+---
+interface Props {
+  priceId: string;
+  buttonText?: string;
+  class?: string;
+}
+
+const { priceId, buttonText = "Get Started", class: className = "" } = Astro.props;
+
+// Check if running in production
+const isProduction = import.meta.env.PROD;
+const stripeKey = import.meta.env.STRIPE_PUBLISHABLE_KEY || '';
+---
+
+{
+  isProduction && stripeKey ? (
+    <button
+      class={`stripe-checkout-btn ${className}`}
+      data-price-id={priceId}
+      type="button"
+    >
+      {buttonText}
+    </button>
+  ) : (
+    <a
+      href="mailto:support@thezeromethod.com?subject=Interested%20in%20Zero%20Method%20Starter%20Pack"
+      class={className}
+    >
+      {buttonText} (Coming Soon)
+    </a>
+  )
+}
+
+{
+  isProduction && stripeKey && (
+    <script define:vars={{ stripeKey }}>
+      // Stripe integration script
+      const btn = document.querySelector('.stripe-checkout-btn');
+      if (btn) {
+        btn.addEventListener('click', async () => {
+          try {
+            const stripe = await loadStripe(stripeKey);
+            const priceId = btn.getAttribute('data-price-id');
+            
+            const response = await fetch('/api/create-checkout-session', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                priceId: priceId,
+                successUrl: `${window.location.origin}/success`,
+                cancelUrl: `${window.location.origin}/cancel`,
+              }),
+            });
+            
+            const session = await response.json();
+            
+            if (session.id) {
+              await stripe.redirectToCheckout({ sessionId: session.id });
+            } else {
+              alert('Something went wrong. Please try again or contact support.');
+            }
+          } catch (error) {
+            console.error('Stripe error:', error);
+            alert('Payment system not configured yet. Email us at support@thezeromethod.com');
+          }
+        });
+      }
+      
+      // Load Stripe.js
+      function loadStripe(key) {
+        return new Promise((resolve, reject) => {
+          if (window.Stripe) {
+            resolve(window.Stripe(key));
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = 'https://js.stripe.com/v3/';
+          script.onload = () => resolve(window.Stripe(key));
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+    </script>
+  )
+}

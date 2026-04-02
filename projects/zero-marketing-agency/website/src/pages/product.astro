@@ -2,9 +2,11 @@
 import Layout from '@layouts/Layout.astro';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
+import StripeButton from '@components/StripeButton.astro';
 
 const title = "Product | Zero Method - AI Prompts Starter Pack";
 const description = "25 battle-tested AI prompts + 10 professional email templates. Save hours every week with copy-paste ready prompts for ChatGPT and Claude.";
+const keywords = "AI prompts, email templates, ChatGPT prompts, Claude prompts, productivity, automation, AI tools";
 
 const features = [
   {
@@ -43,7 +45,7 @@ const tiers = [
   {
     name: "Starter Pack",
     price: "$19",
-    priceId: "price_starter_placeholder",
+    priceId: "price_1R9abcdefgHIJKLMN", // Replace with actual Stripe Price ID
     tier: "starter",
     description: "Perfect for individuals getting started with AI productivity",
     features: [
@@ -105,7 +107,7 @@ const whatsIncluded = [
 ];
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} keywords={keywords}>
   <Header />
 
   <main>
