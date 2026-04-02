@@ -3,138 +3,105 @@ import Layout from '@layouts/Layout.astro';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
 
-const title = "Product | Zero Method - AI Productivity Suite";
-const description = "Choose your plan. Get instant access to 150+ proven AI prompts, templates, and workflows that save you 10+ hours every week.";
+const title = "Product | Zero Method - AI Prompts Starter Pack";
+const description = "25 battle-tested AI prompts + 10 professional email templates. Save hours every week with copy-paste ready prompts for ChatGPT and Claude.";
 
 const features = [
   {
     icon: "🚀",
     title: "25 Battle-Tested Prompts",
-    description: "Carefully crafted prompts for ChatGPT, Claude, and Gemini. Each one tested and refined for consistent results."
+    description: "25 carefully crafted prompts across 5 categories: Email, Reports, Content, Productivity, and Research. Each tested for consistent results."
   },
   {
     icon: "📄",
-    title: "10 Done-For-You Templates",
-    description: "Professional email templates for client communications, follow-ups, and professional outreach."
+    title: "10 Email Templates",
+    description: "Professional email templates for cold outreach, follow-ups, meeting requests, declining politely, and relationship maintenance."
   },
   {
-    icon: "📊",
-    title: "Usage Guide",
-    description: "Clear instructions on how to customize each prompt for your specific situation and get the best results."
+    icon: "📖",
+    title: "PDF + Markdown Formats",
+    description: "Download as a clean PDF for offline access, or use the markdown version. Copy-paste ready for immediate use."
   },
   {
     icon: "🔄",
-    title: "Free Updates",
-    description: "Get access to new prompts and templates as we add them. Early buyers get upgraded to future versions at no extra cost."
+    title: "Free Updates for 1 Year",
+    description: "Get all updates and additions for a full year after purchase. As we expand the library, you get the new content."
   },
   {
-    icon: "📱",
-    title: "PDF + Digital Format",
-    description: "Download as PDF for offline access, or use the digital version. Works on any device."
+    icon: "⚡",
+    title: "Immediate Download",
+    description: "No waiting. Get instant access to everything right after purchase. Start saving time in the next 5 minutes."
   },
   {
     icon: "💯",
     title: "30-Day Guarantee",
-    description: "Not satisfied? Get a full refund. No questions asked. We're confident these prompts will save you time."
+    description: "Not satisfied? Email us within 30 days for a full refund. No questions asked. We only want happy customers."
   }
 ];
 
 const tiers = [
   {
-    name: "Starter",
+    name: "Starter Pack",
     price: "$19",
     priceId: "price_starter_placeholder",
     tier: "starter",
-    description: "Perfect for trying out AI prompts for the first time",
+    description: "Perfect for individuals getting started with AI productivity",
     features: [
-      "25 Core Prompts",
+      "25 AI Prompts (5 categories)",
       "10 Email Templates",
-      "PDF Download",
-      "Usage Guide",
+      "PDF + Markdown formats",
+      "Usage instructions",
       "Email Support",
-      "Free Updates"
+      "1 year of updates"
     ],
-    cta: "Get Started",
+    cta: "Buy Now",
     popular: true,
-    status: "Coming Soon"
-  },
-  {
-    name: "Professional",
-    price: "$49",
-    priceId: "price_professional_placeholder",
-    tier: "professional",
-    description: "Full suite with all current content (launching soon)",
-    features: [
-      "50+ Premium Prompts",
-      "25+ Templates",
-      "Full PDF Guide",
-      "Video Walkthroughs",
-      "Priority Support",
-      "Free Lifetime Updates",
-      "Worksheets (coming)",
-      "Community (coming)"
-    ],
-    cta: "Join Waitlist",
-    popular: false,
-    status: "Waitlist"
-  },
-  {
-    name: "Agency",
-    price: "$99",
-    priceId: "price_agency_placeholder",
-    tier: "agency",
-    description: "For teams (launching after Professional release)",
-    features: [
-      "Everything in Professional",
-      "Team License",
-      "Custom Prompts",
-      "White-Label Rights",
-      "API Access (coming)",
-      "Dedicated Support"
-    ],
-    cta: "Join Waitlist",
-    popular: false,
-    status: "Waitlist"
+    status: "Available Now"
   }
 ];
 
 const faqs = [
   {
-    question: "What's included in the suite?",
-    answer: "You get instant access to our complete library of AI prompts, templates, video tutorials, and worksheets. Everything is organized by use case so you can find exactly what you need, when you need it. Professional and Agency tiers include additional features like community access and team licenses."
+    question: "What's actually included?",
+    answer: "You get 25 AI prompts organized into 5 categories (Email, Reports, Content, Productivity, Research) plus 10 professional email templates. Everything is delivered as both PDF and Markdown files for immediate use. No videos, no worksheets, no community—just solid, tested prompts that work."
   },
   {
-    question: "Do I need technical skills to use this?",
-    answer: "Not at all. Our prompts are designed to work with ChatGPT, Claude, and other AI tools. If you can copy and paste, you can use our system. We include video walkthroughs for every major use case."
+    question: "Do I need technical skills?",
+    answer: "Not at all. If you can copy and paste, you can use these prompts. Simply copy the prompt template, fill in your specific details where indicated, and paste into ChatGPT, Claude, or any AI tool. Each prompt includes clear instructions on how to customize it."
   },
   {
-    question: "How quickly will I see results?",
-    answer: "Most users report saving 2-3 hours in their first week, and 10+ hours per week after fully implementing the system. Your results depend on how much you currently use AI and how quickly you adopt the workflows."
+    question: "How will I receive the product?",
+    answer: "Immediate download after purchase. You'll get a ZIP file containing the PDF version and Markdown version. Extract and start using right away. No login portals, no waiting, no complexity."
   },
   {
-    question: "Is this a subscription?",
-    answer: "No. You pay once and get lifetime access to the suite, including all future updates. No recurring fees, no surprises."
+    question: "What format is the product in?",
+    answer: "PDF (for easy reading and offline access) and Markdown (for easy copying and editing). The PDF is professionally formatted and printable. The Markdown files work in any text editor or note-taking app."
+  },
+  {
+    question: "Are there video tutorials?",
+    answer: "No. We don't offer video tutorials at this time. Each prompt includes written usage instructions. If you're looking for video content, this product may not be for you. We're focused on written, copy-paste-ready resources."
   },
   {
     question: "What if I'm not satisfied?",
-    answer: "We offer a 30-day money-back guarantee. If you don't find value in the suite, email us for a full refund. No questions asked."
+    answer: "30-day money-back guarantee. If these prompts don't save you time, email us at support@thezeromethod.com within 30 days for a full refund. No questions asked, no hoops to jump through."
+  },
+  {
+    question: "Will there be updates?",
+    answer: "Yes. When you buy, you get free updates for 1 year. As we add new prompts and templates, you'll receive an email with the download link for the updated version. No re-purchasing, no additional fees."
   },
   {
     question: "Can I use this for my clients?",
-    answer: "The Professional tier is for personal use only. The Agency tier includes a commercial license allowing you to use templates with clients and share with up to 5 team members. For larger teams, contact us for enterprise pricing."
+    answer: "The Starter Pack is for personal use. You can use the prompts and templates for your own work, but please don't resell or redistribute them. If you need commercial rights for client work, contact us about upcoming licensing options."
   }
 ];
 
 const whatsIncluded = [
-  { name: "AI Workflow Playbook (PDF)", desc: "150+ pages of proven strategies" },
-  { name: "Prompt Library (Notion + PDF)", desc: "Organized by use case" },
-  { name: "Email Template Pack", desc: "40+ professional email templates" },
-  {
-    name: "Content Creation System",
-    desc: "Blog posts, social, ads, and more"
-  },
-  { name: "Video Training Series", desc: "10+ hours of walkthroughs" },
-  { name: "Productivity Worksheets", desc: "Build your custom workflow" }
+  { name: "25 AI Prompts Collection", desc: "Email, Reports, Content, Productivity, Research" },
+  { name: "10 Email Templates", desc: "Cold outreach, follow-ups, professional communication" },
+  { name: "PDF Version", desc: "Formatted and printable" },
+  { name: "Markdown Version", desc: "Editable and copy-paste ready" },
+  { name: "Usage Instructions", desc: "How to customize each prompt" },
+  { name: "1 Year of Updates", desc: "New content as we add it" }
 ];
 ---
 
@@ -149,20 +116,21 @@ const whatsIncluded = [
       <div class="relative max-w-7xl mx-auto px-6 lg:px-8">
         <div class="text-center max-w-4xl mx-auto">
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
-            The Complete <span class="bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">AI Productivity System</span>
+            25 AI Prompts That <span class="bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent">Save 5 Hours Every Week</span>
           </h1>
           <p class="text-lg sm:text-xl text-navy-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Everything you need to save 10+ hours every week with AI. Proven prompts, done-for-you templates, and step-by-step training.
+            Copy-paste ready prompts for ChatGPT and Claude. No fluff, no videos, just battle-tested templates that work.
           </p>
           <a
             href="#pricing"
             class="inline-flex items-center px-8 py-4 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-gold-500/20"
           >
-            See Pricing
+            Get the Pack — $19
             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
             </svg>
           </a>
+          <p class="mt-4 text-navy-400 text-sm">30-day money-back guarantee • Instant download</p>
         </div>
       </div>
     </section>
@@ -172,10 +140,10 @@ const whatsIncluded = [
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="max-w-3xl mx-auto text-center mb-16">
           <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Everything You Need to Automate Your Work
+            What's Included
           </h2>
           <p class="text-navy-400 text-lg">
-            A complete system built by professionals, for professionals.
+            Everything you need, nothing you don't. Just tested prompts that save time.
           </p>
         </div>
 
@@ -197,18 +165,18 @@ const whatsIncluded = [
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div>
             <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
-              What's Inside the Box
+              The Complete Package
             </h2>
-            <p class="text-navy-400 text-lg mb-8">
-              A comprehensive toolkit that transforms how you work with AI. No fluff—just proven tools that deliver results.
+            <p class="text-navy-400 text-lg mb-8 leading-relaxed">
+              25 carefully crafted prompts across 5 essential categories, plus 10 professional email templates. 
+              Everything is copy-paste ready and includes clear instructions.
             </p>
-
             <div class="space-y-4">
               {whatsIncluded.map(item => (
-                <div class="flex items-start space-x-4 p-4 bg-navy-900/50 rounded-xl border border-navy-800">
-                  <div class="w-6 h-6 rounded-full bg-gold-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg class="w-4 h-4 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <div class="flex items-start space-x-4">
+                  <div class="flex-shrink-0 w-6 h-6 rounded-full bg-gold-500/20 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                     </svg>
                   </div>
                   <div>
@@ -221,46 +189,40 @@ const whatsIncluded = [
           </div>
 
           <div class="relative">
-            <div class="absolute inset-0 bg-gradient-to-br from-gold-500/20 to-gold-600/10 rounded-3xl blur-3xl"></div>
-            <div class="relative bg-navy-900 rounded-3xl p-8 border border-navy-800">
+            <div class="absolute inset-0 bg-gradient-to-br from-gold-500/20 to-transparent rounded-2xl"></div>
+            <div class="relative bg-navy-900 rounded-2xl p-8 border border-navy-800">
               <div class="space-y-6">
-                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
-                  <div class="flex items-center justify-between mb-4">
-                    <span class="text-navy-400 text-sm">Prompt Library</span>
-                    <span class="text-gold-500 text-sm font-medium">150+ prompts</span>
+                <div class="flex items-center space-x-4">
+                  <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
                   </div>
-                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
-                    <div class="h-full w-3/4 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
-                  </div>
-                </div>
-
-                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
-                  <div class="flex items-center justify-between mb-4">
-                    <span class="text-navy-400 text-sm">Time Saved / Week</span>
-                    <span class="text-gold-500 text-sm font-medium">10+ hours</span>
-                  </div>
-                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
-                    <div class="h-full w-full bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  <div>
+                    <h4 class="text-white font-medium">PDF Format</h4>
+                    <p class="text-navy-400 text-sm">Clean, printable, offline access</p>
                   </div>
                 </div>
-
-                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
-                  <div class="flex items-center justify-between mb-4">
-                    <span class="text-navy-400 text-sm">Templates</span>
-                    <span class="text-gold-500 text-sm font-medium">40+ ready to use</span>
+                <div class="flex items-center space-x-4">
+                  <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
                   </div>
-                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
-                    <div class="h-full w-4/5 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  <div>
+                    <h4 class="text-white font-medium">Markdown Format</h4>
+                    <p class="text-navy-400 text-sm">Easy to edit and customize</p>
                   </div>
                 </div>
-
-                <div class="p-6 bg-navy-800/50 rounded-xl border border-navy-700">
-                  <div class="flex items-center justify-between mb-4">
-                    <span class="text-navy-400 text-sm">Active Users</span>
-                    <span class="text-gold-500 text-sm font-medium">5,000+</span>
+                <div class="flex items-center space-x-4">
+                  <div class="w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center">
+                    <svg class="w-6 h-6 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
                   </div>
-                  <div class="h-2 bg-navy-700 rounded-full overflow-hidden">
-                    <div class="h-full w-11/12 bg-gradient-to-r from-gold-400 to-gold-600 rounded-full"></div>
+                  <div>
+                    <h4 class="text-white font-medium">ZIP Download</h4>
+                    <p class="text-navy-400 text-sm">Both formats in one file</p>
                   </div>
                 </div>
               </div>
@@ -270,47 +232,47 @@ const whatsIncluded = [
       </div>
     </section>
 
-    <!-- Pricing Section -->
+    <!-- Pricing -->
     <section id="pricing" class="py-20 bg-navy-900/50">
       <div class="max-w-7xl mx-auto px-6 lg:px-8">
         <div class="max-w-3xl mx-auto text-center mb-16">
           <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Choose Your Plan
+            Simple Pricing
           </h2>
           <p class="text-navy-400 text-lg">
-            One-time payment. Lifetime access. No subscriptions.
+            One product, one price. No tiers, no subscriptions, no surprises.
           </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="max-w-lg mx-auto">
           {tiers.map(tier => (
-            <div class:list={[
-              "relative p-8 rounded-2xl",
-              tier.popular
-                ? "bg-navy-800 border-2 border-gold-500"
-                : "bg-navy-900 border border-navy-800"
-            ]}>
+            <div class={`relative p-8 rounded-2xl border-2 ${
+              tier.popular 
+                ? 'border-gold-500 bg-navy-900' 
+                : 'border-navy-800 bg-navy-900/50'
+            }`}>
               {tier.popular && (
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gold-500 text-navy-900 text-sm font-bold rounded-full">
-                  Most Popular
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                  <span class="bg-gold-500 text-navy-900 px-4 py-1 rounded-full text-sm font-bold">
+                    Available Now
+                  </span>
                 </div>
               )}
-
-              <div class="mb-6">
+              
+              <div class="text-center mb-8">
                 <h3 class="text-2xl font-bold text-white mb-2">{tier.name}</h3>
-                <p class="text-navy-400 text-sm">{tier.description}</p>
-              </div>
-
-              <div class="mb-6">
-                <span class="text-5xl font-bold text-white">{tier.price}</span>
-                <span class="text-navy-400">one-time</span>
+                <p class="text-navy-400 mb-4">{tier.description}</p>
+                <div class="flex items-baseline justify-center">
+                  <span class="text-5xl font-bold text-white">{tier.price}</span>
+                  <span class="text-navy-400 ml-2">one-time</span>
+                </div>
               </div>
 
               <ul class="space-y-4 mb-8">
                 {tier.features.map(feature => (
-                  <li class="flex items-start">
-                    <svg class="w-5 h-5 text-gold-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  <li class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-gold-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
                     <span class="text-navy-300">{feature}</span>
                   </li>
@@ -318,93 +280,44 @@ const whatsIncluded = [
               </ul>
 
               <button
-                data-tier={tier.tier}
-                data-price={tier.priceId}
-                class="checkout-btn w-full text-center py-4 rounded-lg font-bold transition-all duration-200 block"
-                class:list={[
+                class={`w-full py-4 px-6 rounded-lg font-bold text-lg transition-all duration-200 ${
                   tier.popular
-                    ? "bg-gold-500 hover:bg-gold-600 text-navy-900"
-                    : "bg-navy-800 hover:bg-navy-700 text-white border border-navy-700"
-                ]}
+                    ? 'bg-gold-500 hover:bg-gold-600 text-navy-900'
+                    : 'bg-navy-800 hover:bg-navy-700 text-white border border-navy-700'
+                }`}
               >
                 {tier.cta}
               </button>
+
+              <p class="text-center text-navy-400 text-sm mt-4">
+                {tier.status === 'Available Now' 
+                  ? 'Instant download after purchase' 
+                  : 'Join waitlist for updates'}
+              </p>
             </div>
           ))}
         </div>
 
-        <p class="text-center text-navy-500 text-sm mt-12">
-          All plans include lifetime updates. 30-day money-back guarantee.
-        </p>
+        <div class="max-w-2xl mx-auto mt-12 text-center">
+          <p class="text-navy-400 text-sm">
+            🔒 Secure payment via Stripe • 📧 Delivery via email • 💯 30-day guarantee
+          </p>
+        </div>
       </div>
-
-      <!-- Stripe Checkout Script -->
-      <script>
-        document.querySelectorAll('.checkout-btn').forEach(button => {
-          button.addEventListener('click', async function() {
-            const tier = this.dataset.tier;
-            const priceId = this.dataset.price;
-
-            // Show loading state
-            const originalText = this.textContent;
-            this.textContent = 'Loading...';
-            this.disabled = true;
-
-            try {
-              const response = await fetch('/api/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  tier: tier,
-                }),
-              });
-
-              const data = await response.json();
-
-              if (data.url) {
-                // Redirect to Stripe Checkout
-                window.location.href = data.url;
-              } else {
-                throw new Error(data.error || 'Failed to create checkout session');
-              }
-            } catch (error) {
-              console.error('Checkout error:', error);
-              alert('Sorry, something went wrong. Please try again or contact support.');
-              this.textContent = originalText;
-              this.disabled = false;
-            }
-          });
-        });
-      </script>
     </section>
 
     <!-- FAQ Section -->
     <section class="py-20">
-      <div class="max-w-3xl mx-auto px-6 lg:px-8">
-        <div class="text-center mb-16">
-          <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p class="text-navy-400 text-lg">
-            Everything you need to know about the AI Productivity Suite.
-          </p>
-        </div>
-
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white text-center mb-12">
+          Frequently Asked Questions
+        </h2>
         <div class="space-y-6">
           {faqs.map(faq => (
-            <details class="group bg-navy-900 rounded-xl border border-navy-800 overflow-hidden">
-              <summary class="flex items-center justify-between p-6 cursor-pointer hover:bg-navy-800/50 transition-colors">
-                <span class="text-white font-medium pr-4">{faq.question}</span>
-                <svg class="w-5 h-5 text-gold-500 flex-shrink-0 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <div class="px-6 pb-6 text-navy-400 leading-relaxed">
-                {faq.answer}
-              </div>
-            </details>
+            <div class="bg-navy-900 rounded-xl p-6 border border-navy-800">
+              <h3 class="text-lg font-semibold text-white mb-3">{faq.question}</h3>
+              <p class="text-navy-400 leading-relaxed">{faq.answer}</p>
+            </div>
           ))}
         </div>
       </div>
@@ -412,24 +325,21 @@ const whatsIncluded = [
 
     <!-- Final CTA -->
     <section class="py-20 bg-navy-900/50">
-      <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-          Start Saving Time Today
+      <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+        <h2 class="text-3xl sm:text-4xl font-bold text-white mb-6">
+          Ready to Save 5 Hours This Week?
         </h2>
-        <p class="text-navy-400 text-lg mb-10 max-w-2xl mx-auto">
-          Join 5,000+ professionals who've transformed their productivity. Get instant access to the complete suite.
+        <p class="text-navy-400 text-lg mb-8">
+          Get 25 proven prompts and 10 email templates. Copy, paste, and start saving time today.
         </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button
-            data-tier="professional"
-            data-price="price_professional"
-            class="checkout-btn inline-flex items-center px-10 py-5 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold text-xl rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-gold-500/20"
-          >
-            Get Professional - $79
-          </button>
-        </div>
-        <p class="text-navy-500 text-sm mt-6">
-          30-day money-back guarantee. Instant access.
+        <a
+          href="#pricing"
+          class="inline-flex items-center px-8 py-4 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-gold-500/20"
+        >
+          Get Started — $19
+        </a>
+        <p class="mt-4 text-navy-400 text-sm">
+          30-day money-back guarantee
         </p>
       </div>
     </section>
