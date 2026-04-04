@@ -1,0 +1,16 @@
+{
+  "name": "zero-coding-agent",
+  "version": "1.0.0",
+  "description": "Local coding agent using Ollama for token-free development",
+  "main": "coding-agent.js",
+  "scripts": {
+    "start": "node coding-agent.js",
+    "dev": "node coding-agent.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.5.3",
+    "express": "^5.2.1",
+    "fs-extra": "^11.2.0",
+    "ollama": "^0.5.0"
+  }
+}

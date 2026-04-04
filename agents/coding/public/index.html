@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Agent | Zero Method</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --accent: #06b6d4;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark-bg: #0f172a;
+            --dark-card: #1e293b;
+            --dark-border: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            
+            --transition: all 0.2s ease;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+
+        .card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-ready {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .status-busy {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .status-error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        textarea, input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            font-size: 16px;
+            font-family: monospace;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-radius-sm);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--dark-border);
+            color: var(--text-primary);
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(51, 65, 85, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .result {
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid var(--dark-border);
+            border-radius: var(--border-radius-sm);
+            padding: 20px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: var(--dark-border);
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid var(--primary);
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dark-border);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👨‍💻 Coding Agent</h1>
+            <p class="subtitle">Local AI-powered coding assistant using Ollama - Zero token cost!</p>
+            
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📊</span>
+                        Agent Status
+                    </div>
+                    <div class="status-badge status-ready" id="agentStatus">
+                        Initializing...
+                    </div>
+                </div>
+                <div id="agentDetails">
+                    Checking Ollama connection...
+                </div>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="generate">Generate Code</div>
+            <div class="tab" data-tab="review">Review Code</div>
+            <div class="tab" data-tab="refactor">Refactor Code</div>
+            <div class="tab" data-tab="explain">Explain Code</div>
+        </div>
+
+        <!-- Generate Code Tab -->
+        <div class="tab-content active" id="generate-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>✨</span>
+                        Generate Code
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="generatePrompt">Describe what you want to build:</label>
+                    <textarea id="generatePrompt" placeholder="Example: Create a Node.js function that validates email addresses using regex"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="generateLanguage">Programming Language:</label>
+                    <select id="generateLanguage">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="php">PHP</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="generateBtn">
+                    <span>🚀</span> Generate Code
+                </button>
+                
+                <div class="loading" id="generateLoading">
+                    <div class="spinner"></div>
+                    <p>Generating code with local AI model...</p>
+                </div>
+                
+                <div class="result" id="generateResult" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Review Code Tab -->
+        <div class="tab-content" id="review-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🔎</span>
+                        Review Code
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewCode">Paste code to review:</label>
+                    <textarea id="reviewCode" placeholder="Paste your code here for review..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewLanguage">Programming Language:</label>
+                    <select id="reviewLanguage">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="php">PHP</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="reviewBtn">
+                    <span>🔎</span> Review Code
+                </button>
+                
+                <div class="loading" id="reviewLoading">
+                    <div class="spinner"></div>
+                    <p>Reviewing code with local AI model...</p>
+                </div>
+                
+                <div class="result" id="reviewResult" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Refactor Code Tab -->
+        <div class="tab-content" id="refactor-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>🔨</span>
+                        Refactor Code
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="refactorCode">Paste code to refactor:</label>
+                    <textarea id="refactorCode" placeholder="Paste your code here to refactor..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="refactorInstructions">Refactor instructions:</label>
+                    <textarea id="refactorInstructions" placeholder="Example: Make this code more readable and add error handling"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="refactorLanguage">Programming Language:</label>
+                    <select id="refactorLanguage">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="php">PHP</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="refactorBtn">
+                    <span>🔨</span> Refactor Code
+                </button>
+                
+                <div class="loading" id="refactorLoading">
+                    <div class="spinner"></div>
+                    <p>Refactoring code with local AI model...</p>
+                </div>
+                
+                <div class="result" id="refactorResult" style="display: none;"></div>
+            </div>
+        </div>
+
+        <!-- Explain Code Tab -->
+        <div class="tab-content" id="explain-tab">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span>📘</span>
+                        Explain Code
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="explainCode">Paste code to explain:</label>
+                    <textarea id="explainCode" placeholder="Paste code here for explanation..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="explainLanguage">Programming Language:</label>
+                    <select id="explainLanguage">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="typescript">TypeScript</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="go">Go</option>
+                        <option value="rust">Rust</option>
+                        <option value="php">PHP</option>
+                    </select>
+                </div>
+                
+                <button class="btn btn-primary" id="explainBtn">
+                    <span>📘</span> Explain Code
+                </button>
+                
+                <div class="loading" id="explainLoading">
+                    <div class="spinner"></div>
+                    <p>Explaining code with local AI model...</p>
+                </div>
+                
+                <div class="result" id="explainResult" style="display: none;"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by Ollama • Zero Token Cost • Local AI Processing</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                tab.classList.add('active');
+                
+                // Show corresponding content
+                const tabName = tab.getAttribute('data-tab');
+                document.getElementById(`${tabName}-tab`).classList.add('active');
+            });
+        });
+
+        // Agent status checker
+        async function checkAgentStatus() {
+            try {
+                const response = await fetch('/api/status');
+                const status = await response.json();
+                
+                document.getElementById('agentStatus').textContent = status.status;
+                document.getElementById('agentStatus').className = `status-badge ${
+                    status.status === 'ready' ? 'status-ready' : 
+                    status.status === 'busy' ? 'status-busy' : 'status-error'
+                }`;
+                
+                document.getElementById('agentDetails').innerHTML = `
+                    <div><strong>Agent:</strong> ${status.agent}</div>
+                    <div><strong>Current Task:</strong> ${status.currentTask}</div>
+                    <div><strong>Model:</strong> ${status.model}</div>
+                    <div><strong>Workspace:</strong> ${status.workspace}</div>
+                `;
+            } catch (error) {
+                document.getElementById('agentStatus').textContent = 'Offline';
+                document.getElementById('agentStatus').className = 'status-badge status-error';
+                document.getElementById('agentDetails').innerHTML = 'Unable to connect to Coding Agent API';
+            }
+        }
+
+        // Check status on load and every 30 seconds
+        checkAgentStatus();
+        setInterval(checkAgentStatus, 30000);
+
+        // Generate Code
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const prompt = document.getElementById('generatePrompt').value;
+            const language = document.getElementById('generateLanguage').value;
+            
+            if (!prompt) {
+                alert('Please enter a description of what you want to build');
+                return;
+            }
+            
+            const loading = document.getElementById('generateLoading');
+            const result = document.getElementById('generateResult');
+            
+            loading.classList.add('active');
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ prompt, language })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.textContent = data.code;
+                    result.style.display = 'block';
+                } else {
+                    result.textContent = `Error: ${data.error}`;
+                    result.style.display = 'block';
+                }
+            } catch (error) {
+                result.textContent = `Network Error: ${error.message}`;
+                result.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // Review Code
+        document.getElementById('reviewBtn').addEventListener('click', async () => {
+            const code = document.getElementById('reviewCode').value;
+            const language = document.getElementById('reviewLanguage').value;
+            
+            if (!code) {
+                alert('Please paste code to review');
+                return;
+            }
+            
+            const loading = document.getElementById('reviewLoading');
+            const result = document.getElementById('reviewResult');
+            
+            loading.classList.add('active');
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code, language })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.textContent = data.review;
+                    result.style.display = 'block';
+                } else {
+                    result.textContent = `Error: ${data.error}`;
+                    result.style.display = 'block';
+                }
+            } catch (error) {
+                result.textContent = `Network Error: ${error.message}`;
+                result.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // Refactor Code
+        document.getElementById('refactorBtn').addEventListener('click', async () => {
+            const code = document.getElementById('refactorCode').value;
+            const instructions = document.getElementById('refactorInstructions').value;
+            const language = document.getElementById('refactorLanguage').value;
+            
+            if (!code) {
+                alert('Please paste code to refactor');
+                return;
+            }
+            
+            if (!instructions) {
+                alert('Please enter refactor instructions');
+                return;
+            }
+            
+            const loading = document.getElementById('refactorLoading');
+            const result = document.getElementById('refactorResult');
+            
+            loading.classList.add('active');
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/refactor', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code, instructions, language })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.textContent = data.code;
+                    result.style.display = 'block';
+                } else {
+                    result.textContent = `Error: ${data.error}`;
+                    result.style.display = 'block';
+                }
+            } catch (error) {
+                result.textContent = `Network Error: ${error.message}`;
+                result.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+
+        // Explain Code
+        document.getElementById('explainBtn').addEventListener('click', async () => {
+            const code = document.getElementById('explainCode').value;
+            const language = document.getElementById('explainLanguage').value;
+            
+            if (!code) {
+                alert('Please paste code to explain');
+                return;
+            }
+            
+            const loading = document.getElementById('explainLoading');
+            const result = document.getElementById('explainResult');
+            
+            loading.classList.add('active');
+            result.style.display = 'none';
+            
+            try {
+                const response = await fetch('/api/explain', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ code, language })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    result.textContent = data.explanation;
+                    result.style.display = 'block';
+                } else {
+                    result.textContent = `Error: ${data.error}`;
+                    result.style.display = 'block';
+                }
+            } catch (error) {
+                result.textContent = `Network Error: ${error.message}`;
+                result.style.display = 'block';
+            } finally {
+                loading.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
