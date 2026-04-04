@@ -1,9 +1,9 @@
 {
-  "lastUpdated": "2026-04-04T14:20:00.000Z",
+  "lastUpdated": "2026-04-04T17:30:00.000Z",
   "website": {
     "status": "operational",
     "uptime": "99.9%",
-    "lastCheck": "2026-04-04T14:15:00.000Z"
+    "lastCheck": "2026-04-04T14:30:00.000Z"
   },
   "agents": [
     {
@@ -97,55 +97,55 @@
     {
       "id": "post-1775312400000",
       "platform": "twitter",
-      "content": "🧠 The AI Prompt Formula:\n\n[CONTEXT] + [TASK] + [CONSTRAINTS] = Perfect Output\n\nExample:\n\"You're a marketing consultant for SaaS startups. Write 3 email subject lines that increase open rates by 25%. Focus on urgency and curiosity.\"\n\nThis simple framework solves 90% of prompting problems.\n\n#AIPrompting #ProductivityTips",
+      "content": "🧠 The AI Prompt Formula:\n\nContext + Task + Constraints = Perfect Output\n\n❌ Bad: \"Write about marketing\"\n✅ Good: \"Write 3 SaaS email subjects for founders, focus on urgency\"\n\nSpecificity = Quality\n\n#AIPrompts #Productivity",
       "status": "draft",
       "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": ["#AIPrompting", "#ProductivityTips"],
+      "hashtags": ["#AIPrompts", "#Productivity"],
       "mediaUrl": null,
       "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775313000000",
       "platform": "twitter",
-      "content": "⏱️ AI Time-Saver: Batch Processing\n\nInstead of 10 separate prompts, try:\n\n\"Generate 10 LinkedIn post ideas about remote work for tech professionals. Include a hook, 3 key points, and a CTA. Number them 1-10.\"\n\nBatch = 10x faster results.\n\n#AIProductivity #TimeManagement",
+      "content": "⏱️ AI Batch Processing:\n\nInstead of 10 separate prompts:\n\n\"Generate 10 LinkedIn ideas about remote work. Include hooks + 3 key points + CTA.\"\n\nBatch = 10x faster\n\n#AIProductivity #ContentCreation",
       "status": "draft",
       "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": ["#AIProductivity", "#TimeManagement"],
+      "hashtags": ["#AIProductivity", "#ContentCreation"],
       "mediaUrl": null,
       "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775313600000",
       "platform": "twitter",
-      "content": "🔄 AI Feedback Loop:\n\n1. Ask AI to draft something\n2. Review and edit\n3. Show AI your edited version\n4. Ask for improvements\n5. Repeat until perfect\n\nThis iterative process creates 10x better results than accepting first drafts.\n\n#AIWorkflow #ContinuousImprovement",
+      "content": "🔄 AI Feedback Loop:\n\n1. Ask AI to draft\n2. Review & edit\n3. Show AI your version\n4. Ask for improvements\n5. Repeat until perfect\n\nIteration beats first drafts every time\n\n#AIWorkflow #BestPractices",
       "status": "draft",
       "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": ["#AIWorkflow", "#ContinuousImprovement"],
+      "hashtags": ["#AIWorkflow", "#BestPractices"],
       "mediaUrl": null,
       "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775314200000",
       "platform": "twitter",
-      "content": "🎯 AI for Solopreneurs:\n\nUse AI to:\n• Draft client emails (save 30 mins/day)\n• Create content calendars (save 2 hrs/week)\n• Research competitors (save 5 hrs/month)\n• Write product descriptions (save 10 hrs/month)\n\nThat's 60+ hours/year back to growing your business.\n\n#SolopreneurLife #AIForBusiness",
+      "content": "🎯 AI for Solopreneurs:\n\nSave 60+ hours/year:\n• Emails: 30 min/day\n• Content: 2 hrs/week\n• Research: 5 hrs/month\n• Descriptions: 10 hrs/month\n\nReclaim time. Scale faster.\n\n#Solopreneur #AIForBusiness",
       "status": "draft",
       "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": ["#SolopreneurLife", "#AIForBusiness"],
+      "hashtags": ["#Solopreneur", "#AIForBusiness"],
       "mediaUrl": null,
       "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775314800000",
       "platform": "twitter",
-      "content": "🔍 AI Quality Check:\n\nBefore hitting send, ask AI:\n\n\"What's unclear in this draft?\"\n\"Who might misunderstand this?\"\n\"What assumptions did I make?\"\n\"How could this be misinterpreted?\"\n\nThis simple QA process prevents embarrassing mistakes.\n\n#AIBestPractices #QualityControl",
+      "content": "🔍 AI Quality Check:\n\nBefore publishing, ask:\n• \"What's unclear?\"\n• \"Who might misunderstand?\"\n• \"What assumptions did I make?\"\n\n2 minutes of QA prevents embarrassing mistakes\n\n#AIBestPractices #QualityControl",
       "status": "draft",
       "scheduledDate": null,
       "postedDate": null,
@@ -159,9 +159,9 @@
     {
       "id": "blog-1775312400001",
       "title": "The Complete Professional's Guide to AI Prompt Engineering",
-      "status": "draft",
+      "status": "approved",
       "author": "Content Agent",
-      "lastModified": "2026-04-04T14:20:00.000Z",
+      "lastModified": "2026-04-04T17:22:30.660Z",
       "filePath": "blog_professionals_guide_ai_prompt_engineering.md",
       "wordCount": 2400,
       "readTime": "12 min",
@@ -185,14 +185,16 @@
           "Develop quality control processes for AI outputs",
           "Create reusable templates for common tasks"
         ]
-      }
+      },
+      "approvedAt": "2026-04-04T17:22:30.660Z",
+      "scheduledPublishDate": "2026-04-09T05:00:00.000Z"
     },
     {
       "id": "blog-1775313000001",
       "title": "10 AI Automation Strategies That Save Professionals 10+ Hours Per Week",
-      "status": "draft",
+      "status": "approved",
       "author": "Content Agent",
-      "lastModified": "2026-04-04T14:20:00.000Z",
+      "lastModified": "2026-04-04T17:22:28.097Z",
       "filePath": "blog_10_ai_automation_strategies.md",
       "wordCount": 2200,
       "readTime": "11 min",
@@ -221,14 +223,16 @@
           "Measure time savings to validate automation effectiveness",
           "Scale successful automations across your professional practice"
         ]
-      }
+      },
+      "approvedAt": "2026-04-04T17:22:28.097Z",
+      "scheduledPublishDate": "2026-04-07T05:00:00.000Z"
     },
     {
       "id": "blog-1775313600001",
       "title": "Building an AI-Powered Professional Practice: A Step-by-Step Framework",
-      "status": "draft",
+      "status": "approved",
       "author": "Content Agent",
-      "lastModified": "2026-04-04T14:20:00.000Z",
+      "lastModified": "2026-04-04T17:22:21.620Z",
       "filePath": "blog_ai_powered_professional_practice.md",
       "wordCount": 2600,
       "readTime": "13 min",
@@ -254,7 +258,9 @@
           "Continuously evaluate and improve AI implementations",
           "Position yourself as a leader in AI-augmented professional services"
         ]
-      }
+      },
+      "approvedAt": "2026-04-04T17:22:21.620Z",
+      "scheduledPublishDate": "2026-04-05T05:00:00.000Z"
     }
   ],
   "twitterBot": {
