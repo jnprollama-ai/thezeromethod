@@ -3,843 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero Command Center | Pokemon Office</title>
+    <title>Dashboard | Command Center</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
-    <style>
-        :root {
-            --bg-dark: #0f172a;
-            --bg-card: #1e293b;
-            --bg-card-hover: #334155;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent-emerald: #10b981;
-            --accent-blue: #3b82f6;
-            --accent-purple: #8b5cf6;
-            --accent-amber: #f59e0b;
-            --accent-rose: #f43f5e;
-            --border-color: #334155;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Animated background */
-        .bg-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        /* Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-blue));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
-        }
-
-        .logo-text h1 {
-            font-size: 24px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--text-primary), var(--accent-emerald));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .logo-text span {
-            font-size: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 20px;
-            font-size: 14px;
-            color: var(--accent-emerald);
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-emerald);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Grid Layout */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
-        @media (max-width: 1024px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .card-title-icon {
-            font-size: 20px;
-        }
-
-        /* Agents Grid */
-        .agents-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .agent-card {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .agent-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--agent-color, var(--accent-emerald));
-        }
-
-        .agent-card:hover {
-            background: var(--bg-card-hover);
-            transform: scale(1.02);
-        }
-
-        .agent-card.active::before {
-            background: var(--accent-emerald);
-            box-shadow: 0 0 10px var(--accent-emerald);
-        }
-
-        .agent-card.busy::before {
-            background: var(--accent-amber);
-            box-shadow: 0 0 10px var(--accent-amber);
-        }
-
-        .agent-avatar {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 12px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            background: var(--bg-card-hover);
-            border: 2px solid var(--border-color);
-        }
-
-        .agent-name {
-            font-weight: 600;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .agent-role {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-        }
-
-        .agent-status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .agent-status.active {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--accent-emerald);
-        }
-
-        .agent-status.busy {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent-amber);
-        }
-
-        .agent-status.idle {
-            background: rgba(148, 163, 184, 0.2);
-            color: var(--text-secondary);
-        }
-
-        /* Projects */
-        .project-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .project-item {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .project-name {
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .project-status {
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .project-status.validation {
-            background: rgba(139, 92, 246, 0.2);
-            color: var(--accent-purple);
-        }
-
-        .project-status.planning {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--accent-blue);
-        }
-
-        .project-status.operational {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--accent-emerald);
-        }
-
-        .project-status.draft {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent-amber);
-        }
-
-        .project-status.approved {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--accent-emerald);
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: var(--bg-card-hover);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent-emerald), var(--accent-blue));
-            border-radius: 4px;
-            transition: width 0.5s ease;
-        }
-
-        .project-tasks {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .task-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .task-item.done {
-            color: var(--text-secondary);
-            text-decoration: line-through;
-        }
-
-        .task-checkbox {
-            width: 16px;
-            height: 16px;
-            border: 2px solid var(--border-color);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-        }
-
-        .task-item.done .task-checkbox {
-            background: var(--accent-emerald);
-            border-color: var(--accent-emerald);
-            color: white;
-        }
-
-        /* Metrics */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .metric-card {
-            background: var(--bg-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .metric-value {
-            font-size: 32px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .metric-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Footer */
-        footer {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 12px;
-        }
-
-        .last-updated {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Full width cards */
-        .card-full {
-            grid-column: 1 / -1;
-        }
-
-        @media (max-width: 1024px) {
-            .card-full {
-                grid-column: 1;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .card {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-        .card:nth-child(4) { animation-delay: 0.4s; }
-    </style>
 </head>
 <body>
-    <div class="bg-grid"></div>
-    
-    <div class="container">
-        <header>
-            <div class="logo">
-                <div class="logo-icon">🌀</div>
-                <div class="logo-text">
-                    <h1>Command Center</h1>
-                    <span>Pokemon Office Edition</span>
-                </div>
-            </div>
-            <div class="status-indicator">
-                <div class="status-dot"></div>
-                <span>System Online</span>
-            </div>
-        </header>
-
-        <div class="dashboard-grid">
-            <!-- Agents Section -->
-            <div class="card card-full">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-icon">👥</span>
-                        Active Agents
-                    </div>
-                </div>
-                <div class="agents-grid" id="agentsGrid">
-                    <!-- Agents injected by JS -->
-                </div>
-            </div>
-
-            <!-- Projects Section -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-icon">📊</span>
-                        Projects
-                    </div>
-                </div>
-                <div class="project-list" id="projectList">
-                    <!-- Projects injected by JS -->
-                </div>
-            </div>
-
-            <!-- Metrics Section -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-icon">📈</span>
-                        Key Metrics
-                    </div>
-                </div>
-                <div class="metrics-grid" id="metricsGrid">
-                    <!-- Metrics injected by JS -->
-                </div>
-            </div>
-
-            <!-- Daily Progress Section -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-icon">📅</span>
-                        Daily Progress
-                    </div>
-                </div>
-                <div class="project-tasks" id="dailyProgressList">
-                    <!-- Progress items injected by JS -->
-                </div>
-            </div>
-
-            <!-- Blog Drafts Section -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-icon">✍️</span>
-                        Blog Drafts
-                    </div>
-                </div>
-                <div id="blogDraftsList">
-                    <!-- Blog drafts injected by JS -->
-                </div>
-            </div>
-
-            <!-- Upcoming Projects Section -->
-            <div class="card card-full">
-                <div class="card-header">
-                    <div class="card-title">
-                        <span class="card-title-icon">🚀</span>
-                        Upcoming Projects
-                    </div>
-                </div>
-                <div class="project-list" id="upcomingProjectsList">
-                    <!-- Upcoming projects injected by JS -->
-                </div>
-            </div>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🌀</span>
+            <span class="nav-title">Command Center</span>
         </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link active"><span>🏠</span> Dashboard</a></li>
+            <li><a href="/agents" class="nav-link"><span>👾</span> Agents</a></li>
+            <li><a href="/projects" class="nav-link"><span>📊</span> Projects</a></li>
+            <li><a href="/blogs" class="nav-link"><span>📝</span> Blogs</a></li>
+            <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
+            <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
+            <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+        </div>
+    </nav>
 
-        <footer>
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="page-header">
+            <h1>🌀 Command Center Dashboard</h1>
+            <p class="page-subtitle">Real-time monitoring of Zero Method operations</p>
             <div class="last-updated">
-                <span>🕐</span>
+                <span>🕐 Last updated: </span>
                 <span id="lastUpdated">Loading...</span>
             </div>
-            <div>Zero Method • 2026</div>
-        </footer>
-    </div>
+        </section>
+
+        <!-- Quick Stats Grid -->
+        <section class="stats-section">
+            <h2 class="section-title">📊 Quick Stats</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="activeAgents">-</div>
+                    <div class="stat-label">Active Agents</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="projectsProgress">-</div>
+                    <div class="stat-label">Avg. Progress</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">✍️</div>
+                    <div class="stat-value" id="blogDraftsCount">-</div>
+                    <div class="stat-label">Blog Drafts</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">$<span id="revenueAmount">0</span></div>
+                    <div class="stat-label">Revenue</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="activity-section">
+            <h2 class="section-title">📋 Recent Activity</h2>
+            
+            <div class="activity-list" id="activityList">
+                <div class="activity-item">
+                    <div class="activity-icon">⏳</div>
+                    <div class="activity-content">
+                        <div class="activity-text">Loading recent activity...</div>
+                        <div class="activity-meta">Just now</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Navigation Cards -->
+        <section class="quick-nav-section">
+            <h2 class="section-title">⚡ Quick Access</h2>
+            
+            <div class="quick-nav-grid">
+                <a href="/agents" class="quick-nav-card">
+                    <div class="quick-nav-icon">👾</div>
+                    <div class="quick-nav-title">Agents</div>
+                    <div class="quick-nav-desc">Monitor agent status and tasks</div>
+                </a>
+                
+                <a href="/projects" class="quick-nav-card">
+                    <div class="quick-nav-icon">📊</div>
+                    <div class="quick-nav-title">Projects</div>
+                    <div class="quick-nav-desc">Track project progress and milestones</div>
+                </a>
+                
+                <a href="/blogs" class="quick-nav-card">
+                    <div class="quick-nav-icon">📝</div>
+                    <div class="quick-nav-title">Blog Drafts</div>
+                    <div class="quick-nav-desc">Review and approve content</div>
+                </a>
+                
+                <a href="/social" class="quick-nav-card">
+                    <div class="quick-nav-icon">📱</div>
+                    <div class="quick-nav-title">Social Media</div>
+                    <div class="quick-nav-desc">Manage social media automation</div>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Zero Method | Command Center v2.0</p>
+    </footer>
 
     <script>
-        // Pokemon emoji mapping
-        const pokemonEmoji = {
-            'Mewtwo': '👾',
-            'Alakazam': '🥄',
-            'Rapidash': '🦄',
-            'Porygon': '📊',
-            'Jigglypuff': '🎤'
-        };
-
-        // Initialize Socket.io
         const socket = io();
-
-        // Update dashboard
-        function updateDashboard(data) {
-            updateAgents(data.agents);
-            updateProjects(data.projects);
-            updateMetrics(data.metrics);
-            updateDailyProgress(data.dailyProgress);
-            updateUpcomingProjects(data.upcomingProjects);
-            updateBlogDrafts(data.blogDrafts);
-            document.getElementById('lastUpdated').textContent = 
-                'Last updated: ' + new Date(data.lastUpdated).toLocaleString();
-        }
-
-        // Update agents
-        function updateAgents(agents) {
-            const grid = document.getElementById('agentsGrid');
-            grid.innerHTML = agents.map(agent => `
-                <div class="agent-card ${agent.status}">
-                    <div class="agent-avatar">${pokemonEmoji[agent.pokemon] || '👤'}</div>
-                    <div class="agent-name">${agent.name}</div>
-                    <div class="agent-role">${agent.role}</div>
-                    <div class="agent-status ${agent.status}">${agent.status}</div>
-                    <div style="margin-top: 8px; font-size: 11px; color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
-                        ${agent.task}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update projects
-        function updateProjects(projects) {
-            const list = document.getElementById('projectList');
-            list.innerHTML = Object.entries(projects).map(([id, project]) => `
-                <div class="project-item">
-                    <div class="project-header">
-                        <div class="project-name">
-                            <span>${project.name}</span>
-                        </div>
-                        <div class="project-status ${project.status}">${project.status}</div>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${project.progress}%"></div>
-                    </div>
-                    <div class="project-tasks">
-                        ${project.tasks.slice(0, 4).map(task => `
-                            <div class="task-item ${task.done ? 'done' : ''}">
-                                <div class="task-checkbox">${task.done ? '✓' : ''}</div>
-                                <span>${task.name}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update metrics
-        function updateMetrics(metrics) {
-            const grid = document.getElementById('metricsGrid');
-            const metricData = [
-                { label: 'Website Visits', value: metrics.websiteVisits },
-                { label: 'Email Signups', value: metrics.emailSignups },
-                { label: 'Social Followers', value: metrics.socialFollowers },
-                { label: 'Content Pieces', value: metrics.contentPieces }
-            ];
-            
-            grid.innerHTML = metricData.map(m => `
-                <div class="metric-card">
-                    <div class="metric-value">${m.value}</div>
-                    <div class="metric-label">${m.label}</div>
-                </div>
-            `).join('');
-        }
-
-        // Update daily progress
-        function updateDailyProgress(progressItems) {
-            const list = document.getElementById('dailyProgressList');
-            if (!progressItems || progressItems.length === 0) {
-                list.innerHTML = '<div class="task-item"><span>No progress logged yet</span></div>';
-                return;
-            }
-            
-            list.innerHTML = progressItems.slice(0, 10).map(item => `
-                <div class="task-item">
-                    <div class="task-checkbox">✓</div>
-                    <div>
-                        <div>${item.content}</div>
-                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
-                            ${new Date(item.date).toLocaleDateString()} by ${item.author}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update upcoming projects
-        function updateUpcomingProjects(projects) {
-            const list = document.getElementById('upcomingProjectsList');
-            if (!projects || projects.length === 0) {
-                list.innerHTML = '<div class="project-item" style="text-align: center; color: var(--text-secondary);">No upcoming projects</div>';
-                return;
-            }
-            
-            list.innerHTML = projects.map(project => `
-                <div class="project-item">
-                    <div class="project-header">
-                        <div class="project-name">
-                            <span>${project.name}</span>
-                        </div>
-                        <div class="project-status ${project.status}">${project.status}</div>
-                    </div>
-                    <div style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">
-                        ${project.description}
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px;">
-                        <div><strong>Timeline:</strong> ${project.timeline || 'TBD'}</div>
-                        <div><strong>Dependencies:</strong> ${project.dependencies && project.dependencies.length > 0 ? project.dependencies.join(', ') : 'None'}</div>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                        <div><strong>Est. Tokens:</strong> ${project.estimatedTokens || 'N/A'}</div>
-                        <div><strong>Est. Budget:</strong> $${project.estimatedBudget || 'N/A'}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Update blog drafts
-        function updateBlogDrafts(drafts) {
-            const list = document.getElementById('blogDraftsList');
-            if (!drafts || drafts.length === 0) {
-                list.innerHTML = '<div class="task-item"><span>No blog drafts yet</span></div>';
-                return;
-            }
-            
-            list.innerHTML = drafts.map(draft => `
-                <div class="project-item" id="draft-${draft.id}">
-                    <div class="project-header">
-                        <div class="project-name">
-                            <span>${draft.title}</span>
-                        </div>
-                        <div class="project-status ${draft.status}">${draft.status}</div>
-                    </div>
-                    <div style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">
-                        Author: ${draft.author} | Last modified: ${new Date(draft.lastModified).toLocaleDateString()}
-                    </div>
-                    
-                    <!-- Comments Section -->
-                    <div style="margin-bottom: 12px;">
-                        <strong>Comments:</strong>
-                        <div id="comments-${draft.id}" style="margin-top: 8px; max-height: 150px; overflow-y: auto;">
-                            ${draft.comments && draft.comments.length > 0 
-                              ? draft.comments.map(comment => `
-                                  <div style="background: var(--bg-dark); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 13px;">
-                                      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-                                          <strong>${comment.author}</strong>
-                                          <span style="color: var(--text-secondary); font-size: 11px;">${new Date(comment.timestamp).toLocaleString()}</span>
-                                      </div>
-                                      <div>${comment.comment}</div>
-                                  </div>
-                                `).join('')
-                              : '<div style="color: var(--text-secondary); font-size: 13px;">No comments yet</div>'
-                            }
-                        </div>
-                    </div>
-                    
-                    <!-- Add Comment Form -->
-                    <div style="margin-bottom: 12px;">
-                        <textarea id="comment-input-${draft.id}" placeholder="Add a comment or suggestion..." 
-                                  style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-primary); font-size: 13px;"></textarea>
-                        <button onclick="addComment('${draft.id}')" 
-                                style="margin-top: 6px; padding: 6px 12px; background: var(--accent-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-                            Add Comment
-                        </button>
-                    </div>
-                    
-                    <!-- Action Buttons -->
-                    <div style="display: flex; gap: 8px;">
-                        <button onclick="approveDraft('${draft.id}')" 
-                                style="padding: 8px 16px; background: var(--accent-emerald); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; flex: 1;">
-                            Approve for Posting
-                        </button>
-                        <button onclick="viewDraft('${draft.id}')" 
-                                style="padding: 8px 16px; background: var(--bg-card-hover); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-size: 13px; flex: 1;">
-                            View Draft
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Add comment to blog draft
-        function addComment(draftId) {
-            const commentInput = document.getElementById(`comment-input-${draftId}`);
-            const comment = commentInput.value.trim();
-            
-            if (!comment) {
-                alert('Please enter a comment');
-                return;
-            }
-            
-            fetch('/api/blog-drafts/comment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    draftId: draftId,
-                    comment: comment,
-                    author: 'Jon' // In a real implementation, this would come from auth
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                commentInput.value = '';
-                console.log('Comment added:', data);
-            })
-            .catch(err => {
-                console.error('Error adding comment:', err);
-                alert('Failed to add comment');
-            });
-        }
-
-        // Approve blog draft
-        function approveDraft(draftId) {
-            if (!confirm('Are you sure you want to approve this draft for posting?')) {
-                return;
-            }
-            
-            fetch('/api/blog-drafts/approve', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    draftId: draftId
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log('Draft approved:', data);
-                alert('Draft approved for posting!');
-            })
-            .catch(err => {
-                console.error('Error approving draft:', err);
-                alert('Failed to approve draft');
-            });
-        }
-
-        // View blog draft (placeholder for now)
-        function viewDraft(draftId) {
-            alert('Draft viewing would open the full content in a new window or modal. Draft ID: ' + draftId);
-            // In a full implementation, this would open the draft content
-        }
-
-        // Socket events
-        socket.on('connect', () => {
-            console.log('Connected to Command Center');
-        });
-
+        
         socket.on('statusUpdate', (data) => {
-            updateDashboard(data);
+            // Update last updated time
+            document.getElementById('lastUpdated').textContent = 
+                new Date(data.lastUpdated).toLocaleString();
+            
+            // Update stats
+            const activeAgents = data.agents.filter(a => a.status === 'active').length;
+            document.getElementById('activeAgents').textContent = activeAgents;
+            
+            const projects = Object.values(data.projects);
+            const avgProgress = projects.reduce((sum, p) => sum + p.progress, 0) / projects.length;
+            document.getElementById('projectsProgress').textContent = Math.round(avgProgress) + '%';
+            
+            document.getElementById('blogDraftsCount').textContent = data.blogDrafts ? data.blogDrafts.length : 0;
+            
+            document.getElementById('revenueAmount').textContent = data.projects.zma.revenue || '0';
+            
+            // Update activity
+            const activityList = document.getElementById('activityList');
+            if (data.dailyProgress && data.dailyProgress.length > 0) {
+                activityList.innerHTML = data.dailyProgress.slice(0, 5).map(item => `
+                    <div class="activity-item">
+                        <div class="activity-icon">✓</div>
+                        <div class="activity-content">
+                            <div class="activity-text">${item.content}</div>
+                            <div class="activity-meta">${new Date(item.date).toLocaleString()} by ${item.author}</div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                activityList.innerHTML = `
+                    <div class="activity-item">
+                        <div class="activity-icon">📋</div>
+                        <div class="activity-content">
+                            <div class="activity-text">No recent activity recorded</div>
+                            <div class="activity-meta">System initialization</div>
+                        </div>
+                    </div>
+                `;
+            }
         });
 
-        // Initial fetch
+        // Initial load
         fetch('/api/status')
             .then(res => res.json())
-            .then(data => updateDashboard(data))
-            .catch(err => console.error('Error fetching status:', err));
+            .then(data => {
+                socket.emit('statusUpdate', data);
+            })
+            .catch(err => {
+                console.error('Error loading initial data:', err);
+                document.getElementById('lastUpdated').textContent = 'Offline';
+                document.querySelector('.nav-status').innerHTML = '<span class="status-dot"></span> Offline';
+            });
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
   "name": "zero-command-center",
-  "version": "1.0.0",
-  "description": "Pokemon Office Themed Command Center for Zero Marketing Agency",
+  "version": "2.0.0",
+  "description": "Multi-page Command Center with tabbed navigation",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

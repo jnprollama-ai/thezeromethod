@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogs | Command Center</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🌀</span>
+            <span class="nav-title">Command Center</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link"><span>🏠</span> Dashboard</a></li>
+            <li><a href="/agents" class="nav-link"><span>👾</span> Agents</a></li>
+            <li><a href="/projects" class="nav-link"><span>📊</span> Projects</a></li>
+            <li><a href="/blogs" class="nav-link active"><span>📝</span> Blogs</a></li>
+            <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
+            <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
+            <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="page-header">
+            <h1>📝 Blog Drafts</h1>
+            <p class="page-subtitle">Review, comment, and approve content</p>
+        </section>
+
+        <section class="blogs-section">
+            <div id="blogsContainer">
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="activity-icon">⏳</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Loading blog drafts...</div>
+                            <div class="activity-meta">Please wait</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Zero Method | Command Center v2.0</p>
+    </footer>
+
+    <script>
+        const socket = io();
+        
+        socket.on('statusUpdate', (data) => {
+            const container = document.getElementById('blogsContainer');
+            
+            if (!data.blogDrafts || data.blogDrafts.length === 0) {
+                container.innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">📭</div>
+                            <div class="activity-content">
+                                <div class="activity-text">No blog drafts available</div>
+                                <div class="activity-meta">Create a new draft to get started</div>
+                            </div>
+                        </div>
+                        <div class="agent-body">
+                            <div class="agent-actions" style="justify-content: center;">
+                                <button class="btn btn-primary" onclick="createNewDraft()">
+                                    <span>➕</span> Create New Draft
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = data.blogDrafts.map(draft => `
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="agent-avatar-large">📝</div>
+                        <div class="agent-info">
+                            <h2>${draft.title}</h2>
+                            <div>
+                                <span class="agent-role-badge">${draft.status}</span>
+                                <span class="agent-status-badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                    ${new Date(draft.lastModified).toLocaleDateString()}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-body">
+                        <div class="agent-stat">
+                            <span class="stat-label">Author:</span>
+                            <span class="stat-value">${draft.author}</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Comments:</span>
+                            <span class="stat-value">${draft.comments ? draft.comments.length : 0} comments</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Comments:</span>
+                            <div class="stat-value" style="width: 100%;">
+                                ${draft.comments && draft.comments.length > 0 
+                                  ? draft.comments.map(comment => `
+                                      <div style="background: var(--dark-border); padding: 12px; border-radius: 8px; margin-bottom: 8px;">
+                                          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                              <strong>${comment.author}</strong>
+                                              <span style="color: var(--text-secondary); font-size: 12px;">${new Date(comment.timestamp).toLocaleString()}</span>
+                                          </div>
+                                          <div>${comment.comment}</div>
+                                      </div>
+                                    `).join('')
+                                  : '<div style="color: var(--text-secondary); font-size: 14px;">No comments yet</div>'
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Add Comment:</span>
+                            <div class="stat-value" style="width: 100%;">
+                                <textarea id="comment-input-${draft.id}" 
+                                          placeholder="Enter your feedback or suggestions..." 
+                                          style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--dark-border); background: var(--dark-card); color: var(--text-primary); font-size: 14px; resize: vertical; min-height: 80px;"></textarea>
+                                <div style="margin-top: 12px; display: flex; gap: 8px; justify-content: flex-end;">
+                                    <button class="btn btn-secondary" onclick="addComment('${draft.id}')">
+                                        <span>💬</span> Add Comment
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-actions">
+                            <button class="btn btn-secondary" onclick="viewDraft('${draft.id}')">
+                                <span>👁️</span> View Full Draft
+                            </button>
+                            ${draft.status !== 'approved' ? `
+                            <button class="btn btn-primary" onclick="approveDraft('${draft.id}')">
+                                <span>✅</span> Approve for Posting
+                            </button>
+                            ` : `
+                            <button class="btn btn-primary" disabled style="opacity: 0.7;">
+                                <span>✅</span> Already Approved
+                            </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+        function addComment(draftId) {
+            const commentInput = document.getElementById(`comment-input-${draftId}`);
+            const comment = commentInput.value.trim();
+            
+            if (!comment) {
+                alert('Please enter a comment');
+                return;
+            }
+            
+            fetch('/api/blog-drafts/comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    draftId: draftId,
+                    comment: comment,
+                    author: 'Jon'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                commentInput.value = '';
+                // Refresh data
+                fetch('/api/status')
+                    .then(res => res.json())
+                    .then(data => socket.emit('statusUpdate', data));
+            })
+            .catch(err => {
+                console.error('Error adding comment:', err);
+                alert('Failed to add comment');
+            });
+        }
+
+        function approveDraft(draftId) {
+            if (!confirm('Are you sure you want to approve this draft for posting?')) {
+                return;
+            }
+            
+            fetch('/api/blog-drafts/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ draftId: draftId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Refresh data
+                fetch('/api/status')
+                    .then(res => res.json())
+                    .then(data => socket.emit('statusUpdate', data));
+                alert('Draft approved for posting!');
+            })
+            .catch(err => {
+                console.error('Error approving draft:', err);
+                alert('Failed to approve draft');
+            });
+        }
+
+        function viewDraft(draftId) {
+            window.open('/content/review_blog_draft.html', '_blank');
+        }
+
+        function createNewDraft() {
+            alert('Create new draft functionality would open here');
+        }
+
+        // Initial load
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data))
+            .catch(err => {
+                console.error('Error loading blog drafts:', err);
+                document.getElementById('blogsContainer').innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">❌</div>
+                            <div class="activity-content">
+                                <div class="activity-text">Failed to load blog drafts</div>
+                                <div class="activity-meta">Check connection and try again</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>

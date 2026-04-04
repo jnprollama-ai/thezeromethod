@@ -27,116 +27,19 @@ if (!fs.existsSync(path.join(__dirname, 'data'))) {
   fs.mkdirSync(path.join(__dirname, 'data'));
 }
 
-// Default status data
-const defaultStatus = {
-  lastUpdated: new Date().toISOString(),
-  website: {
-    status: 'operational',
-    uptime: '99.9%',
-    lastCheck: new Date().toISOString()
-  },
-  agents: [
-    { id: 'zero', name: 'Zero', pokemon: 'Mewtwo', role: 'Commander', status: 'active', task: 'Strategic oversight' },
-    { id: 'research', name: 'Research Agent', pokemon: 'Alakazam', role: 'Analyst', status: 'idle', task: 'Competitor analysis complete' },
-    { id: 'content', name: 'Content Agent', pokemon: 'Rapidash', role: 'Creator', status: 'active', task: 'Blog post drafted' },
-    { id: 'seo', name: 'SEO Agent', pokemon: 'Porygon', role: 'Optimizer', status: 'idle', task: 'Monitoring rankings' },
-    { id: 'social', name: 'Social Agent', pokemon: 'Jigglypuff', role: 'Engager', status: 'active', task: 'Social media content ready' }
-  ],
-  projects: {
-    zma: {
-      name: 'Zero Marketing Agency',
-      status: 'validation',
-      progress: 65,
-      revenue: 0,
-      tasks: [
-        { name: 'Website Live', done: true },
-        { name: 'Product Created', done: true },
-        { name: 'Content Strategy', done: true },
-        { name: 'Social Media Content', done: true },
-        { name: 'Blog Posts', done: false },
-        { name: 'Traffic Generation', done: false },
-        { name: 'First Sale', done: false }
-      ]
-    },
-    trading: {
-      name: 'Trading Dashboard',
-      status: 'planning',
-      progress: 10,
-      revenue: 0,
-      tasks: [
-        { name: 'Concept Defined', done: true },
-        { name: 'Architecture Design', done: false },
-        { name: 'MVP Development', done: false }
-      ]
-    },
-    saas: {
-      name: 'Zero SaaS',
-      status: 'research',
-      progress: 5,
-      revenue: 0,
-      tasks: [
-        { name: 'Market Validation', done: false },
-        { name: 'Competitive Analysis', done: false },
-        { name: 'Feature Planning', done: false }
-      ]
-    }
-  },
-  metrics: {
-    websiteVisits: 0,
-    emailSignups: 0,
-    socialFollowers: 0,
-    contentPieces: 3
-  },
-  dailyProgress: [],
-  upcomingProjects: [
-    {
-      id: 'trading',
-      name: 'Trading Dashboard',
-      description: 'Real-time market data visualization and portfolio tracking',
-      status: 'planning',
-      timeline: 'Months 2-3',
-      dependencies: ['zma'],
-      estimatedTokens: 200000,
-      estimatedBudget: 100
-    },
-    {
-      id: 'saas',
-      name: 'Zero SaaS',
-      description: 'AI-powered tools for solopreneurs and small businesses',
-      status: 'research',
-      timeline: 'Months 4-6',
-      dependencies: ['zma'],
-      estimatedTokens: 500000,
-      estimatedBudget: 250
-    }
-  ],
-  blogDrafts: [
-    {
-      id: 'prompt-engineering-basics',
-      title: 'AI Prompt Engineering Basics for Non-Technical Professionals',
-      status: 'draft',
-      author: 'Zero',
-      lastModified: new Date().toISOString(),
-      filePath: 'blog_draft_prompt_engineering.md',
-      comments: []
-    }
-  ]
-};
-
 // Load or initialize status
 function loadStatus() {
   try {
     if (fs.existsSync(DATA_FILE)) {
       const data = fs.readFileSync(DATA_FILE, 'utf8');
-      return { ...defaultStatus, ...JSON.parse(data) };
+      return JSON.parse(data);
     }
   } catch (err) {
     console.error('Error loading status:', err);
   }
-  return defaultStatus;
+  return require('./data/default-status.json');
 }
 
-// Save status
 function saveStatus(status) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(status, null, 2));
@@ -146,6 +49,35 @@ function saveStatus(status) {
 }
 
 let currentStatus = loadStatus();
+
+// Routes for each page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/agents', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'agents.html'));
+});
+
+app.get('/projects', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'projects.html'));
+});
+
+app.get('/blogs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blogs.html'));
+});
+
+app.get('/social', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'social.html'));
+});
+
+app.get('/saas', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'saas.html'));
+});
+
+app.get('/trading', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'trading.html'));
+});
 
 // API Routes
 app.get('/api/status', (req, res) => {
@@ -159,33 +91,6 @@ app.post('/api/status', (req, res) => {
   res.json(currentStatus);
 });
 
-app.post('/api/update-agent', (req, res) => {
-  const { id, updates } = req.body;
-  const agent = currentStatus.agents.find(a => a.id === id);
-  if (agent) {
-    Object.assign(agent, updates);
-    currentStatus.lastUpdated = new Date().toISOString();
-    saveStatus(currentStatus);
-    io.emit('statusUpdate', currentStatus);
-    res.json(agent);
-  } else {
-    res.status(404).json({ error: 'Agent not found' });
-  }
-});
-
-app.post('/api/update-project', (req, res) => {
-  const { id, updates } = req.body;
-  if (currentStatus.projects[id]) {
-    Object.assign(currentStatus.projects[id], updates);
-    currentStatus.lastUpdated = new Date().toISOString();
-    saveStatus(currentStatus);
-    io.emit('statusUpdate', currentStatus);
-    res.json(currentStatus.projects[id]);
-  } else {
-    res.status(404).json({ error: 'Project not found' });
-  }
-});
-
 app.post('/api/log-progress', (req, res) => {
   const { date, content, author = 'System' } = req.body;
   const entry = {
@@ -195,8 +100,7 @@ app.post('/api/log-progress', (req, res) => {
     author
   };
   
-  currentStatus.dailyProgress.unshift(entry); // Add to beginning of array
-  // Keep only last 30 entries
+  currentStatus.dailyProgress.unshift(entry);
   if (currentStatus.dailyProgress.length > 30) {
     currentStatus.dailyProgress = currentStatus.dailyProgress.slice(0, 30);
   }
@@ -205,41 +109,6 @@ app.post('/api/log-progress', (req, res) => {
   saveStatus(currentStatus);
   io.emit('statusUpdate', currentStatus);
   res.json(entry);
-});
-
-app.post('/api/add-project', (req, res) => {
-  const { id, name, description, timeline, dependencies = [] } = req.body;
-  
-  if (!id || !name) {
-    return res.status(400).json({ error: 'Project ID and name are required' });
-  }
-  
-  const newProject = {
-    id,
-    name,
-    description,
-    status: 'planning',
-    timeline,
-    dependencies,
-    progress: 0,
-    revenue: 0,
-    tasks: []
-  };
-  
-  currentStatus.upcomingProjects.push(newProject);
-  currentStatus.lastUpdated = new Date().toISOString();
-  saveStatus(currentStatus);
-  io.emit('statusUpdate', currentStatus);
-  res.json(newProject);
-});
-
-app.get('/api/history', (req, res) => {
-  res.json(currentStatus.dailyProgress);
-});
-
-// Blog Drafts API
-app.get('/api/blog-drafts', (req, res) => {
-  res.json(currentStatus.blogDrafts || []);
 });
 
 app.post('/api/blog-drafts/comment', (req, res) => {
@@ -280,23 +149,7 @@ app.post('/api/blog-drafts/approve', (req, res) => {
   res.json({ message: 'Draft approved', draft });
 });
 
-app.post('/api/blog-drafts/update', (req, res) => {
-  const { draftId, updates } = req.body;
-  const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
-  
-  if (!draft) {
-    return res.status(404).json({ error: 'Draft not found' });
-  }
-  
-  Object.assign(draft, updates);
-  draft.lastModified = new Date().toISOString();
-  currentStatus.lastUpdated = new Date().toISOString();
-  saveStatus(currentStatus);
-  io.emit('statusUpdate', currentStatus);
-  res.json(draft);
-});
-
-// Socket.io connection
+// Socket.io
 io.on('connection', (socket) => {
   console.log('Client connected');
   socket.emit('statusUpdate', currentStatus);
@@ -306,11 +159,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Serve main page
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
 server.listen(PORT, () => {
-  console.log(`🌀 Command Center running on http://localhost:${PORT}`);
+  console.log(`🌀 Command Center v2.0 running on http://localhost:${PORT}`);
+  console.log('Navigation: Home | Agents | Projects | Blogs | Social | SaaS | Trading');
 });

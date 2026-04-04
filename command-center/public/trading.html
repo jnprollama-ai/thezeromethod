@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Dashboard | Command Center</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🌀</span>
+            <span class="nav-title">Command Center</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link"><span>🏠</span> Dashboard</a></li>
+            <li><a href="/agents" class="nav-link"><span>👾</span> Agents</a></li>
+            <li><a href="/projects" class="nav-link"><span>📊</span> Projects</a></li>
+            <li><a href="/blogs" class="nav-link"><span>📝</span> Blogs</a></li>
+            <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
+            <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
+            <li><a href="/trading" class="nav-link active"><span>💹</span> Trading</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="page-header">
+            <h1>💹 Trading Dashboard</h1>
+            <p class="page-subtitle">Monitor market data and portfolio performance</p>
+        </section>
+
+        <section class="trading-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">💼</div>
+                    <div class="stat-value">$<span id="portfolioValue">0</span></div>
+                    <div class="stat-label">Portfolio Value</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="portfolioChange">+0.00%</div>
+                    <div class="stat-label">24h Change</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">$<span id="cashBalance">0</span></div>
+                    <div class="stat-label">Cash Balance</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="winRate">0%</div>
+                    <div class="stat-label">Win Rate</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">🔍 Market Overview</h2>
+            
+            <div class="agent-detail-card">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">🌐</div>
+                    <div class="agent-info">
+                        <h2>Major Indices</h2>
+                        <div>
+                            <span class="agent-role-badge">Live Data</span>
+                            <span class="agent-status-badge active">Updated 1 min ago</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <div class="agent-stat">
+                        <span class="stat-label">S&P 500:</span>
+                        <span class="stat-value" id="sp500">5,234.18 <span style="color: #10b981;">(+0.42%)</span></span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">NASDAQ:</span>
+                        <span class="stat-value" id="nasdaq">16,153.39 <span style="color: #10b981;">(+0.67%)</span></span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">DOW JONES:</span>
+                        <span class="stat-value" id="dow">38,664.25 <span style="color: #ef4444;">(-0.12%)</span></span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">BITCOIN:</span>
+                        <span class="stat-value" id="btc">68,421.35 <span style="color: #10b981;">(+2.15%)</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">📋 Portfolio Holdings</h2>
+            
+            <div class="agent-detail-card">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">💰</div>
+                    <div class="agent-info">
+                        <h2>Current Positions</h2>
+                        <div>
+                            <span class="agent-role-badge">4 Assets</span>
+                            <span class="agent-status-badge active">Diversified</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid var(--dark-border);">
+                                <th style="text-align: left; padding: 12px; color: var(--text-secondary);">Asset</th>
+                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">Quantity</th>
+                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">Avg Price</th>
+                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">Current</th>
+                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">P&L</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid var(--dark-border);">
+                                <td style="padding: 12px;">AAPL</td>
+                                <td style="padding: 12px; text-align: right;">10</td>
+                                <td style="padding: 12px; text-align: right;">$150.00</td>
+                                <td style="padding: 12px; text-align: right;">$178.23</td>
+                                <td style="padding: 12px; text-align: right; color: #10b981;">+$282.30 (+18.8%)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--dark-border);">
+                                <td style="padding: 12px;">MSFT</td>
+                                <td style="padding: 12px; text-align: right;">5</td>
+                                <td style="padding: 12px; text-align: right;">$320.00</td>
+                                <td style="padding: 12px; text-align: right;">$412.56</td>
+                                <td style="padding: 12px; text-align: right; color: #10b981;">+$462.80 (+28.9%)</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--dark-border);">
+                                <td style="padding: 12px;">GOOGL</td>
+                                <td style="padding: 12px; text-align: right;">8</td>
+                                <td style="padding: 12px; text-align: right;">$125.50</td>
+                                <td style="padding: 12px; text-align: right;">$142.33</td>
+                                <td style="padding: 12px; text-align: right; color: #10b981;">+$134.64 (+13.4%)</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px;">BTC</td>
+                                <td style="padding: 12px; text-align: right;">0.5</td>
+                                <td style="padding: 12px; text-align: right;">$58,000.00</td>
+                                <td style="padding: 12px; text-align: right;">$68,421.35</td>
+                                <td style="padding: 12px; text-align: right; color: #10b981;">+$5,210.68 (+17.9%)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="agent-actions">
+                        <button class="btn btn-secondary" onclick="refreshData()">
+                            <span>🔄</span> Refresh Data
+                        </button>
+                        <button class="btn btn-primary" onclick="executeTrade()">
+                            <span>💱</span> Execute Trade
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">🤖 Trading Bot Status</h2>
+            
+            <div class="quick-nav-grid">
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">🧠</div>
+                    <div class="quick-nav-title">Strategy Bot</div>
+                    <div class="quick-nav-desc">AI-powered trading strategies</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge active">Active</span>
+                        <button class="btn btn-secondary" onclick="configureBot()">⚙️ Config</button>
+                    </div>
+                </div>
+                
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">🛡️</div>
+                    <div class="quick-nav-title">Risk Manager</div>
+                    <div class="quick-nav-desc">Portfolio risk monitoring</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge active">Monitoring</span>
+                        <button class="btn btn-secondary" onclick="viewRisk()">👁️ View</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Zero Method | Command Center v2.0</p>
+    </footer>
+
+    <script>
+        // Simulate trading data
+        const tradingData = {
+            portfolioValue: 42789.45,
+            portfolioChange: "+2.34%",
+            cashBalance: 5230.75,
+            winRate: "72%"
+        };
+
+        // Update UI with trading data
+        function updateTradingUI() {
+            document.getElementById('portfolioValue').textContent = tradingData.portfolioValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('portfolioChange').textContent = tradingData.portfolioChange;
+            document.getElementById('portfolioChange').style.color = tradingData.portfolioChange.startsWith('+') ? '#10b981' : '#ef4444';
+            document.getElementById('cashBalance').textContent = tradingData.cashBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('winRate').textContent = tradingData.winRate;
+        }
+
+        function refreshData() {
+            // Simulate data refresh
+            document.querySelector('.agent-status-badge').textContent = 'Refreshing...';
+            setTimeout(() => {
+                document.querySelector('.agent-status-badge').textContent = 'Updated now';
+                // Update with slightly different values for demo
+                tradingData.portfolioValue += (Math.random() - 0.5) * 1000;
+                updateTradingUI();
+            }, 1500);
+        }
+
+        function executeTrade() {
+            const asset = prompt('Enter asset symbol (e.g., AAPL, BTC):');
+            if (asset) {
+                const action = prompt('Buy or Sell?');
+                if (action && (action.toLowerCase() === 'buy' || action.toLowerCase() === 'sell')) {
+                    const quantity = prompt('Enter quantity:');
+                    if (quantity && !isNaN(quantity)) {
+                        alert(`Trade executed!\n\n${action.toUpperCase()} ${quantity} ${asset}\nStatus: Completed`);
+                    }
+                }
+            }
+        }
+
+        function configureBot() {
+            alert('Opening bot configuration panel...\n\nSettings:\n- Risk tolerance: Moderate\n- Position sizing: 2%\n- Stop loss: 5%\n- Take profit: 15%');
+        }
+
+        function viewRisk() {
+            alert('Risk analysis dashboard:\n\n- Portfolio VaR: $2,340 (5.5%)\n- Sector exposure: Tech 65%\n- Correlation risk: Low\n- Liquidity risk: Minimal');
+        }
+
+        // Initialize
+        updateTradingUI();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Randomly update portfolio value for demo purposes
+            tradingData.portfolioValue += (Math.random() - 0.5) * 200;
+            const change = (Math.random() - 0.5) * 2;
+            tradingData.portfolioChange = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+            updateTradingUI();
+        }, 30000); // Update every 30 seconds
+    </script>
+</body>
+</html>

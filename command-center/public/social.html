@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media | Command Center</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🌀</span>
+            <span class="nav-title">Command Center</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link"><span>🏠</span> Dashboard</a></li>
+            <li><a href="/agents" class="nav-link"><span>👾</span> Agents</a></li>
+            <li><a href="/projects" class="nav-link"><span>📊</span> Projects</a></li>
+            <li><a href="/blogs" class="nav-link"><span>📝</span> Blogs</a></li>
+            <li><a href="/social" class="nav-link active"><span>📱</span> Social</a></li>
+            <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
+            <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="page-header">
+            <h1>📱 Social Media Management</h1>
+            <p class="page-subtitle">Monitor and manage social media automation</p>
+        </section>
+
+        <section class="social-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🐦</div>
+                    <div class="stat-value" id="twitterFollowers">0</div>
+                    <div class="stat-label">Twitter Followers</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">❤️</div>
+                    <div class="stat-value" id="twitterLikes">0</div>
+                    <div class="stat-label">Likes Today</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">🔁</div>
+                    <div class="stat-value" id="twitterRetweets">0</div>
+                    <div class="stat-label">Retweets Today</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="engagementRate">0%</div>
+                    <div class="stat-label">Engagement Rate</div>
+                </div>
+            </div>
+
+            <div class="agent-detail-card">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">🤖</div>
+                    <div class="agent-info">
+                        <h2>Twitter Bot Status</h2>
+                        <div>
+                            <span class="agent-role-badge" id="botStatus">Checking...</span>
+                            <span class="agent-status-badge active">Operational</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <div class="agent-stat">
+                        <span class="stat-label">Scheduled Posts:</span>
+                        <span class="stat-value" id="scheduledPosts">Loading...</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Next Post:</span>
+                        <span class="stat-value" id="nextPost">-</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Recent Activity:</span>
+                        <div class="stat-value" id="recentActivity" style="width: 100%;">
+                            <div style="background: var(--dark-border); padding: 12px; border-radius: 8px;">
+                                <div id="activityLog">Checking bot status...</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-actions">
+                        <button class="btn btn-secondary" onclick="toggleBot()">
+                            <span>⏯️</span> <span id="botToggleText">Pause</span> Bot
+                        </button>
+                        <button class="btn btn-primary" onclick="viewSchedule()">
+                            <span>📅</span> View Schedule
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Zero Method | Command Center v2.0</p>
+    </footer>
+
+    <script>
+        // Simulate social media data
+        const socialData = {
+            twitter: {
+                followers: 42,
+                likesToday: 23,
+                retweetsToday: 8,
+                engagementRate: 3.2,
+                botStatus: 'Active',
+                scheduledPosts: 5,
+                nextPost: 'Today at 2:00 PM',
+                recentActivity: [
+                    'Posted: "Prompt engineering isn\'t about complexity..."',
+                    'Liked 5 tweets about AI productivity',
+                    'Followed 3 relevant accounts',
+                    'Replied to 2 community questions'
+                ]
+            }
+        };
+
+        // Update UI with social data
+        function updateSocialUI() {
+            document.getElementById('twitterFollowers').textContent = socialData.twitter.followers;
+            document.getElementById('twitterLikes').textContent = socialData.twitter.likesToday;
+            document.getElementById('twitterRetweets').textContent = socialData.twitter.retweetsToday;
+            document.getElementById('engagementRate').textContent = socialData.twitter.engagementRate + '%';
+            document.getElementById('botStatus').textContent = socialData.twitter.botStatus;
+            document.getElementById('scheduledPosts').textContent = socialData.twitter.scheduledPosts;
+            document.getElementById('nextPost').textContent = socialData.twitter.nextPost;
+            
+            document.getElementById('activityLog').innerHTML = socialData.twitter.recentActivity
+                .map(activity => `<div style="margin-bottom: 8px;">✓ ${activity}</div>`).join('');
+        }
+
+        function toggleBot() {
+            const currentStatus = document.getElementById('botStatus').textContent;
+            if (currentStatus === 'Active') {
+                socialData.twitter.botStatus = 'Paused';
+                document.getElementById('botStatus').textContent = 'Paused';
+                document.getElementById('botToggleText').textContent = 'Resume';
+                alert('Twitter bot paused. Will resume posting when activated.');
+            } else {
+                socialData.twitter.botStatus = 'Active';
+                document.getElementById('botStatus').textContent = 'Active';
+                document.getElementById('botToggleText').textContent = 'Pause';
+                alert('Twitter bot resumed. Will continue scheduled posting.');
+            }
+        }
+
+        function viewSchedule() {
+            alert('Scheduled posts:\n\n' + 
+                  '1. 9:00 AM - AI productivity tip\n' + 
+                  '2. 12:00 PM - Prompt engineering framework\n' + 
+                  '3. 2:00 PM - Common AI mistakes\n' + 
+                  '4. 5:00 PM - Time-saving AI tricks\n' + 
+                  '5. 7:00 PM - Weekend reflection post');
+        }
+
+        // Initialize
+        updateSocialUI();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Randomly update some metrics for demo purposes
+            socialData.twitter.likesToday += Math.floor(Math.random() * 3);
+            socialData.twitter.followers += Math.random() > 0.8 ? 1 : 0;
+            updateSocialUI();
+        }, 30000); // Update every 30 seconds
+    </script>
+</body>
+</html>

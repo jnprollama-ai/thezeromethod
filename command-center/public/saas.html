@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaaS Tools | Command Center</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🌀</span>
+            <span class="nav-title">Command Center</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link"><span>🏠</span> Dashboard</a></li>
+            <li><a href="/agents" class="nav-link"><span>👾</span> Agents</a></li>
+            <li><a href="/projects" class="nav-link"><span>📊</span> Projects</a></li>
+            <li><a href="/blogs" class="nav-link"><span>📝</span> Blogs</a></li>
+            <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
+            <li><a href="/saas" class="nav-link active"><span>🚀</span> SaaS</a></li>
+            <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="page-header">
+            <h1>🚀 SaaS Tools Suite</h1>
+            <p class="page-subtitle">Monitor and manage Zero Method SaaS products</p>
+        </section>
+
+        <section class="saas-section">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-value" id="totalUsers">0</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value">$<span id="monthlyRevenue">0</span></div>
+                    <div class="stat-label">Monthly Revenue</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="growthRate">0%</div>
+                    <div class="stat-label">Growth Rate</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⭐</div>
+                    <div class="stat-value" id="avgRating">0.0</div>
+                    <div class="stat-label">Avg. Rating</div>
+                </div>
+            </div>
+
+            <h2 class="section-title">🛠️ Tool Status</h2>
+            
+            <div class="quick-nav-grid">
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">📄</div>
+                    <div class="quick-nav-title">PDF Tools</div>
+                    <div class="quick-nav-desc">Merge, split, compress PDFs</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge active">Operational</span>
+                        <button class="btn btn-secondary" onclick="deployTool('pdf')">Deploy</button>
+                    </div>
+                </div>
+                
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">🖼️</div>
+                    <div class="quick-nav-title">Image Tools</div>
+                    <div class="quick-nav-desc">Resize, compress, edit images</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Planning</span>
+                        <button class="btn btn-secondary" onclick="planTool('image')" disabled>Plan</button>
+                    </div>
+                </div>
+                
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">🧮</div>
+                    <div class="quick-nav-title">Calculator Suite</div>
+                    <div class="quick-nav-desc">Financial and business calculators</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge" style="background: rgba(148, 163, 184, 0.2); color: var(--text-secondary);">Ideation</span>
+                        <button class="btn btn-secondary" onclick="ideaTool('calculator')" disabled>Idea</button>
+                    </div>
+                </div>
+                
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">🔗</div>
+                    <div class="quick-nav-title">URL Shortener</div>
+                    <div class="quick-nav-desc">Custom short links with analytics</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge" style="background: rgba(148, 163, 184, 0.2); color: var(--text-secondary);">Ideation</span>
+                        <button class="btn btn-secondary" onclick="ideaTool('url')" disabled>Idea</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-detail-card" style="margin-top: 40px;">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">📊</div>
+                    <div class="agent-info">
+                        <h2>Analytics Dashboard</h2>
+                        <div>
+                            <span class="agent-role-badge">Live Data</span>
+                            <span class="agent-status-badge active">Updated 2 mins ago</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <div class="agent-stat">
+                        <span class="stat-label">PDF Tools Usage:</span>
+                        <span class="stat-value">142 users today</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Top Features:</span>
+                        <span class="stat-value">Merge (45%), Compress (35%), Split (20%)</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Revenue Projections:</span>
+                        <span class="stat-value">$247/month (current), $892/month (6-month forecast)</span>
+                    </div>
+                    
+                    <div class="agent-actions">
+                        <button class="btn btn-secondary" onclick="viewAnalytics()">
+                            <span>📈</span> View Detailed Analytics
+                        </button>
+                        <button class="btn btn-primary" onclick="launchNewTool()">
+                            <span>🚀</span> Launch New Tool
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Zero Method | Command Center v2.0</p>
+    </footer>
+
+    <script>
+        // Simulate SaaS data
+        const saasData = {
+            totalUsers: 142,
+            monthlyRevenue: 247,
+            growthRate: 12.5,
+            avgRating: 4.7
+        };
+
+        // Update UI with SaaS data
+        function updateSaaSUI() {
+            document.getElementById('totalUsers').textContent = saasData.totalUsers;
+            document.getElementById('monthlyRevenue').textContent = saasData.monthlyRevenue;
+            document.getElementById('growthRate').textContent = saasData.growthRate + '%';
+            document.getElementById('avgRating').textContent = saasData.avgRating;
+        }
+
+        function deployTool(toolName) {
+            alert(`${toolName.toUpperCase()} tools deployment initiated!\n\nStatus: Building...\nEstimated completion: 2 minutes`);
+        }
+
+        function planTool(toolName) {
+            alert(`Planning phase started for ${toolName} tools.\n\nNext steps:\n1. Requirements gathering\n2. Technical specification\n3. Resource allocation`);
+        }
+
+        function ideaTool(toolName) {
+            alert(`New idea registered for ${toolName} tools.\n\nAdded to innovation backlog.`);
+        }
+
+        function viewAnalytics() {
+            alert('Opening detailed analytics dashboard...\n\nFeatures:\n- User behavior tracking\n- Conversion funnel analysis\n- Revenue attribution\n- Performance metrics');
+        }
+
+        function launchNewTool() {
+            const toolName = prompt('Enter new tool name:');
+            if (toolName) {
+                alert(`New tool "${toolName}" added to development pipeline!\n\nDevelopment phases:\n1. Ideation & Planning\n2. Design & Prototyping\n3. Development\n4. Testing\n5. Launch`);
+            }
+        }
+
+        // Initialize
+        updateSaaSUI();
+
+        // Simulate real-time updates
+        setInterval(() => {
+            // Randomly update some metrics for demo purposes
+            saasData.totalUsers += Math.floor(Math.random() * 3);
+            saasData.monthlyRevenue += Math.floor(Math.random() * 5);
+            updateSaaSUI();
+        }, 45000); // Update every 45 seconds
+    </script>
+</body>
+</html>

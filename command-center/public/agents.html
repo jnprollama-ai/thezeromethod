@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agents | Command Center</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <span class="nav-logo">🌀</span>
+            <span class="nav-title">Command Center</span>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="/" class="nav-link"><span>🏠</span> Dashboard</a></li>
+            <li><a href="/agents" class="nav-link active"><span>👾</span> Agents</a></li>
+            <li><a href="/projects" class="nav-link"><span>📊</span> Projects</a></li>
+            <li><a href="/blogs" class="nav-link"><span>📝</span> Blogs</a></li>
+            <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
+            <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
+            <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+        </ul>
+        <div class="nav-status">
+            <span class="status-dot online"></span>
+            <span>Online</span>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <section class="page-header">
+            <h1>👾 Active Agents</h1>
+            <p class="page-subtitle">Monitor all AI agents and their current tasks</p>
+        </section>
+
+        <section class="agents-section">
+            <div id="agentsContainer">
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="activity-icon">⏳</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Loading agents...</div>
+                            <div class="activity-meta">Please wait</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>© 2026 Zero Method | Command Center v2.0</p>
+    </footer>
+
+    <script>
+        const pokemonEmoji = {
+            'Mewtwo': '👾',
+            'Alakazam': '🥄',
+            'Rapidash': '🦄',
+            'Porygon': '📊',
+            'Jigglypuff': '🎤'
+        };
+
+        const socket = io();
+        
+        socket.on('statusUpdate', (data) => {
+            const container = document.getElementById('agentsContainer');
+            container.innerHTML = data.agents.map(agent => `
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="agent-avatar-large">${pokemonEmoji[agent.pokemon] || '👤'}</div>
+                        <div class="agent-info">
+                            <h2>${agent.name}</h2>
+                            <div>
+                                <span class="agent-role-badge">${agent.role}</span>
+                                <span class="agent-status-badge ${agent.status}">${agent.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-body">
+                        <div class="agent-stat">
+                            <span class="stat-label">Pokemon:</span>
+                            <span class="stat-value">${agent.pokemon}</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Current Task:</span>
+                            <span class="stat-value">${agent.task}</span>
+                        </div>
+                        
+                        <div class="agent-actions">
+                            <button class="btn btn-secondary" onclick="updateTask('${agent.id}')">
+                                <span>✏️</span> Update Task
+                            </button>
+                            <button class="btn btn-primary" onclick="viewDetails('${agent.id}')">
+                                <span>👁️</span> View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        });
+
+        function updateTask(agentId) {
+            const newTask = prompt('Enter new task:');
+            if (newTask) {
+                fetch('/api/update-agent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: agentId, updates: { task: newTask } })
+                })
+                .then(() => {
+                    // Refresh data
+                    fetch('/api/status')
+                        .then(res => res.json())
+                        .then(data => socket.emit('statusUpdate', data));
+                });
+            }
+        }
+
+        function viewDetails(agentId) {
+            alert('Agent details view would open here for: ' + agentId);
+        }
+
+        // Initial load
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data))
+            .catch(err => {
+                console.error('Error loading agents:', err);
+                document.getElementById('agentsContainer').innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">❌</div>
+                            <div class="activity-content">
+                                <div class="activity-text">Failed to load agents</div>
+                                <div class="activity-meta">Check connection and try again</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>
