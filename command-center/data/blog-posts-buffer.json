@@ -1,0 +1,102 @@
+[
+  {
+    "id": "blog-1775312400001",
+    "title": "The Complete Professional's Guide to AI Prompt Engineering",
+    "status": "draft",
+    "author": "Content Agent",
+    "lastModified": "2026-04-04T14:20:00.000Z",
+    "filePath": "blog_professionals_guide_ai_prompt_engineering.md",
+    "wordCount": 2400,
+    "readTime": "12 min",
+    "tags": ["AI", "Prompt Engineering", "Professional Development"],
+    "comments": [],
+    "createdAt": "2026-04-04T14:20:00.000Z",
+    "outline": {
+      "targetAudience": "Working professionals looking to enhance productivity with AI",
+      "keySections": [
+        "Introduction: Why Prompt Engineering Matters for Professionals",
+        "Chapter 1: The Context-Task-Constraint Framework",
+        "Chapter 2: Writing Prompts for Different Professional Tasks",
+        "Chapter 3: Industry-Specific Prompt Templates",
+        "Chapter 4: Quality Control and Iteration Techniques",
+        "Chapter 5: Advanced Prompt Engineering Strategies",
+        "Conclusion: Building Your Prompt Engineering Workflow"
+      ],
+      "mainTakeaways": [
+        "Master the fundamental framework for effective prompts",
+        "Learn to adapt prompts for specific professional contexts",
+        "Develop quality control processes for AI outputs",
+        "Create reusable templates for common tasks"
+      ]
+    }
+  },
+  {
+    "id": "blog-1775313000001",
+    "title": "10 AI Automation Strategies That Save Professionals 10+ Hours Per Week",
+    "status": "draft",
+    "author": "Content Agent",
+    "lastModified": "2026-04-04T14:20:00.000Z",
+    "filePath": "blog_10_ai_automation_strategies.md",
+    "wordCount": 2200,
+    "readTime": "11 min",
+    "tags": ["AI", "Automation", "Productivity", "Time Management"],
+    "comments": [],
+    "createdAt": "2026-04-04T14:20:00.000Z",
+    "outline": {
+      "targetAudience": "Busy professionals seeking to reclaim time through AI automation",
+      "keySections": [
+        "Introduction: The Automation Opportunity",
+        "Strategy 1: Automated Email Management",
+        "Strategy 2: Content Creation Batches",
+        "Strategy 3: Research and Summarization Pipelines",
+        "Strategy 4: Meeting Preparation Automation",
+        "Strategy 5: Report Generation Templates",
+        "Strategy 6: Customer Inquiry Response Systems",
+        "Strategy 7: Social Media Content Scheduling",
+        "Strategy 8: Data Analysis and Visualization",
+        "Strategy 9: Learning and Development Acceleration",
+        "Strategy 10: Personal Administration Tasks",
+        "Implementation Roadmap"
+      ],
+      "mainTakeaways": [
+        "Identify high-impact automation opportunities in your workflow",
+        "Implement strategies systematically for maximum impact",
+        "Measure time savings to validate automation effectiveness",
+        "Scale successful automations across your professional practice"
+      ]
+    }
+  },
+  {
+    "id": "blog-1775313600001",
+    "title": "Building an AI-Powered Professional Practice: A Step-by-Step Framework",
+    "status": "draft",
+    "author": "Content Agent",
+    "lastModified": "2026-04-04T14:20:00.000Z",
+    "filePath": "blog_ai_powered_professional_practice.md",
+    "wordCount": 2600,
+    "readTime": "13 min",
+    "tags": ["AI", "Professional Development", "Business Strategy", "Framework"],
+    "comments": [],
+    "createdAt": "2026-04-04T14:20:00.000Z",
+    "outline": {
+      "targetAudience": "Professionals and consultants looking to integrate AI into their practice",
+      "keySections": [
+        "Introduction: The AI-Augmented Professional",
+        "Phase 1: Assessment and Foundation Setting",
+        "Phase 2: Tool Integration and Workflow Mapping",
+        "Phase 3: Process Optimization and Quality Control",
+        "Phase 4: Scaling and Specialization",
+        "Phase 5: Innovation and Thought Leadership",
+        "Case Studies: Successful AI Integration Examples",
+        "Common Pitfalls and How to Avoid Them",
+        "Future-Proofing Your AI Practice"
+      ],
+      "mainTakeaways": [
+        "Follow a structured approach to AI integration in professional practice",
+        "Balance automation with human judgment and expertise",
+        "Continuously evaluate and improve AI implementations",
+        "Position yourself as a leader in AI-augmented professional services"
+      ]
+    }
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "id": "post-1775312400000",
+    "platform": "twitter",
+    "content": "🧠 The AI Prompt Formula:\n\n[CONTEXT] + [TASK] + [CONSTRAINTS] = Perfect Output\n\nExample:\n\"You're a marketing consultant for SaaS startups. Write 3 email subject lines that increase open rates by 25%. Focus on urgency and curiosity.\"\n\nThis simple framework solves 90% of prompting problems.\n\n#AIPrompting #ProductivityTips",
+    "status": "draft",
+    "scheduledDate": null,
+    "postedDate": null,
+    "engagement": null,
+    "hashtags": ["#AIPrompting", "#ProductivityTips"],
+    "mediaUrl": null,
+    "createdAt": "2026-04-04T14:20:00.000Z"
+  },
+  {
+    "id": "post-1775313000000",
+    "platform": "twitter",
+    "content": "⏱️ AI Time-Saver: Batch Processing\n\nInstead of 10 separate prompts, try:\n\n\"Generate 10 LinkedIn post ideas about remote work for tech professionals. Include a hook, 3 key points, and a CTA. Number them 1-10.\"\n\nBatch = 10x faster results.\n\n#AIProductivity #TimeManagement",
+    "status": "draft",
+    "scheduledDate": null,
+    "postedDate": null,
+    "engagement": null,
+    "hashtags": ["#AIProductivity", "#TimeManagement"],
+    "mediaUrl": null,
+    "createdAt": "2026-04-04T14:20:00.000Z"
+  },
+  {
+    "id": "post-1775313600000",
+    "platform": "twitter",
+    "content": "🔄 AI Feedback Loop:\n\n1. Ask AI to draft something\n2. Review and edit\n3. Show AI your edited version\n4. Ask for improvements\n5. Repeat until perfect\n\nThis iterative process creates 10x better results than accepting first drafts.\n\n#AIWorkflow #ContinuousImprovement",
+    "status": "draft",
+    "scheduledDate": null,
+    "postedDate": null,
+    "engagement": null,
+    "hashtags": ["#AIWorkflow", "#ContinuousImprovement"],
+    "mediaUrl": null,
+    "createdAt": "2026-04-04T14:20:00.000Z"
+  },
+  {
+    "id": "post-1775314200000",
+    "platform": "twitter",
+    "content": "🎯 AI for Solopreneurs:\n\nUse AI to:\n• Draft client emails (save 30 mins/day)\n• Create content calendars (save 2 hrs/week)\n• Research competitors (save 5 hrs/month)\n• Write product descriptions (save 10 hrs/month)\n\nThat's 60+ hours/year back to growing your business.\n\n#SolopreneurLife #AIForBusiness",
+    "status": "draft",
+    "scheduledDate": null,
+    "postedDate": null,
+    "engagement": null,
+    "hashtags": ["#SolopreneurLife", "#AIForBusiness"],
+    "mediaUrl": null,
+    "createdAt": "2026-04-04T14:20:00.000Z"
+  },
+  {
+    "id": "post-1775314800000",
+    "platform": "twitter",
+    "content": "🔍 AI Quality Check:\n\nBefore hitting send, ask AI:\n\n\"What's unclear in this draft?\"\n\"Who might misunderstand this?\"\n\"What assumptions did I make?\"\n\"How could this be misinterpreted?\"\n\nThis simple QA process prevents embarrassing mistakes.\n\n#AIBestPractices #QualityControl",
+    "status": "draft",
+    "scheduledDate": null,
+    "postedDate": null,
+    "engagement": null,
+    "hashtags": ["#AIBestPractices", "#QualityControl"],
+    "mediaUrl": null,
+    "createdAt": "2026-04-04T14:20:00.000Z"
+  }
+]
