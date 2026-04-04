@@ -4,6 +4,10 @@ const { Server } = require('socket.io');
 const path = require('path');
 const fs = require('fs');
 
+// Import Twitter Bot
+const TwitterBot = require('../agents/social/twitter-bot');
+const twitterBot = new TwitterBot();
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -803,6 +807,44 @@ app.post('/api/saas-tools/deploy', (req, res) => {
   }
 });
 
+// Twitter Bot API
+app.get('/api/twitter/status', async (req, res) => {
+  try {
+    const status = twitterBot.getStatus();
+    const followerCount = await twitterBot.getFollowerCount();
+    res.json({
+      ...status,
+      followerCount
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/twitter/start', async (req, res) => {
+  try {
+    const started = await twitterBot.start();
+    res.json({ started });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/twitter/stop', (req, res) => {
+  twitterBot.stop();
+  res.json({ stopped: true });
+});
+
+app.post('/api/twitter/post', async (req, res) => {
+  try {
+    const { content } = req.body;
+    const tweet = await twitterBot.postImmediate(content);
+    res.json({ posted: true, tweet });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Socket.io
 io.on('connection', (socket) => {
   console.log('Client connected');
@@ -816,4 +858,14 @@ io.on('connection', (socket) => {
 server.listen(PORT, () => {
   console.log(`🌀 Command Center v2.1 running on http://localhost:${PORT}`);
   console.log('Navigation: Home | Agents | Projects | Blogs | Social | SaaS | Trading');
+  
+  // Start Twitter Bot automatically
+  console.log('🐦 Starting Twitter Bot...');
+  twitterBot.start().then(success => {
+    if (success) {
+      console.log('✅ Twitter Bot started successfully');
+    } else {
+      console.log('⚠️ Twitter Bot failed to start - check credentials');
+    }
+  });
 });

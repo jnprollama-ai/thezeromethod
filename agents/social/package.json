@@ -1,0 +1,13 @@
+{
+  "name": "zero-social-agent",
+  "version": "1.0.0",
+  "description": "Social media automation agent with Twitter integration",
+  "main": "twitter-bot.js",
+  "scripts": {
+    "start": "node twitter-bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "twitter-api-v2": "^1.15.0"
+  }
+}

@@ -129,7 +129,27 @@
     "websiteVisits": 0,
     "emailSignups": 0,
     "socialFollowers": 0,
+    "twitterFollowers": 0,
     "contentPieces": 3
+  },
+  "socialMediaContent": [
+    {
+      "id": "twitter-1",
+      "platform": "twitter",
+      "content": "🚀 Starting our journey with AI! Follow @ZeroMethodAI for tips on AI productivity and prompt engineering.",
+      "status": "draft",
+      "scheduledDate": null,
+      "postedDate": null,
+      "engagement": null,
+      "hashtags": ["#AI", "#Productivity"],
+      "mediaUrl": null
+    }
+  ],
+  "twitterBot": {
+    "isRunning": false,
+    "username": "@ZeroMethodAI",
+    "lastPost": null,
+    "followerCount": 0
   },
   "dailyProgress": [
     {
