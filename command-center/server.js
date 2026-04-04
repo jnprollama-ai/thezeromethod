@@ -109,6 +109,17 @@ const defaultStatus = {
       estimatedTokens: 500000,
       estimatedBudget: 250
     }
+  ],
+  blogDrafts: [
+    {
+      id: 'prompt-engineering-basics',
+      title: 'AI Prompt Engineering Basics for Non-Technical Professionals',
+      status: 'draft',
+      author: 'Zero',
+      lastModified: new Date().toISOString(),
+      filePath: 'blog_draft_prompt_engineering.md',
+      comments: []
+    }
   ]
 };
 
@@ -224,6 +235,65 @@ app.post('/api/add-project', (req, res) => {
 
 app.get('/api/history', (req, res) => {
   res.json(currentStatus.dailyProgress);
+});
+
+// Blog Drafts API
+app.get('/api/blog-drafts', (req, res) => {
+  res.json(currentStatus.blogDrafts || []);
+});
+
+app.post('/api/blog-drafts/comment', (req, res) => {
+  const { draftId, comment, author = 'Reviewer' } = req.body;
+  const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
+  
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' });
+  }
+  
+  const commentObj = {
+    id: Date.now().toString(),
+    comment,
+    author,
+    timestamp: new Date().toISOString()
+  };
+  
+  draft.comments.push(commentObj);
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(commentObj);
+});
+
+app.post('/api/blog-drafts/approve', (req, res) => {
+  const { draftId } = req.body;
+  const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
+  
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' });
+  }
+  
+  draft.status = 'approved';
+  draft.approvedAt = new Date().toISOString();
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json({ message: 'Draft approved', draft });
+});
+
+app.post('/api/blog-drafts/update', (req, res) => {
+  const { draftId, updates } = req.body;
+  const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
+  
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' });
+  }
+  
+  Object.assign(draft, updates);
+  draft.lastModified = new Date().toISOString();
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(draft);
 });
 
 // Socket.io connection

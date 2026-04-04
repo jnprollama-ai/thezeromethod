@@ -515,6 +515,19 @@
                 </div>
             </div>
 
+            <!-- Blog Drafts Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-icon">✍️</span>
+                        Blog Drafts
+                    </div>
+                </div>
+                <div id="blogDraftsList">
+                    <!-- Blog drafts injected by JS -->
+                </div>
+            </div>
+
             <!-- Upcoming Projects Section -->
             <div class="card card-full">
                 <div class="card-header">
@@ -672,6 +685,134 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        // Update blog drafts
+        function updateBlogDrafts(drafts) {
+            const list = document.getElementById('blogDraftsList');
+            if (!drafts || drafts.length === 0) {
+                list.innerHTML = '<div class="task-item"><span>No blog drafts yet</span></div>';
+                return;
+            }
+            
+            list.innerHTML = drafts.map(draft => `
+                <div class="project-item" id="draft-${draft.id}">
+                    <div class="project-header">
+                        <div class="project-name">
+                            <span>${draft.title}</span>
+                        </div>
+                        <div class="project-status ${draft.status}">${draft.status}</div>
+                    </div>
+                    <div style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">
+                        Author: ${draft.author} | Last modified: ${new Date(draft.lastModified).toLocaleDateString()}
+                    </div>
+                    
+                    <!-- Comments Section -->
+                    <div style="margin-bottom: 12px;">
+                        <strong>Comments:</strong>
+                        <div id="comments-${draft.id}" style="margin-top: 8px; max-height: 150px; overflow-y: auto;">
+                            ${draft.comments && draft.comments.length > 0 
+                              ? draft.comments.map(comment => `
+                                  <div style="background: var(--bg-dark); padding: 8px; border-radius: 6px; margin-bottom: 6px; font-size: 13px;">
+                                      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                          <strong>${comment.author}</strong>
+                                          <span style="color: var(--text-secondary); font-size: 11px;">${new Date(comment.timestamp).toLocaleString()}</span>
+                                      </div>
+                                      <div>${comment.comment}</div>
+                                  </div>
+                                `).join('')
+                              : '<div style="color: var(--text-secondary); font-size: 13px;">No comments yet</div>'
+                            }
+                        </div>
+                    </div>
+                    
+                    <!-- Add Comment Form -->
+                    <div style="margin-bottom: 12px;">
+                        <textarea id="comment-input-${draft.id}" placeholder="Add a comment or suggestion..." 
+                                  style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-primary); font-size: 13px;"></textarea>
+                        <button onclick="addComment('${draft.id}')" 
+                                style="margin-top: 6px; padding: 6px 12px; background: var(--accent-blue); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                            Add Comment
+                        </button>
+                    </div>
+                    
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 8px;">
+                        <button onclick="approveDraft('${draft.id}')" 
+                                style="padding: 8px 16px; background: var(--accent-emerald); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; flex: 1;">
+                            Approve for Posting
+                        </button>
+                        <button onclick="viewDraft('${draft.id}')" 
+                                style="padding: 8px 16px; background: var(--bg-card-hover); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-size: 13px; flex: 1;">
+                            View Draft
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Add comment to blog draft
+        function addComment(draftId) {
+            const commentInput = document.getElementById(`comment-input-${draftId}`);
+            const comment = commentInput.value.trim();
+            
+            if (!comment) {
+                alert('Please enter a comment');
+                return;
+            }
+            
+            fetch('/api/blog-drafts/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    draftId: draftId,
+                    comment: comment,
+                    author: 'Jon' // In a real implementation, this would come from auth
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                commentInput.value = '';
+                console.log('Comment added:', data);
+            })
+            .catch(err => {
+                console.error('Error adding comment:', err);
+                alert('Failed to add comment');
+            });
+        }
+
+        // Approve blog draft
+        function approveDraft(draftId) {
+            if (!confirm('Are you sure you want to approve this draft for posting?')) {
+                return;
+            }
+            
+            fetch('/api/blog-drafts/approve', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    draftId: draftId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Draft approved:', data);
+                alert('Draft approved for posting!');
+            })
+            .catch(err => {
+                console.error('Error approving draft:', err);
+                alert('Failed to approve draft');
+            });
+        }
+
+        // View blog draft (placeholder for now)
+        function viewDraft(draftId) {
+            alert('Draft viewing would open the full content in a new window or modal. Draft ID: ' + draftId);
+            // In a full implementation, this would open the draft content
         }
 
         // Socket events
