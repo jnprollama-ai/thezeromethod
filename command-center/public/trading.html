@@ -99,6 +99,20 @@
                 </div>
             </div>
 
+            <h2 class="section-title">📰 Market News & Analysis</h2>
+            
+            <div id="marketNewsContainer">
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="activity-icon">⏳</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Loading market news...</div>
+                            <div class="activity-meta">Please wait</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h2 class="section-title">📋 Portfolio Holdings</h2>
             
             <div class="agent-detail-card">
@@ -189,6 +203,72 @@
                         <button class="btn btn-secondary" onclick="viewRisk()">👁️ View</button>
                     </div>
                 </div>
+                
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">⚡</div>
+                    <div class="quick-nav-title">Auto Trading</div>
+                    <div class="quick-nav-desc">Fully automated execution</div>
+                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
+                        <span class="agent-status-badge active">Enabled</span>
+                        <button class="btn btn-secondary" onclick="configureAutoTrading()">⚙️ Config</button>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="section-title">⚙️ Auto Trading Configuration</h2>
+            
+            <div class="agent-detail-card">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">⚙️</div>
+                    <div class="agent-info">
+                        <h2>Trading Preferences</h2>
+                        <div>
+                            <span class="agent-role-badge">Low Intervention</span>
+                            <span class="agent-status-badge active">Optimized</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <div class="agent-stat">
+                        <span class="stat-label">Risk Tolerance:</span>
+                        <span class="stat-value">Moderate</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Position Sizing:</span>
+                        <span class="stat-value">2% per trade</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Stop Loss:</span>
+                        <span class="stat-value">5% per position</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Take Profit:</span>
+                        <span class="stat-value">15% per position</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Max Daily Trades:</span>
+                        <span class="stat-value">3</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Preferred Assets:</span>
+                        <span class="stat-value">Tech stocks, Bitcoin, Ethereum</span>
+                    </div>
+                    
+                    <div class="agent-actions">
+                        <button class="btn btn-secondary" onclick="optimizeStrategy()">
+                            <span>🧠</span> Optimize Strategy
+                        </button>
+                        <button class="btn btn-primary" onclick="viewPerformance()">
+                            <span>📊</span> View Performance
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -198,6 +278,8 @@
     </footer>
 
     <script>
+        const socket = io();
+        
         // Simulate trading data
         const tradingData = {
             portfolioValue: 42789.45,
@@ -247,8 +329,113 @@
             alert('Risk analysis dashboard:\n\n- Portfolio VaR: $2,340 (5.5%)\n- Sector exposure: Tech 65%\n- Correlation risk: Low\n- Liquidity risk: Minimal');
         }
 
+        function configureAutoTrading() {
+            alert('Auto trading configuration:\n\n- Enabled: Yes\n- Risk model: Conservative\n- Max drawdown: 10%\n- Rebalancing: Weekly\n- Execution: Market orders');
+        }
+
+        function optimizeStrategy() {
+            alert('Running strategy optimization...\n\nBest performing strategies:\n1. Mean reversion (65% success)\n2. Trend following (58% success)\n3. Breakout trading (52% success)');
+        }
+
+        function viewPerformance() {
+            alert('Performance metrics:\n\n- Monthly ROI: 4.2%\n- Sharpe Ratio: 1.8\n- Max Drawdown: 8.3%\n- Win Rate: 72%');
+        }
+
+        // Handle market news updates
+        socket.on('statusUpdate', (data) => {
+            const container = document.getElementById('marketNewsContainer');
+            
+            if (!data.tradingNews || data.tradingNews.length === 0) {
+                container.innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">📭</div>
+                            <div class="activity-content">
+                                <div class="activity-text">No market news available</div>
+                                <div class="activity-meta">Check back later for updates</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                ${data.tradingNews.map(news => `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="agent-avatar-large">
+                                ${news.impact === 'positive' ? '🟢' : news.impact === 'negative' ? '🔴' : '🟡'}
+                            </div>
+                            <div class="agent-info">
+                                <h2>${news.title}</h2>
+                                <div>
+                                    <span class="agent-role-badge">${news.source}</span>
+                                    <span class="agent-status-badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                        ${new Date(news.date).toLocaleDateString()}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-body">
+                            <div class="agent-stat">
+                                <span class="stat-label">Summary:</span>
+                                <div class="stat-value" style="width: 100%; background: var(--dark-border); padding: 12px; border-radius: 8px;">
+                                    ${news.summary}
+                                </div>
+                            </div>
+                            
+                            <div class="agent-stat">
+                                <span class="stat-label">Impact:</span>
+                                <span class="stat-value">
+                                    ${news.impact === 'positive' ? '🟢 Positive' : news.impact === 'negative' ? '🔴 Negative' : '🟡 Neutral'}
+                                </span>
+                            </div>
+                            
+                            <div class="agent-actions">
+                                <button class="btn btn-secondary" onclick="analyzeImpact('${news.id}')">
+                                    <span>🧠</span> Analyze Impact
+                                </button>
+                                <button class="btn btn-primary" onclick="adjustStrategy('${news.id}')">
+                                    <span>⚙️</span> Adjust Strategy
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        });
+
+        function analyzeImpact(newsId) {
+            alert('Analyzing market impact...\n\nPotential effects on portfolio:\n- BTC: +2.1% expected movement\n- Tech stocks: +1.5% expected movement\n- Recommendation: Increase position size for high conviction trades');
+        }
+
+        function adjustStrategy(newsId) {
+            alert('Adjusting trading strategy based on news...\n\nChanges applied:\n- Increased BTC allocation by 5%\n- Reduced cash reserves to 10%\n- Activated momentum filter');
+        }
+
         // Initialize
         updateTradingUI();
+
+        // Initial load
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data))
+            .catch(err => {
+                console.error('Error loading trading data:', err);
+                document.getElementById('marketNewsContainer').innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">❌</div>
+                            <div class="activity-content">
+                                <div class="activity-text">Failed to load market news</div>
+                                <div class="activity-meta">Check connection and try again</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
 
         // Simulate real-time updates
         setInterval(() => {

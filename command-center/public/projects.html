@@ -78,25 +78,38 @@
                     
                     <div class="agent-body">
                         <div class="agent-stat">
-                            <span class="stat-label">Description:</span>
-                            <span class="stat-value">${project.description || 'No description'}</span>
-                        </div>
-                        
-                        <div class="agent-stat">
                             <span class="stat-label">Revenue:</span>
                             <span class="stat-value">$${project.revenue || 0}</span>
                         </div>
                         
                         <div class="agent-stat">
                             <span class="stat-label">Tasks:</span>
-                            <span class="stat-value">
-                                ${project.tasks ? project.tasks.filter(t => t.done).length + '/' + project.tasks.length + ' completed' : 'No tasks'}
-                            </span>
+                            <div class="stat-value" style="width: 100%;">
+                                ${project.tasks ? project.tasks.map(task => `
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; padding: 8px; border-radius: 6px; background: ${task.done ? 'rgba(16, 185, 129, 0.1)' : 'rgba(148, 163, 184, 0.1)'}; border: 1px solid ${task.done ? 'rgba(16, 185, 129, 0.3)' : 'rgba(148, 163, 184, 0.3)'};">
+                                        <span>${task.name}</span>
+                                        <span>
+                                            <input type="checkbox" ${task.done ? 'checked' : ''} onchange="updateTask('${id}', '${task.name}', this.checked)" />
+                                        </span>
+                                    </div>
+                                `).join('') : 'No tasks defined'}
+                            </div>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Pending Items:</span>
+                            <div class="stat-value" style="width: 100%;">
+                                ${project.tasks ? project.tasks.filter(t => !t.done).map(task => `
+                                    <div style="margin-bottom: 8px; padding: 8px; border-radius: 6px; background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);">
+                                        <span>⏳ ${task.name}</span>
+                                    </div>
+                                `).join('') : 'All tasks completed!'}
+                            </div>
                         </div>
                         
                         <div class="agent-actions">
                             <button class="btn btn-secondary" onclick="updateProject('${id}')">
-                                <span>✏️</span> Update
+                                <span>✏️</span> Update Progress
                             </button>
                             <button class="btn btn-primary" onclick="viewProject('${id}')">
                                 <span>👁️</span> Details
@@ -107,14 +120,32 @@
             `).join('');
         });
 
+        function updateTask(projectId, taskName, done) {
+            fetch('/api/projects/task/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    projectId: projectId, 
+                    taskName: taskName,
+                    done: done
+                })
+            })
+            .then(() => {
+                // Refresh data
+                fetch('/api/status')
+                    .then(res => res.json())
+                    .then(data => socket.emit('statusUpdate', data));
+            });
+        }
+
         function updateProject(projectId) {
             const newProgress = prompt('Enter new progress percentage (0-100):');
             if (newProgress && !isNaN(newProgress) && newProgress >= 0 && newProgress <= 100) {
-                fetch('/api/update-project', {
+                fetch('/api/projects/update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
-                        id: projectId, 
+                        projectId: projectId, 
                         updates: { progress: parseInt(newProgress) } 
                     })
                 })

@@ -37,7 +37,234 @@ function loadStatus() {
   } catch (err) {
     console.error('Error loading status:', err);
   }
-  return require('./data/default-status.json');
+  return {
+    "lastUpdated": new Date().toISOString(),
+    "website": {
+      "status": "operational",
+      "uptime": "99.9%",
+      "lastCheck": new Date().toISOString()
+    },
+    "agents": [
+      {
+        "id": "zero",
+        "name": "Zero",
+        "pokemon": "Mewtwo",
+        "role": "Commander",
+        "status": "active",
+        "task": "Strategic oversight"
+      },
+      {
+        "id": "research",
+        "name": "Research Agent",
+        "pokemon": "Alakazam",
+        "role": "Analyst",
+        "status": "idle",
+        "task": "Competitor analysis complete"
+      },
+      {
+        "id": "content",
+        "name": "Content Agent",
+        "pokemon": "Rapidash",
+        "role": "Creator",
+        "status": "active",
+        "task": "Blog post drafted"
+      },
+      {
+        "id": "seo",
+        "name": "SEO Agent",
+        "pokemon": "Porygon",
+        "role": "Optimizer",
+        "status": "idle",
+        "task": "Monitoring rankings"
+      },
+      {
+        "id": "social",
+        "name": "Social Agent",
+        "pokemon": "Jigglypuff",
+        "role": "Engager",
+        "status": "active",
+        "task": "Social media content ready"
+      }
+    ],
+    "projects": {
+      "zma": {
+        "name": "Zero Marketing Agency",
+        "status": "validation",
+        "progress": 65,
+        "revenue": 0,
+        "tasks": [
+          {
+            "name": "Website Live",
+            "done": true
+          },
+          {
+            "name": "Product Created",
+            "done": true
+          },
+          {
+            "name": "Content Strategy",
+            "done": true
+          },
+          {
+            "name": "Social Media Content",
+            "done": true
+          },
+          {
+            "name": "Blog Posts",
+            "done": false
+          },
+          {
+            "name": "Traffic Generation",
+            "done": false
+          },
+          {
+            "name": "First Sale",
+            "done": false
+          }
+        ]
+      },
+      "trading": {
+        "name": "Trading Dashboard",
+        "status": "planning",
+        "progress": 10,
+        "revenue": 0,
+        "tasks": [
+          {
+            "name": "Concept Defined",
+            "done": true
+          },
+          {
+            "name": "Architecture Design",
+            "done": false
+          },
+          {
+            "name": "MVP Development",
+            "done": false
+          }
+        ]
+      },
+      "saas": {
+        "name": "Zero SaaS",
+        "status": "research",
+        "progress": 5,
+        "revenue": 0,
+        "tasks": [
+          {
+            "name": "Market Validation",
+            "done": false
+          },
+          {
+            "name": "Competitive Analysis",
+            "done": false
+          },
+          {
+            "name": "Feature Planning",
+            "done": false
+          }
+        ]
+      }
+    },
+    "metrics": {
+      "websiteVisits": 0,
+      "emailSignups": 0,
+      "socialFollowers": 0,
+      "contentPieces": 3
+    },
+    "dailyProgress": [
+      {
+        "id": Date.now().toString(),
+        "date": new Date().toISOString(),
+        "content": "Initialized Command Center",
+        "author": "System"
+      }
+    ],
+    "upcomingProjects": [
+      {
+        "id": "trading",
+        "name": "Trading Dashboard",
+        "description": "Real-time market data visualization and portfolio tracking",
+        "status": "planning",
+        "timeline": "Months 2-3",
+        "dependencies": [
+          "zma"
+        ],
+        "estimatedTokens": 200000,
+        "estimatedBudget": 100
+      },
+      {
+        "id": "saas",
+        "name": "Zero SaaS",
+        "description": "AI-powered tools for solopreneurs and small businesses",
+        "status": "research",
+        "timeline": "Months 4-6",
+        "dependencies": [
+          "zma"
+        ],
+        "estimatedTokens": 500000,
+        "estimatedBudget": 250
+      },
+      {
+        "id": "content-automation",
+        "name": "Content Automation",
+        "description": "Automate blog and social media content creation",
+        "status": "planning",
+        "timeline": "Month 2",
+        "dependencies": [],
+        "progress": 0,
+        "revenue": 0,
+        "tasks": []
+      }
+    ],
+    "blogDrafts": [
+      {
+        "id": "prompt-engineering-basics",
+        "title": "AI Prompt Engineering Basics for Non-Technical Professionals",
+        "status": "draft",
+        "author": "Zero",
+        "lastModified": new Date().toISOString(),
+        "filePath": "blog_draft_prompt_engineering.md",
+        "comments": []
+      }
+    ],
+    "socialMediaContent": [
+      {
+        "id": "social-1",
+        "platform": "twitter",
+        "content": "Did you know that AI prompt engineering can save professionals 5+ hours per week? Our new guide breaks down the essentials for non-technical users.",
+        "status": "draft",
+        "scheduledDate": null,
+        "postedDate": null,
+        "engagement": null
+      },
+      {
+        "id": "social-2",
+        "platform": "linkedin",
+        "content": "The future of work is here: AI-powered productivity tools that don't require technical expertise. Learn how to leverage these tools effectively.",
+        "status": "approved",
+        "scheduledDate": new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+        "postedDate": null,
+        "engagement": null
+      }
+    ],
+    "tradingNews": [
+      {
+        "id": "news-1",
+        "title": "Bitcoin ETF Approval Rumors Continue to Boost Crypto Markets",
+        "source": "Crypto Daily",
+        "date": new Date().toISOString(),
+        "impact": "positive",
+        "summary": "Regulatory developments continue to drive optimism in the cryptocurrency markets as institutional adoption accelerates."
+      },
+      {
+        "id": "news-2",
+        "title": "Tech Stocks Rally Amid AI Innovation Surge",
+        "source": "Market Watch",
+        "date": new Date().toISOString(),
+        "impact": "positive",
+        "summary": "Major tech companies are reporting strong earnings driven by AI integration, leading to broad market gains."
+      }
+    ]
+  };
 }
 
 function saveStatus(status) {
@@ -147,6 +374,116 @@ app.post('/api/blog-drafts/approve', (req, res) => {
   saveStatus(currentStatus);
   io.emit('statusUpdate', currentStatus);
   res.json({ message: 'Draft approved', draft });
+});
+
+app.post('/api/blog-drafts/create', (req, res) => {
+  const { title, content, author = 'System' } = req.body;
+  const draft = {
+    id: `draft-${Date.now()}`,
+    title,
+    content,
+    status: 'draft',
+    author,
+    lastModified: new Date().toISOString(),
+    comments: []
+  };
+  
+  currentStatus.blogDrafts.push(draft);
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(draft);
+});
+
+app.post('/api/social-media-content/create', (req, res) => {
+  const { platform, content } = req.body;
+  const post = {
+    id: `post-${Date.now()}`,
+    platform,
+    content,
+    status: 'draft',
+    scheduledDate: null,
+    postedDate: null,
+    engagement: null
+  };
+  
+  currentStatus.socialMediaContent.push(post);
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(post);
+});
+
+app.post('/api/social-media-content/approve', (req, res) => {
+  const { postId } = req.body;
+  const post = currentStatus.socialMediaContent.find(p => p.id === postId);
+  
+  if (!post) {
+    return res.status(404).json({ error: 'Post not found' });
+  }
+  
+  post.status = 'approved';
+  post.lastModified = new Date().toISOString();
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json({ message: 'Post approved', post });
+});
+
+app.post('/api/social-media-content/schedule', (req, res) => {
+  const { postId, scheduledDate } = req.body;
+  const post = currentStatus.socialMediaContent.find(p => p.id === postId);
+  
+  if (!post) {
+    return res.status(404).json({ error: 'Post not found' });
+  }
+  
+  post.scheduledDate = scheduledDate;
+  post.status = 'scheduled';
+  post.lastModified = new Date().toISOString();
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json({ message: 'Post scheduled', post });
+});
+
+app.post('/api/projects/update', (req, res) => {
+  const { projectId, updates } = req.body;
+  if (currentStatus.projects[projectId]) {
+    currentStatus.projects[projectId] = { 
+      ...currentStatus.projects[projectId], 
+      ...updates,
+      lastUpdated: new Date().toISOString()
+    };
+    currentStatus.lastUpdated = new Date().toISOString();
+    saveStatus(currentStatus);
+    io.emit('statusUpdate', currentStatus);
+    res.json(currentStatus.projects[projectId]);
+  } else {
+    res.status(404).json({ error: 'Project not found' });
+  }
+});
+
+app.post('/api/projects/task/update', (req, res) => {
+  const { projectId, taskName, done } = req.body;
+  if (currentStatus.projects[projectId]) {
+    const task = currentStatus.projects[projectId].tasks.find(t => t.name === taskName);
+    if (task) {
+      task.done = done;
+      // Calculate progress based on completed tasks
+      const totalTasks = currentStatus.projects[projectId].tasks.length;
+      const completedTasks = currentStatus.projects[projectId].tasks.filter(t => t.done).length;
+      currentStatus.projects[projectId].progress = Math.round((completedTasks / totalTasks) * 100);
+      currentStatus.lastUpdated = new Date().toISOString();
+      saveStatus(currentStatus);
+      io.emit('statusUpdate', currentStatus);
+      res.json({ message: 'Task updated', task });
+    } else {
+      res.status(404).json({ error: 'Task not found' });
+    }
+  } else {
+    res.status(404).json({ error: 'Project not found' });
+  }
 });
 
 // Socket.io

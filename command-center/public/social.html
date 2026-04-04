@@ -104,6 +104,20 @@
                     </div>
                 </div>
             </div>
+
+            <h2 class="section-title">Social Media Content</h2>
+            
+            <div id="socialContentContainer">
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="activity-icon">⏳</div>
+                        <div class="activity-content">
+                            <div class="activity-text">Loading social media content...</div>
+                            <div class="activity-meta">Please wait</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -112,6 +126,8 @@
     </footer>
 
     <script>
+        const socket = io();
+        
         // Simulate social media data
         const socialData = {
             twitter: {
@@ -169,8 +185,209 @@
                   '5. 7:00 PM - Weekend reflection post');
         }
 
+        // Handle social media content updates
+        socket.on('statusUpdate', (data) => {
+            const container = document.getElementById('socialContentContainer');
+            
+            // Separate content by status
+            const contentByStatus = {
+                'Pending for approval': data.socialMediaContent.filter(c => c.status === 'draft'),
+                'Scheduled': data.socialMediaContent.filter(c => c.status === 'scheduled'),
+                'Published': data.socialMediaContent.filter(c => c.status === 'published')
+            };
+            
+            // Create HTML for each status section
+            let htmlContent = '';
+            
+            for (const [status, content] of Object.entries(contentByStatus)) {
+                if (content.length > 0) {
+                    htmlContent += `
+                        <h3 style="margin: 24px 0 16px; color: var(--text-primary);">${status} (${content.length})</h3>
+                        ${content.map(item => `
+                            <div class="agent-detail-card">
+                                <div class="agent-header">
+                                    <div class="agent-avatar-large">
+                                        ${item.platform === 'twitter' ? '🐦' : item.platform === 'linkedin' ? '💼' : item.platform === 'facebook' ? '📘' : '📱'}
+                                    </div>
+                                    <div class="agent-info">
+                                        <h2>${item.platform.charAt(0).toUpperCase() + item.platform.slice(1)}</h2>
+                                        <div>
+                                            <span class="agent-role-badge">${item.status}</span>
+                                            <span class="agent-status-badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                                ${item.scheduledDate ? new Date(item.scheduledDate).toLocaleDateString() : 'Not scheduled'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="agent-body">
+                                    <div class="agent-stat">
+                                        <span class="stat-label">Content:</span>
+                                        <div class="stat-value" style="width: 100%; background: var(--dark-border); padding: 12px; border-radius: 8px; white-space: pre-wrap;">
+                                            ${item.content}
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="agent-actions">
+                                        ${item.status === 'draft' ? `
+                                            <button class="btn btn-secondary" onclick="approveContent('${item.id}')">
+                                                <span>✅</span> Approve
+                                            </button>
+                                            <button class="btn btn-secondary" onclick="scheduleContent('${item.id}')">
+                                                <span>📅</span> Schedule
+                                            </button>
+                                        ` : item.status === 'approved' ? `
+                                            <button class="btn btn-secondary" onclick="scheduleContent('${item.id}')">
+                                                <span>📅</span> Schedule
+                                            </button>
+                                        ` : item.status === 'scheduled' ? `
+                                            <button class="btn btn-secondary" disabled>
+                                                <span>⏰</span> Scheduled
+                                            </button>
+                                        ` : `
+                                            <button class="btn btn-secondary" disabled>
+                                                <span>✅</span> Published
+                                            </button>
+                                        `}
+                                        <button class="btn btn-primary" onclick="editContent('${item.id}')">
+                                            <span>✏️</span> Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    `;
+                }
+            }
+            
+            container.innerHTML = htmlContent || `
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="activity-icon">📭</div>
+                        <div class="activity-content">
+                            <div class="activity-text">No social media content available</div>
+                            <div class="activity-meta">Create new content to get started</div>
+                        </div>
+                    </div>
+                    <div class="agent-body">
+                        <div class="agent-actions" style="justify-content: center;">
+                            <button class="btn btn-primary" onclick="createNewContent()">
+                                <span>➕</span> Create New Content
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        function approveContent(contentId) {
+            fetch('/api/social-media-content/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ postId: contentId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Refresh data
+                fetch('/api/status')
+                    .then(res => res.json())
+                    .then(data => socket.emit('statusUpdate', data));
+                alert('Content approved!');
+            })
+            .catch(err => {
+                console.error('Error approving content:', err);
+                alert('Failed to approve content');
+            });
+        }
+
+        function scheduleContent(contentId) {
+            const date = prompt('Enter scheduled date (YYYY-MM-DD):');
+            const time = prompt('Enter scheduled time (HH:MM):');
+            
+            if (date && time) {
+                const scheduledDate = new Date(`${date}T${time}:00`);
+                if (isNaN(scheduledDate.getTime())) {
+                    alert('Invalid date/time format');
+                    return;
+                }
+                
+                fetch('/api/social-media-content/schedule', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        postId: contentId, 
+                        scheduledDate: scheduledDate.toISOString() 
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    // Refresh data
+                    fetch('/api/status')
+                        .then(res => res.json())
+                        .then(data => socket.emit('statusUpdate', data));
+                    alert('Content scheduled!');
+                })
+                .catch(err => {
+                    console.error('Error scheduling content:', err);
+                    alert('Failed to schedule content');
+                });
+            }
+        }
+
+        function editContent(contentId) {
+            alert('Edit functionality would open here for content ID: ' + contentId);
+        }
+
+        function createNewContent() {
+            const platform = prompt('Enter platform (twitter/linkedin/facebook):');
+            if (platform) {
+                const content = prompt('Enter social media content:');
+                if (content) {
+                    fetch('/api/social-media-content/create', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            platform: platform,
+                            content: content
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        // Refresh data
+                        fetch('/api/status')
+                            .then(res => res.json())
+                            .then(data => socket.emit('statusUpdate', data));
+                        alert('New content created successfully!');
+                    })
+                    .catch(err => {
+                        console.error('Error creating content:', err);
+                        alert('Failed to create content');
+                    });
+                }
+            }
+        }
+
         // Initialize
         updateSocialUI();
+
+        // Initial load
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data))
+            .catch(err => {
+                console.error('Error loading social media content:', err);
+                document.getElementById('socialContentContainer').innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">❌</div>
+                            <div class="activity-content">
+                                <div class="activity-text">Failed to load social media content</div>
+                                <div class="activity-meta">Check connection and try again</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
 
         // Simulate real-time updates
         setInterval(() => {
