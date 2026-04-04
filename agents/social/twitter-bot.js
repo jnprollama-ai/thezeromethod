@@ -8,13 +8,12 @@ require('dotenv').config();
 
 class TwitterBot {
   constructor() {
-    // Twitter API credentials - prioritize env vars, fallback to hardcoded
-    // NOTE: Using working tokens with read access as fallback
+    // Twitter API credentials - NEW CREDENTIALS
     this.client = new TwitterApi({
-      appKey: process.env.TWITTER_API_KEY || 'NchfKKavZ3GVxgPE4tQeEChpz',
-      appSecret: process.env.TWITTER_API_SECRET || '2AyiQby9WeWyV8S6qKvEucoGRj5Og2RldFjSJuV9SrkMu9ZKVx',
-      accessToken: process.env.TWITTER_ACCESS_TOKEN || '2039630718599376896-JLR41n6v1r0GTxPSvNh0RLe1k3Ianm',
-      accessSecret: process.env.TWITTER_ACCESS_SECRET || 'i9wHTIWr0XzvJEnbxo0snzT6IyZC6EvfRpX2ktHynAqB0',
+      appKey: process.env.TWITTER_API_KEY || 'b0FtX0d3RVdLbEV0YTN5dXJreEs6MTpjaQ',
+      appSecret: process.env.TWITTER_API_SECRET || '4MvDscmsgJJ1dLjDXTVyUJ4vCApj4lCoSNNtwvamJCI5gQk7ra',
+      accessToken: process.env.TWITTER_ACCESS_TOKEN || '2039630718599376896-uhj4ZKekjd6ZJxTNV6R0h1v6YgYDfu',
+      accessSecret: process.env.TWITTER_ACCESS_SECRET || 'BTfxyBS2PY6rhmSiSrfRL5IUCs76FT1z6tj5DUq1tDO5q',
     });
     
     this.username = process.env.TWITTER_USERNAME || '@ZeroMethodAI';
@@ -46,14 +45,13 @@ class TwitterBot {
       console.log(`✅ Twitter Bot authenticated as: ${user.data.username}`);
       console.log(`👥 Current followers: ${user.data.public_metrics?.followers_count || 0}`);
       
-      // Check if we have write access by trying to get app permissions
+      // Check if we have write access
       this.hasWriteAccess = await this.checkWritePermissions();
       
       if (this.hasWriteAccess) {
         console.log('✅ Write permissions confirmed');
       } else {
         console.log('⚠️ Read-only mode - tweets will be queued but not posted');
-        console.log('   To enable posting, upgrade Twitter API access at https://developer.twitter.com');
       }
     } catch (error) {
       console.error('❌ Twitter authentication failed:', error.message);
@@ -62,7 +60,7 @@ class TwitterBot {
     }
 
     // Start posting schedule checker
-    this.checkInterval = setInterval(() => this.checkSchedule(), 60000); // Check every minute
+    this.checkInterval = setInterval(() => this.checkSchedule(), 60000);
     console.log('✅ Twitter Bot is running');
     console.log('📅 Posting schedule:', this.postingSchedule.map(s => `${s.hour}:${String(s.minute).padStart(2, '0')}`).join(', '));
     
@@ -71,9 +69,9 @@ class TwitterBot {
 
   async checkWritePermissions() {
     try {
-      // Try to validate credentials with write check
+      // Try to validate credentials
       const app = await this.client.v2.me();
-      return true; // If we can get here, we have at least read access
+      return true;
     } catch (error) {
       return false;
     }
@@ -109,7 +107,6 @@ class TwitterBot {
   async postScheduledContent() {
     console.log('📤 Checking for scheduled content...');
     
-    // Load status to get scheduled posts
     const statusPath = path.join(__dirname, '..', '..', 'command-center', 'data', 'status.json');
     
     try {
@@ -125,7 +122,6 @@ class TwitterBot {
         return;
       }
       
-      // Post the first scheduled post
       const post = scheduledPosts[0];
       
       if (this.hasWriteAccess) {
@@ -133,10 +129,8 @@ class TwitterBot {
         console.log(`✅ Posted tweet: ${post.id}`);
       } else {
         console.log(`⏳ Queued tweet (read-only mode): ${post.id}`);
-        console.log('   Content:', post.content.substring(0, 50) + '...');
       }
       
-      // Update status to published (or queued if read-only)
       post.status = this.hasWriteAccess ? 'published' : 'queued';
       post.postedDate = new Date().toISOString();
       if (this.hasWriteAccess) {
@@ -153,11 +147,11 @@ class TwitterBot {
   async postTweet(post) {
     try {
       if (!this.hasWriteAccess) {
-        throw new Error('Write permissions not available. Please upgrade Twitter API access.');
+        throw new Error('Write permissions not available.');
       }
       
       const tweet = await this.client.v2.tweet(post.content);
-      console.log(`✅ Tweet posted successfully: https://twitter.com/${this.username}/status/${tweet.data.id}`);
+      console.log(`✅ Tweet posted: https://twitter.com/${this.username}/status/${tweet.data.id}`);
       return tweet;
     } catch (error) {
       console.error('❌ Failed to post tweet:', error.message);
@@ -168,7 +162,6 @@ class TwitterBot {
   async postImmediate(content) {
     try {
       if (!this.hasWriteAccess) {
-        // Queue the tweet instead
         console.log('⏳ Tweet queued (read-only mode):', content.substring(0, 50) + '...');
         return { queued: true, content };
       }
@@ -189,32 +182,6 @@ class TwitterBot {
     } catch (error) {
       console.error('❌ Failed to get follower count:', error.message);
       return 0;
-    }
-  }
-
-  async getRecentTweets() {
-    try {
-      const userId = await this.getUserId();
-      if (!userId) return [];
-      
-      const tweets = await this.client.v2.userTimeline(
-        userId,
-        { max_results: 5, 'tweet.fields': 'public_metrics,created_at' }
-      );
-      return tweets.data?.data || [];
-    } catch (error) {
-      console.error('❌ Failed to get recent tweets:', error.message);
-      return [];
-    }
-  }
-
-  async getUserId() {
-    try {
-      const user = await this.client.v2.me();
-      return user.data.id;
-    } catch (error) {
-      console.error('❌ Failed to get user ID:', error.message);
-      return null;
     }
   }
 
@@ -242,7 +209,6 @@ class TwitterBot {
       }
     }
     
-    // If no more posts today, return first post tomorrow
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(this.postingSchedule[0].hour, this.postingSchedule[0].minute, 0, 0);
