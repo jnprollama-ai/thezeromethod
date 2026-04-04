@@ -3,403 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zero PDF Tools - Merge, Split, Compress</title>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-    <script src="https://unpkg.com/downloadjs@1.4.7"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            color: #e0e0ff;
-            min-height: 100vh;
-        }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        header {
-            text-align: center;
-            padding: 60px 20px;
-        }
-        h1 {
-            font-size: 48px;
-            background: linear-gradient(90deg, #00d4ff, #b829dd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-        }
-        .tagline { color: #8b8bb0; font-size: 18px; max-width: 600px; margin: 0 auto; }
-        
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-            margin-top: 50px;
-        }
-        .tool-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 35px;
-            transition: all 0.3s;
-        }
-        .tool-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(0,212,255,0.3);
-            box-shadow: 0 20px 40px rgba(0,212,255,0.1);
-        }
-        .tool-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-        }
-        .tool-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .tool-desc {
-            color: #8b8bb0;
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .drop-zone {
-            border: 2px dashed rgba(0,212,255,0.3);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-        }
-        .drop-zone:hover {
-            border-color: #00d4ff;
-            background: rgba(0,212,255,0.05);
-        }
-        .drop-zone.dragover {
-            border-color: #00ff88;
-            background: rgba(0,255,136,0.1);
-        }
-        
-        .btn {
-            padding: 14px 28px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            width: 100%;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #00d4ff, #b829dd);
-            color: white;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,212,255,0.3);
-        }
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .file-list {
-            margin: 15px 0;
-        }
-        .file-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: rgba(10,10,15,0.5);
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-        .file-name { font-size: 14px; }
-        .file-size { color: #8b8bb0; font-size: 12px; }
-        .remove-btn {
-            background: transparent;
-            border: none;
-            color: #ff4444;
-            cursor: pointer;
-            font-size: 18px;
-        }
-        
-        .progress-bar {
-            height: 6px;
-            background: #2d2d44;
-            border-radius: 3px;
-            overflow: hidden;
-            margin: 20px 0;
-            display: none;
-        }
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.3s;
-        }
-        
-        .result {
-            padding: 20px;
-            background: rgba(0,255,136,0.1);
-            border: 1px solid rgba(0,255,136,0.2);
-            border-radius: 12px;
-            margin-top: 20px;
-            display: none;
-        }
-        .result.show { display: block; }
-        
-        footer {
-            text-align: center;
-            padding: 40px;
-            color: #8b8bb0;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            margin-top: 60px;
-        }
-        footer a { color: #00d4ff; text-decoration: none; }
-    </style>
+    <title>PDF Tools | Zero Suite</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <meta name="description" content="Free PDF tools: Merge, Split, Compress. Client-side processing, no uploads to server.">
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1187634761594137"
+     crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Zero PDF Tools</h1>
-            <p class="tagline">Free PDF tools that work entirely in your browser. No uploads, no privacy concerns, just fast client-side processing.</p>
-        </header>
-        
-        <div class="tools-grid">
-            <!-- Merge PDF -->
-            <div class="tool-card">
-                <div class="tool-icon">📑</div>
-                <h2 class="tool-title">Merge PDFs</h2>
-                <p class="tool-desc">Combine multiple PDF files into one. Drag to reorder pages.</p>
-                
-                <div class="drop-zone" id="merge-drop" onclick="document.getElementById('merge-input').click()">
-                    <p>Drop PDFs here or click to select</p>
-                    <p style="font-size: 12px; color: #8b8bb0; margin-top: 10px;">Supports multiple files</p>
-                </div>
-                <input type="file" id="merge-input" accept=".pdf" multiple style="display:none">
-                
-                <div class="file-list" id="merge-list"></div>
-                <div class="progress-bar" id="merge-progress"><div class="progress-fill"></div></div>
-                
-                <button class="btn btn-primary" id="merge-btn" onclick="mergePDFs()" disabled>
-                    Merge PDFs
-                </button>
-                
-                <div class="result" id="merge-result">
-                    <p style="color: #00ff88; margin-bottom: 10px;">✓ PDFs merged successfully!</p>
-                    <button class="btn btn-primary" id="merge-download" onclick="downloadMerged()">Download</button>
-                </div>
-            </div>
-            
-            <!-- Split PDF -->
-            <div class="tool-card">
-                <div class="tool-icon">✂️</div>
-                <h2 class="tool-title">Split PDF</h2>
-                <p class="tool-desc">Extract specific pages or split into individual files.</p>
-                
-                <div class="drop-zone" id="split-drop" onclick="document.getElementById('split-input').click()">
-                    <p>Drop PDF here or click to select</p>
-                    <p style="font-size: 12px; color: #8b8bb0; margin-top: 10px;">Single file only</p>
-                </div>
-                <input type="file" id="split-input" accept=".pdf" style="display:none">
-                
-                <div class="file-list" id="split-list"></div>
-                
-                <input type="text" id="split-pages" placeholder="Pages to extract (e.g., 1,3,5-10)" 
-                       style="width:100%;padding:12px;margin:15px 0;background:rgba(10,10,15,0.5);border:1px solid #2d2d44;border-radius:8px;color:#e0e0ff;">
-                
-                <div class="progress-bar" id="split-progress"><div class="progress-fill"></div></div>
-                
-                <button class="btn btn-primary" id="split-btn" onclick="splitPDF()" disabled>
-                    Split PDF
-                </button>
-                
-                <div class="result" id="split-result">
-                    <p style="color: #00ff88; margin-bottom: 10px;">✓ PDF split successfully!</p>
-                    <button class="btn btn-primary" id="split-download" onclick="downloadSplit()">Download</button>
-                </div>
-            </div>
-            
-            <!-- Compress PDF -->
-            <div class="tool-card">
-                <div class="tool-icon">🗜️</div>
-                <h2 class="tool-title">Compress PDF</h2>
-                <p class="tool-desc">Reduce PDF file size while maintaining quality.</p>
-                
-                <div class="drop-zone" id="compress-drop" onclick="document.getElementById('compress-input').click()">
-                    <p>Drop PDF here or click to select</p>
-                    <p style="font-size: 12px; color: #8b8bb0; margin-top: 10px;">Max 50MB</p>
-                </div>
-                <input type="file" id="compress-input" accept=".pdf" style="display:none">
-                
-                <div class="file-list" id="compress-list"></div>
-                <div class="progress-bar" id="compress-progress"><div class="progress-fill"></div></div>
-                
-                <button class="btn btn-primary" id="compress-btn" onclick="compressPDF()" disabled>
-                    Compress PDF
-                </button>
-                
-                <div class="result" id="compress-result">
-                    <p style="color: #00ff88; margin-bottom: 10px;">✓ PDF compressed!</p>
-                    <p id="compress-stats" style="color: #8b8bb0; font-size: 14px; margin-bottom: 10px;"></p>
-                    <button class="btn btn-primary" id="compress-download" onclick="downloadCompressed()">Download</button>
-                </div>
-            </div>
+    <header class="header">
+        <div class="container">
+            <a href="/" class="logo">🌀 Zero PDF</a>
+            <nav class="nav">
+                <a href="#merge" class="nav-link">Merge</a>
+                <a href="#split" class="nav-link">Split</a>
+                <a href="#compress" class="nav-link">Compress</a>
+            </nav>
         </div>
-        
-        <footer>
-            <p>Part of <a href="https://thezeromethod.com">Zero Method</a> • Free tier: 3 files/day • <a href="#">Pro $5/month</a></p>
-            <p style="margin-top: 10px; font-size: 14px;">🔒 100% client-side • Your files never leave your browser</p>
-        </footer>
-    </div>
-    
-    <script>
-        const { PDFDocument } = PDFLib;
-        
-        // State
-        let mergeFiles = [];
-        let splitFile = null;
-        let compressFile = null;
-        let mergedPdf = null;
-        let splitPdfs = [];
-        let compressedPdf = null;
-        
-        // Setup drag & drop
-        ['merge', 'split', 'compress'].forEach(type => {
-            const dropZone = document.getElementById(`${type}-drop`);
-            const input = document.getElementById(`${type}-input`);
-            
-            dropZone.addEventListener('dragover', (e) => {
-                e.preventDefault();
-                dropZone.classList.add('dragover');
-            });
-            
-            dropZone.addEventListener('dragleave', () => {
-                dropZone.classList.remove('dragover');
-            });
-            
-            dropZone.addEventListener('drop', (e) => {
-                e.preventDefault();
-                dropZone.classList.remove('dragover');
-                handleFiles(type, e.dataTransfer.files);
-            });
-            
-            input.addEventListener('change', (e) => {
-                handleFiles(type, e.target.files);
-            });
-        });
-        
-        function handleFiles(type, files) {
-            if (type === 'merge') {
-                mergeFiles = [...mergeFiles, ...Array.from(files)];
-                updateMergeList();
-            } else if (type === 'split') {
-                splitFile = files[0];
-                updateSplitList();
-            } else if (type === 'compress') {
-                compressFile = files[0];
-                updateCompressList();
-            }
-        }
-        
-        function updateMergeList() {
-            const list = document.getElementById('merge-list');
-            list.innerHTML = mergeFiles.map((file, i) => `
-                <div class="file-item">
-                    <span class="file-name">${file.name}</span>
-                    <span class="file-size">${(file.size/1024).toFixed(1)} KB</span>
-                    <button class="remove-btn" onclick="removeMergeFile(${i})">×</button>
-                </div>
-            `).join('');
-            document.getElementById('merge-btn').disabled = mergeFiles.length < 2;
-        }
-        
-        function removeMergeFile(index) {
-            mergeFiles.splice(index, 1);
-            updateMergeList();
-        }
-        
-        function updateSplitList() {
-            if (!splitFile) return;
-            document.getElementById('split-list').innerHTML = `
-                <div class="file-item">
-                    <span class="file-name">${splitFile.name}</span>
-                    <span class="file-size">${(splitFile.size/1024).toFixed(1)} KB</span>
-                </div>
-            `;
-            document.getElementById('split-btn').disabled = false;
-        }
-        
-        function updateCompressList() {
-            if (!compressFile) return;
-            document.getElementById('compress-list').innerHTML = `
-                <div class="file-item">
-                    <span class="file-name">${compressFile.name}</span>
-                    <span class="file-size">${(compressFile.size/1024).toFixed(1)} KB</span>
-                </div>
-            `;
-            document.getElementById('compress-btn').disabled = false;
-        }
-        
-        // Merge function
-        async function mergePDFs() {
-            const btn = document.getElementById('merge-btn');
-            const progress = document.getElementById('merge-progress');
-            const fill = progress.querySelector('.progress-fill');
-            
-            btn.disabled = true;
-            progress.style.display = 'block';
-            
-            try {
-                mergedPdf = await PDFDocument.create();
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="container">
+                <h1>PDF Tools</h1>
+                <p class="subtitle">Merge, split, and compress PDFs. All processing happens in your browser—your files never leave your device.</p>
                 
-                for (let i = 0; i < mergeFiles.length; i++) {
-                    const arrayBuffer = await mergeFiles[i].arrayBuffer();
-                    const pdf = await PDFDocument.load(arrayBuffer);
-                    const pages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-                    pages.forEach(page => mergedPdf.addPage(page));
+                <!-- Ad Unit -->
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-1187634761594137"
+                         data-ad-slot="HEADER_SLOT_ID"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </section>
+
+        <!-- Merge PDF Tool -->
+        <section id="merge" class="tool-section">
+            <div class="container">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">📄➕📄</div>
+                        <h2>Merge PDFs</h2>
+                        <p>Combine multiple PDF files into one. Drag and drop to reorder.</p>
+                    </div>
                     
-                    fill.style.width = `${((i + 1) / mergeFiles.length) * 100}%`;
-                }
-                
-                document.getElementById('merge-result').classList.add('show');
-            } catch (e) {
-                alert('Error merging PDFs: ' + e.message);
-            }
-            
-            btn.disabled = false;
-            progress.style.display = 'none';
-        }
-        
-        function downloadMerged() {
-            if (!mergedPdf) return;
-            mergedPdf.save().then(bytes => {
-                download(bytes, 'merged.pdf', 'application/pdf');
-            });
-        }
-        
-        // Split function (placeholder - would need full implementation)
-        async function splitPDF() {
-            alert('Split feature coming soon! Building in background.');
-        }
-        
-        function downloadSplit() {
-            alert('Split download coming soon!');
-        }
-        
-        // Compress function (placeholder)
-        async function compressPDF() {
-            alert('Compress feature coming soon! Building in background.');
-        }
-        
-        function downloadCompressed() {
-            alert('Compress download coming soon!');
-        }
-        
-        console.log('✅ Zero PDF Tools loaded');
-        console.log('🔒 Client-side processing enabled');
-    </script>
+                    <div class="drop-zone" id="merge-drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">📂</div>
+                            <p>Drag & drop PDF files here</p>
+                            <p class="drop-subtitle">or click to browse</p>
+                            <input type="file" id="merge-input" accept=".pdf" multiple hidden>
+                        </div>
+                    </div>
+                    
+                    <div id="merge-file-list" class="file-list" style="display: none;">
+                        <h3>Files to merge (drag to reorder):</h3>
+                        <div id="merge-files" class="files-container"></div>
+                        <div class="merge-actions">
+                            <button id="merge-btn" class="btn btn-primary">
+                                <span class="btn-text">Merge PDFs</span>
+                                <span class="btn-loading" style="display: none;">Processing...</span>
+                            </button>
+                            <button id="merge-clear" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <div id="merge-result" class="result" style="display: none;">
+                        <div class="result-info">
+                            <div class="result-size">
+                                <span>Merged file size: <strong id="merge-size"></strong></span>
+                            </div>
+                            <a id="merge-download" href="#" class="btn btn-primary" download>
+                                Download Merged PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Split PDF Tool -->
+        <section id="split" class="tool-section">
+            <div class="container">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">📄✂️</div>
+                        <h2>Split PDF</h2>
+                        <p>Extract specific pages from a PDF. Select page ranges to split.</p>
+                    </div>
+                    
+                    <div class="drop-zone" id="split-drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">📄</div>
+                            <p>Drag & drop a PDF file here</p>
+                            <p class="drop-subtitle">or click to browse</p>
+                            <input type="file" id="split-input" accept=".pdf" hidden>
+                        </div>
+                    </div>
+                    
+                    <div id="split-config" class="split-config" style="display: none;">
+                        <div class="file-info">
+                            <strong>File:</strong> <span id="split-filename"></span>
+                            <span class="file-meta" id="split-fileinfo"></span>
+                        </div>
+                        
+                        <div class="page-selector">
+                            <label>Select pages to extract:</label>
+                            <input type="text" id="split-pages" placeholder="e.g., 1-5, 8, 10-12">
+                            <p class="help-text">Enter page numbers or ranges separated by commas</p>
+                        </div>
+                        
+                        <div class="split-actions">
+                            <button id="split-btn" class="btn btn-primary">
+                                <span class="btn-text">Split PDF</span>
+                                <span class="btn-loading" style="display: none;">Processing...</span>
+                            </button>
+                            <button id="split-clear" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <div id="split-result" class="result" style="display: none;">
+                        <div class="result-info">
+                            <div class="result-size">
+                                <span>Split file size: <strong id="split-size"></strong></span>
+                            </div>
+                            <a id="split-download" href="#" class="btn btn-primary" download>
+                                Download Split PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compress PDF Tool -->
+        <section id="compress" class="tool-section">
+            <div class="container">
+                <div class="tool-card">
+                    <div class="tool-header">
+                        <div class="tool-icon">📄🗜️</div>
+                        <h2>Compress PDF</h2>
+                        <p>Reduce PDF file size while maintaining quality.</p>
+                    </div>
+                    
+                    <div class="drop-zone" id="compress-drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">📄</div>
+                            <p>Drag & drop a PDF file here</p>
+                            <p class="drop-subtitle">or click to browse</p>
+                            <input type="file" id="compress-input" accept=".pdf" hidden>
+                        </div>
+                    </div>
+                    
+                    <div id="compress-config" class="compress-config" style="display: none;">
+                        <div class="file-info">
+                            <strong>File:</strong> <span id="compress-filename"></span>
+                            <span class="file-meta" id="compress-fileinfo"></span>
+                        </div>
+                        
+                        <div class="compression-level">
+                            <label>Compression level:</label>
+                            <select id="compress-level">
+                                <option value="low">Low (Better quality)</option>
+                                <option value="medium" selected>Medium (Balanced)</option>
+                                <option value="high">High (Smallest file)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="compress-actions">
+                            <button id="compress-btn" class="btn btn-primary">
+                                <span class="btn-text">Compress PDF</span>
+                                <span class="btn-loading" style="display: none;">Processing...</span>
+                            </button>
+                            <button id="compress-clear" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                    
+                    <div id="compress-result" class="result" style="display: none;">
+                        <div class="result-info">
+                            <div class="result-size">
+                                <span>Original: <strong id="compress-original-size"></strong> → </span>
+                                <span>Compressed: <strong id="compress-new-size"></strong></span>
+                                <span class="savings" id="compress-savings"></span>
+                            </div>
+                            
+                            <a id="compress-download" href="#" class="btn btn-primary" download>
+                                Download Compressed PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bottom Ad Unit -->
+        <section class="ad-section">
+            <div class="container">
+                <div class="ad-container">
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-1187634761594137"
+                         data-ad-slot="FOOTER_SLOT_ID"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                         (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Zero Method. Privacy-focused PDF tools.</p>
+            <p class="footer-note">All processing happens in your browser. Your files never leave your device.</p>
+        </div>
+    </footer>
+
+    <!-- PDF-lib library -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="js/merge.js"></script>
+    <script src="js/split.js"></script>
+    <script src="js/compress.js"></script>
 </body>
 </html>
