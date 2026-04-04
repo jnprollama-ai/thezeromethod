@@ -916,6 +916,44 @@ app.post('/api/saas-tools/deploy', (req, res) => {
   }
 });
 
+// Import Content Agent
+const ContentAgent = require('../agents/content/content-agent');
+const contentAgent = new ContentAgent();
+
+// Content Generation API
+app.post('/api/content/generate/twitter', (req, res) => {
+  try {
+    const post = contentAgent.generateTwitterPost();
+    currentStatus.socialMediaContent = currentStatus.socialMediaContent || [];
+    currentStatus.socialMediaContent.push(post);
+    currentStatus.lastUpdated = new Date().toISOString();
+    saveStatus(currentStatus);
+    io.emit('statusUpdate', currentStatus);
+    res.json({ message: 'Twitter post generated', post });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/content/generate/blog', (req, res) => {
+  try {
+    const draft = contentAgent.generateBlogPost();
+    
+    // Generate content for the blog
+    const content = contentAgent.generateBlogContent(draft.title);
+    const contentPath = path.join(BLOG_CONTENT_DIR, draft.filePath);
+    fs.writeFileSync(contentPath, content);
+    
+    currentStatus.blogDrafts.push(draft);
+    currentStatus.lastUpdated = new Date().toISOString();
+    saveStatus(currentStatus);
+    io.emit('statusUpdate', currentStatus);
+    res.json({ message: 'Blog post generated', draft });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Twitter Bot API
 app.get('/api/twitter/status', async (req, res) => {
   try {
@@ -954,10 +992,78 @@ app.post('/api/twitter/post', async (req, res) => {
   }
 });
 
-// Socket.io
+// Chat functionality
 io.on('connection', (socket) => {
   console.log('Client connected');
   socket.emit('statusUpdate', currentStatus);
+  
+  // Handle chat messages
+  socket.on('chatMessage', (data) => {
+    console.log('Chat message received:', data);
+    
+    if (data.type === 'command') {
+      // Handle commands
+      switch(data.command) {
+        case 'status':
+          socket.emit('chatResponse', {
+            message: `📊 System Status:\n` +
+                    `• Website: ${currentStatus.website.status}\n` +
+                    `• Twitter Bot: ${currentStatus.twitterBot?.isRunning ? 'Running' : 'Stopped'}\n` +
+                    `• Buffer: ${currentStatus.socialMediaContent?.filter(p => p.status === 'draft').length || 0} posts waiting\n` +
+                    `• Scheduled: ${currentStatus.socialMediaContent?.filter(p => p.status === 'scheduled').length || 0} posts`
+          });
+          break;
+          
+        case 'createTwitter':
+          try {
+            const post = contentAgent.generateTwitterPost();
+            currentStatus.socialMediaContent = currentStatus.socialMediaContent || [];
+            currentStatus.socialMediaContent.push(post);
+            currentStatus.lastUpdated = new Date().toISOString();
+            saveStatus(currentStatus);
+            io.emit('statusUpdate', currentStatus);
+            socket.emit('chatResponse', {
+              message: `✅ Twitter post generated!\n\n"${post.content.substring(0, 100)}..."\n\nGo to the Social tab to approve and schedule it.`
+            });
+          } catch (error) {
+            socket.emit('chatResponse', { message: '❌ Error: ' + error.message });
+          }
+          break;
+          
+        case 'createBlog':
+          try {
+            const draft = contentAgent.generateBlogPost();
+            const content = contentAgent.generateBlogContent(draft.title);
+            const contentPath = path.join(BLOG_CONTENT_DIR, draft.filePath);
+            fs.writeFileSync(contentPath, content);
+            
+            currentStatus.blogDrafts.push(draft);
+            currentStatus.lastUpdated = new Date().toISOString();
+            saveStatus(currentStatus);
+            io.emit('statusUpdate', currentStatus);
+            socket.emit('chatResponse', {
+              message: `✅ Blog post generated!\n\nTitle: "${draft.title}"\nLength: ${draft.wordCount} words\nRead time: ${draft.readTime}\n\nGo to the Blogs tab to approve and schedule it.`
+            });
+          } catch (error) {
+            socket.emit('chatResponse', { message: '❌ Error: ' + error.message });
+          }
+          break;
+          
+        default:
+          socket.emit('chatResponse', { message: 'Unknown command. Type /help for available commands.' });
+      }
+    } else {
+      // Handle natural language messages
+      const responses = [
+        "I'm here to help! You can ask me to:\n• Create Twitter posts\n• Generate blog content\n• Check system status\n• Or just chat!",
+        "Got it! Is there anything specific you'd like me to help you with regarding Zero Method?",
+        "I'm processing that. Meanwhile, did you know you can type /status to check the system status?",
+        "Thanks for reaching out! I'm your AI assistant. What would you like to work on today?"
+      ];
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      socket.emit('chatResponse', { message: randomResponse });
+    }
+  });
   
   socket.on('disconnect', () => {
     console.log('Client disconnected');
@@ -966,7 +1072,7 @@ io.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`🌀 Command Center v2.1 running on http://localhost:${PORT}`);
-  console.log('Navigation: Home | Agents | Projects | Blogs | Social | SaaS | Trading');
+  console.log('Navigation: Home | Agents | Projects | Blogs | Social | SaaS | Trading | Chat');
   
   // Start Twitter Bot automatically
   console.log('🐦 Starting Twitter Bot...');
