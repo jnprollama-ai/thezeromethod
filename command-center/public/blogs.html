@@ -32,82 +32,96 @@
     <main class="main-content">
         <section class="page-header">
             <h1>📝 Blog Management</h1>
-            <p class="page-subtitle">Create, review, and publish blog content</p>
+            <p class="page-subtitle">Approve content and manage your publishing schedule</p>
         </section>
 
         <section class="blogs-section">
             <!-- Stats -->
             <div class="stats-grid" id="blogStats">
                 <div class="stat-card">
-                    <div class="stat-icon">📄</div>
+                    <div class="stat-icon">📝</div>
                     <div class="stat-value" id="totalDrafts">0</div>
-                    <div class="stat-label">Total Drafts</div>
+                    <div class="stat-label">Total Articles</div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">⏳</div>
+                    <div class="stat-icon">📥</div>
                     <div class="stat-value" id="pendingDrafts">0</div>
                     <div class="stat-label">Pending Review</div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">✅</div>
-                    <div class="stat-value" id="approvedDrafts">0</div>
-                    <div class="stat-label">Approved</div>
+                    <div class="stat-icon">📅</div>
+                    <div class="stat-value" id="scheduledBlogs">0</div>
+                    <div class="stat-label">Scheduled</div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">📈</div>
-                    <div class="stat-value" id="totalWords">0</div>
-                    <div class="stat-label">Total Words</div>
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="publishedBlogs">0</div>
+                    <div class="stat-label">Published</div>
                 </div>
             </div>
 
-            <!-- Tabs -->
-            <div class="tabs-container">
-                <div class="tabs-header">
-                    <button class="tab-button active" data-tab="draft">Drafts</button>
-                    <button class="tab-button" data-tab="in-progress">In Progress</button>
-                    <button class="tab-button" data-tab="approved">Approved</button>
-                </div>
+            <!-- Content Buffer (Pending Approval) -->
+            <h2 class="section-title">📥 Content Buffer (Pending Approval)</h2>
+            
+            <div id="contentBuffer">
+                <!-- Buffer content will be rendered here -->
             </div>
 
-            <div id="blogsContainer">
-                <div class="agent-detail-card">
-                    <div class="agent-header">
-                        <div class="activity-icon">⏳</div>
-                        <div class="activity-content">
-                            <div class="activity-text">Loading blog drafts...</div>
-                            <div class="activity-meta">Please wait</div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Scheduled Content -->
+            <h2 class="section-title">📅 Scheduled Content</h2>
+            
+            <div id="scheduledContent">
+                <!-- Scheduled content will be rendered here -->
             </div>
 
-            <div style="text-align: center; margin-top: 24px;">
-                <button class="btn btn-primary" onclick="createNewDraft()">
-                    <span>➕</span> Create New Draft
-                </button>
+            <!-- Published Content -->
+            <h2 class="section-title">✅ Published Content</h2>
+            
+            <div id="publishedContent">
+                <!-- Published content will be rendered here -->
             </div>
         </section>
     </main>
 
-    <!-- Content Preview Modal -->
-    <div class="modal-overlay" id="contentModal">
+    <!-- Approval Modal -->
+    <div class="modal-overlay" id="approvalModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">Draft Content</h2>
-                <button class="modal-close" onclick="closeModal()">×</button>
+                <h2 class="modal-title" id="modalTitle">📝 Content Preview</h2>
+                <button class="modal-close" onclick="closeApprovalModal()">×</button>
             </div>
             
-            <div id="modalContent">
+            <div id="approvalModalContent">
+                <div class="agent-stat">
+                    <span class="stat-label">Word Count:</span>
+                    <span class="stat-value" id="wordCountDisplay">-</span>
+                </div>
+                
+                <div class="agent-stat">
+                    <span class="stat-label">Read Time:</span>
+                    <span class="stat-value" id="readTimeDisplay">-</span>
+                </div>
+                
                 <div class="content-preview" id="contentPreview">Loading...</div>
+                
+                <div style="margin-top: 20px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                    <strong>📅 Auto-Schedule:</strong>
+                    <p style="margin: 8px 0; font-size: 13px; color: var(--text-secondary);">
+                        This content will be automatically scheduled for the next available slot:
+                    </p>
+                    <div style="font-size: 14px; color: var(--text-primary);">
+                        • Blog posts: Every other day at 9:00 AM (Dubai time)
+                    </div>
+                </div>
             </div>
             
             <div class="agent-actions" style="margin-top: 20px;">
-                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
-                <button class="btn btn-primary" id="modalApproveBtn" style="display: none;" onclick="approveFromModal()">
-                    Approve Draft
+                <button class="btn btn-secondary" onclick="closeApprovalModal()">Cancel</button>
+                <button class="btn btn-primary" id="confirmApproveBtn" onclick="confirmApprove()">
+                    ✅ Approve & Schedule
                 </button>
             </div>
         </div>
@@ -119,55 +133,37 @@
 
     <script>
         const socket = io();
-        let currentDraftId = null;
         let currentStatus = null;
-        
-        // Tab switching
-        document.querySelectorAll('.tab-button').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab-button').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                if (currentStatus) {
-                    renderBlogs(currentStatus);
-                }
-            });
-        });
+        let currentDraftId = null;
 
         socket.on('statusUpdate', (data) => {
             currentStatus = data;
-            updateBlogStats(data);
-            renderBlogs(data);
+            updateStats(data);
+            renderContentBuffer(data);
+            renderScheduledContent(data);
+            renderPublishedContent(data);
         });
 
-        function updateBlogStats(data) {
+        function updateStats(data) {
             const drafts = data.blogDrafts || [];
             document.getElementById('totalDrafts').textContent = drafts.length;
             document.getElementById('pendingDrafts').textContent = drafts.filter(d => d.status === 'draft').length;
-            document.getElementById('approvedDrafts').textContent = drafts.filter(d => d.status === 'approved').length;
-            
-            const totalWords = drafts.reduce((sum, d) => sum + (d.wordCount || 0), 0);
-            document.getElementById('totalWords').textContent = totalWords.toLocaleString();
+            document.getElementById('scheduledBlogs').textContent = drafts.filter(d => d.status === 'approved').length;
+            document.getElementById('publishedBlogs').textContent = drafts.filter(d => d.status === 'published').length;
         }
 
-        function renderBlogs(data) {
-            const container = document.getElementById('blogsContainer');
-            const activeTab = document.querySelector('.tab-button.active').dataset.tab;
+        function renderContentBuffer(data) {
+            const container = document.getElementById('contentBuffer');
+            const bufferDrafts = (data.blogDrafts || []).filter(d => d.status === 'draft');
             
-            const filteredDrafts = data.blogDrafts.filter(d => {
-                if (activeTab === 'draft') return d.status === 'draft';
-                if (activeTab === 'in-progress') return d.status === 'in-progress';
-                if (activeTab === 'approved') return d.status === 'approved';
-                return true;
-            });
-            
-            if (filteredDrafts.length === 0) {
+            if (bufferDrafts.length === 0) {
                 container.innerHTML = `
                     <div class="agent-detail-card">
                         <div class="agent-header">
                             <div class="activity-icon">📭</div>
                             <div class="activity-content">
-                                <div class="activity-text">No ${activeTab.replace('-', ' ')} drafts</div>
-                                <div class="activity-meta">Create a new draft to get started</div>
+                                <div class="activity-text">No content in buffer</div>
+                                <div class="activity-meta">Create new content or generate from the Content Agent</div>
                             </div>
                         </div>
                     </div>
@@ -175,16 +171,22 @@
                 return;
             }
             
-            container.innerHTML = filteredDrafts.map(draft => `
-                <div class="agent-detail-card">
+            container.innerHTML = `
+                <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: var(--border-radius); padding: 16px; margin-bottom: 20px;">
+                    <strong>📥 Content Buffer:</strong> ${bufferDrafts.length} articles waiting for approval
+                </div>
+            ` + bufferDrafts.map(draft => `
+                <div class="agent-detail-card" style="border-left: 4px solid var(--warning);">
                     <div class="agent-header">
                         <div class="agent-avatar-large">📝</div>
                         <div class="agent-info">
                             <h2>${draft.title}</h2>
                             <div>
-                                <span class="agent-role-badge">${draft.status}</span>
+                                <span class="agent-status-badge" style="background: rgba(245, 158, 11, 0.2); color: var(--warning);">
+                                    ⏳ Pending Approval
+                                </span>
                                 <span class="agent-status-badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
-                                    ${draft.wordCount || 0} words • ${draft.readTime || '0 min'} read
+                                    ${draft.wordCount || 0} words
                                 </span>
                             </div>
                         </div>
@@ -197,133 +199,164 @@
                         </div>
                         
                         <div class="agent-stat">
-                            <span class="stat-label">Last Modified:</span>
-                            <span class="stat-value">${new Date(draft.lastModified).toLocaleString()}</span>
+                            <span class="stat-label">Read Time:</span>
+                            <span class="stat-value">${draft.readTime || '0 min'}</span>
                         </div>
                         
-                        ${draft.tags && draft.tags.length > 0 ? `
                         <div class="agent-stat">
                             <span class="stat-label">Tags:</span>
-                            <span class="stat-value">${draft.tags.map(t => `#${t}`).join(' ')}</span>
-                        </div>
-                        ` : ''}
-                        
-                        <div class="agent-stat">
-                            <span class="stat-label">Comments (${draft.comments ? draft.comments.length : 0}):</span>
-                            <div class="stat-value" style="width: 100%;">
-                                ${draft.comments && draft.comments.length > 0 
-                                  ? draft.comments.slice(0, 2).map(comment => `
-                                      <div style="background: var(--dark-border); padding: 10px; border-radius: 6px; margin-bottom: 6px; font-size: 11px;">
-                                          <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
-                                              <strong>${comment.author}</strong>
-                                              <span style="color: var(--text-secondary); font-size: 10px;">${new Date(comment.timestamp).toLocaleDateString()}</span>
-                                          </div>
-                                          <div>${comment.comment}</div>
-                                      </div>
-                                    `).join('') + (draft.comments.length > 2 ? `<div style="color: var(--text-secondary); font-size: 11px; text-align: center;">+${draft.comments.length - 2} more comments</div>` : '')
-                                  : '<div style="color: var(--text-secondary); font-size: 11px;">No comments yet</div>'
-                                }
-                            </div>
-                        </div>
-                        
-                        <div class="agent-stat">
-                            <span class="stat-label">Add Comment:</span>
-                            <div class="stat-value" style="width: 100%;">
-                                <textarea id="comment-input-${draft.id}" 
-                                          placeholder="Enter your feedback..." 
-                                          style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--dark-border); background: var(--dark-card); color: var(--text-primary); font-size: 12px; resize: vertical; min-height: 60px;"></textarea>
-                                <div style="margin-top: 8px; display: flex; gap: 8px; justify-content: flex-end;">
-                                    <button class="btn btn-secondary btn-sm" onclick="addComment('${draft.id}')">
-                                        💬 Add Comment
-                                    </button>
-                                </div>
-                            </div>
+                            <span class="stat-value">${(draft.tags || []).map(t => `#${t}`).join(' ') || 'None'}</span>
                         </div>
                         
                         <div class="agent-actions">
-                            <button class="btn btn-secondary" onclick="viewFullDraft('${draft.id}')">
-                                <span>📄</span> View Full Draft
+                            <button class="btn btn-secondary" onclick="previewDraft('${draft.id}')">
+                                👁️ Preview
                             </button>
                             
-                            ${draft.status !== 'approved' ? `
                             <button class="btn btn-primary" onclick="approveDraft('${draft.id}')">
-                                <span>✅</span> Approve
+                                ✅ Approve & Schedule
                             </button>
-                            ` : ''}
+                            
+                            <button class="btn btn-secondary" onclick="viewFullContent('${draft.id}')">
+                                📄 View Full
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function addComment(draftId) {
-            const commentInput = document.getElementById(`comment-input-${draftId}`);
-            const comment = commentInput.value.trim();
+        function renderScheduledContent(data) {
+            const container = document.getElementById('scheduledContent');
+            const scheduledDrafts = (data.blogDrafts || [])
+                .filter(d => d.status === 'approved' && d.scheduledPublishDate)
+                .sort((a, b) => new Date(a.scheduledPublishDate) - new Date(b.scheduledPublishDate));
             
-            if (!comment) {
-                alert('Please enter a comment');
+            if (scheduledDrafts.length === 0) {
+                container.innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">📭</div>
+                            <div class="activity-content">
+                                <div class="activity-text">No scheduled content</div>
+                                <div class="activity-meta">Approve content from the buffer to schedule it</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
                 return;
             }
             
-            fetch('/api/blog-drafts/comment', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    draftId: draftId,
-                    comment: comment,
-                    author: 'Jon'
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                commentInput.value = '';
-                // Refresh data
-                fetch('/api/status')
-                    .then(res => res.json())
-                    .then(data => socket.emit('statusUpdate', data));
-            })
-            .catch(err => {
-                console.error('Error adding comment:', err);
-                alert('Failed to add comment');
-            });
+            container.innerHTML = scheduledDrafts.map(draft => `
+                <div class="agent-detail-card" style="border-left: 4px solid var(--primary);">
+                    <div class="agent-header">
+                        <div class="agent-avatar-large">📝</div>
+                        <div class="agent-info">
+                            <h2>${draft.title}</h2>
+                            <div>
+                                <span class="agent-status-badge" style="background: rgba(99, 102, 241, 0.2); color: var(--primary);">
+                                    📅 Scheduled
+                                </span>
+                                <span class="agent-status-badge" style="background: rgba(6, 182, 212, 0.2); color: var(--accent);">
+                                    ${new Date(draft.scheduledPublishDate).toLocaleDateString()}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-body">
+                        <div class="agent-stat">
+                            <span class="stat-label">Author:</span>
+                            <span class="stat-value">${draft.author}</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Word Count:</span>
+                            <span class="stat-value">${draft.wordCount || 0} words</span>
+                        </div>
+                        
+                        <div class="agent-actions">
+                            <button class="btn btn-secondary" onclick="viewFullContent('${draft.id}')">
+                                📄 View Full
+                            </button>
+                            
+                            <button class="btn btn-secondary" onclick="unscheduleDraft('${draft.id}')">
+                                ⏸️ Unschedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPublishedContent(data) {
+            const container = document.getElementById('publishedContent');
+            const publishedDrafts = (data.blogDrafts || [])
+                .filter(d => d.status === 'published')
+                .slice(0, 5);
+            
+            if (publishedDrafts.length === 0) {
+                container.innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">📭</div>
+                            <div class="activity-content">
+                                <div class="activity-text">No published content yet</div>
+                                <div class="activity-meta">Approve content to start publishing</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = publishedDrafts.map(draft => `
+                <div class="agent-detail-card" style="border-left: 4px solid var(--success); opacity: 0.8;">
+                    <div class="agent-header">
+                        <div class="agent-avatar-large">📝</div>
+                        <div class="agent-info">
+                            <h2>${draft.title}</h2>
+                            <div>
+                                <span class="agent-status-badge active">
+                                    ✅ Published
+                                </span>
+                                <span class="agent-status-badge" style="background: rgba(16, 185, 129, 0.2); color: var(--success);">
+                                    ${new Date(draft.publishedDate).toLocaleDateString()}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function approveDraft(draftId) {
-            if (!confirm('Are you sure you want to approve this draft?')) {
-                return;
-            }
-            
-            fetch('/api/blog-drafts/approve', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ draftId: draftId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                // Refresh data
-                fetch('/api/status')
-                    .then(res => res.json())
-                    .then(data => socket.emit('statusUpdate', data));
-                alert('Draft approved successfully!');
-            })
-            .catch(err => {
-                console.error('Error approving draft:', err);
-                alert('Failed to approve draft');
-            });
-        }
-
-        async function viewFullDraft(draftId) {
             currentDraftId = draftId;
-            const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
-            
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
             if (!draft) return;
             
-            document.getElementById('modalTitle').textContent = draft.title;
-            document.getElementById('contentPreview').textContent = 'Loading content...';
-            document.getElementById('modalApproveBtn').style.display = 
-                draft.status !== 'approved' ? 'inline-flex' : 'none';
+            document.getElementById('modalTitle').textContent = '📝 ' + draft.title;
+            document.getElementById('wordCountDisplay').textContent = draft.wordCount + ' words';
+            document.getElementById('readTimeDisplay').textContent = draft.readTime;
+            document.getElementById('contentPreview').textContent = 'Click "View Full" to see complete content or "Approve & Schedule" to queue for publishing.';
+            document.getElementById('approvalModal').classList.add('active');
+        }
+
+        function previewDraft(draftId) {
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
+            if (!draft) return;
             
-            document.getElementById('contentModal').classList.add('active');
+            document.getElementById('modalTitle').textContent = '📝 ' + draft.title;
+            document.getElementById('wordCountDisplay').textContent = draft.wordCount + ' words';
+            document.getElementById('readTimeDisplay').textContent = draft.readTime;
+            document.getElementById('contentPreview').textContent = 'Preview mode - Click "View Full" to read the entire article';
+            document.getElementById('approvalModal').classList.add('active');
+            document.getElementById('confirmApproveBtn').style.display = 'none';
+        }
+
+        async function viewFullContent(draftId) {
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
+            if (!draft) return;
             
             try {
                 const response = await fetch(`/api/blog-content/${draftId}`);
@@ -334,72 +367,63 @@
             }
         }
 
-        function closeModal() {
-            document.getElementById('contentModal').classList.remove('active');
+        function closeApprovalModal() {
+            document.getElementById('approvalModal').classList.remove('active');
+            document.getElementById('confirmApproveBtn').style.display = 'inline-flex';
             currentDraftId = null;
         }
 
-        function approveFromModal() {
-            if (currentDraftId) {
-                approveDraft(currentDraftId);
-                closeModal();
-            }
-        }
-
-        function createNewDraft() {
-            const title = prompt('Enter blog title:');
-            if (!title) return;
+        function confirmApprove() {
+            if (!currentDraftId) return;
             
-            const content = prompt('Enter blog content (Markdown supported):');
-            if (content === null) return;
-            
-            fetch('/api/blog-drafts/create', {
+            fetch('/api/blog-drafts/approve', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    title: title,
-                    content: content,
-                    author: 'Jon'
-                })
+                body: JSON.stringify({ draftId: currentDraftId })
             })
             .then(res => res.json())
             .then(data => {
+                alert(`✅ Blog approved and scheduled!\n\nScheduled for: ${new Date(data.scheduledDate).toLocaleDateString()}`);
+                closeApprovalModal();
                 fetch('/api/status')
                     .then(res => res.json())
-                    .then(data => socket.emit('statusUpdate', data));
-                alert('New draft created successfully!');
+                    .then(status => socket.emit('statusUpdate', status));
             })
             .catch(err => {
-                console.error('Error creating draft:', err);
-                alert('Failed to create draft');
+                alert('Failed to approve content: ' + err.message);
             });
         }
 
+        function unscheduleDraft(draftId) {
+            if (!confirm('Unschedule this blog post? It will return to the buffer.')) return;
+            
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
+            if (draft) {
+                draft.status = 'draft';
+                draft.scheduledPublishDate = null;
+                
+                fetch('/api/status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(currentStatus)
+                })
+                .then(() => fetch('/api/status'))
+                .then(res => res.json())
+                .then(data => socket.emit('statusUpdate', data));
+            }
+        }
+
         // Close modal on outside click
-        document.getElementById('contentModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('contentModal')) {
-                closeModal();
+        document.getElementById('approvalModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('approvalModal')) {
+                closeApprovalModal();
             }
         });
 
         // Initial load
         fetch('/api/status')
             .then(res => res.json())
-            .then(data => socket.emit('statusUpdate', data))
-            .catch(err => {
-                console.error('Error loading blog drafts:', err);
-                document.getElementById('blogsContainer').innerHTML = `
-                    <div class="agent-detail-card">
-                        <div class="agent-header">
-                            <div class="activity-icon">❌</div>
-                            <div class="activity-content">
-                                <div class="activity-text">Failed to load blog drafts</div>
-                                <div class="activity-meta">Check connection and try again</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
+            .then(data => socket.emit('statusUpdate', data));
     </script>
 </body>
 </html>

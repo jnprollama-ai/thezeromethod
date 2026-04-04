@@ -604,14 +604,46 @@ app.post('/api/blog-drafts/approve', (req, res) => {
     return res.status(404).json({ error: 'Draft not found' });
   }
   
+  // Schedule the post for the next available slot
+  const scheduledDate = getNextBlogScheduleDate();
+  
   draft.status = 'approved';
   draft.approvedAt = new Date().toISOString();
+  draft.scheduledPublishDate = scheduledDate;
   draft.lastModified = new Date().toISOString();
   currentStatus.lastUpdated = new Date().toISOString();
   saveStatus(currentStatus);
   io.emit('statusUpdate', currentStatus);
-  res.json({ message: 'Draft approved', draft });
+  res.json({ message: 'Draft approved and scheduled', draft, scheduledDate });
 });
+
+// Helper function to get next blog schedule date (every other day at 9 AM)
+function getNextBlogScheduleDate() {
+  const now = new Date();
+  const scheduledDates = currentStatus.blogDrafts
+    .filter(d => d.status === 'approved' && d.scheduledPublishDate)
+    .map(d => new Date(d.scheduledPublishDate))
+    .sort((a, b) => b - a);
+  
+  let nextDate = new Date();
+  nextDate.setHours(9, 0, 0, 0);
+  
+  if (scheduledDates.length > 0) {
+    // Start from the last scheduled date
+    nextDate = new Date(scheduledDates[0]);
+    nextDate.setDate(nextDate.getDate() + 2); // Every other day
+  } else {
+    // Start tomorrow
+    nextDate.setDate(nextDate.getDate() + 1);
+  }
+  
+  // If it's in the past, move to next available slot
+  while (nextDate <= now) {
+    nextDate.setDate(nextDate.getDate() + 2);
+  }
+  
+  return nextDate.toISOString();
+}
 
 app.post('/api/blog-drafts/create', (req, res) => {
   const { title, content, author = 'System' } = req.body;
@@ -672,13 +704,90 @@ app.post('/api/social-media-content/approve', (req, res) => {
     return res.status(404).json({ error: 'Post not found' });
   }
   
-  post.status = 'approved';
+  // Auto-schedule for next available slot
+  const scheduledDate = getNextSocialScheduleDate();
+  
+  post.status = 'scheduled';
+  post.scheduledDate = scheduledDate;
   post.lastModified = new Date().toISOString();
   currentStatus.lastUpdated = new Date().toISOString();
   saveStatus(currentStatus);
   io.emit('statusUpdate', currentStatus);
-  res.json({ message: 'Post approved', post });
+  res.json({ message: 'Post approved and scheduled', post, scheduledDate });
 });
+
+// Helper function to get next social media schedule date
+function getNextSocialScheduleDate() {
+  const now = new Date();
+  const scheduleTimes = [
+    { hour: 9, minute: 0 },   // 9:00 AM
+    { hour: 14, minute: 0 },  // 2:00 PM
+    { hour: 18, minute: 0 }   // 6:00 PM
+  ];
+  
+  // Get all scheduled dates
+  const scheduledDates = currentStatus.socialMediaContent
+    .filter(p => p.status === 'scheduled' && p.scheduledDate)
+    .map(p => new Date(p.scheduledDate))
+    .sort((a, b) => a - b);
+  
+  let nextDate = new Date(now);
+  nextDate.setSeconds(0);
+  nextDate.setMilliseconds(0);
+  
+  // Find next available slot
+  let foundSlot = false;
+  
+  // Check today's remaining slots
+  for (const time of scheduleTimes) {
+    const slot = new Date(nextDate);
+    slot.setHours(time.hour, time.minute, 0);
+    
+    if (slot > now) {
+      // Check if this slot is already taken
+      const slotTaken = scheduledDates.some(date => 
+        date.getDate() === slot.getDate() && 
+        date.getHours() === slot.getHours()
+      );
+      
+      if (!slotTaken) {
+        nextDate = slot;
+        foundSlot = true;
+        break;
+      }
+    }
+  }
+  
+  // If no slot today, find next available day
+  if (!foundSlot) {
+    nextDate.setDate(nextDate.getDate() + 1);
+    
+    while (!foundSlot) {
+      for (const time of scheduleTimes) {
+        const slot = new Date(nextDate);
+        slot.setHours(time.hour, time.minute, 0);
+        
+        const slotTaken = scheduledDates.some(date => 
+          date.getDate() === slot.getDate() && 
+          date.getHours() === slot.getHours() &&
+          date.getMonth() === slot.getMonth()
+        );
+        
+        if (!slotTaken) {
+          nextDate = slot;
+          foundSlot = true;
+          break;
+        }
+      }
+      
+      if (!foundSlot) {
+        nextDate.setDate(nextDate.getDate() + 1);
+      }
+    }
+  }
+  
+  return nextDate.toISOString();
+}
 
 app.post('/api/social-media-content/schedule', (req, res) => {
   const { postId, scheduledDate } = req.body;
