@@ -621,6 +621,32 @@ app.post('/api/blog-drafts/approve', (req, res) => {
   res.json({ message: 'Draft approved and scheduled', draft, scheduledDate });
 });
 
+// Add comment to blog draft
+app.post('/api/blog-drafts/comment', (req, res) => {
+  const { draftId, comment } = req.body;
+  const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
+  
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' });
+  }
+  
+  if (!draft.comments) {
+    draft.comments = [];
+  }
+  
+  draft.comments.push({
+    author: 'Zero',
+    text: comment,
+    date: new Date().toISOString()
+  });
+  
+  draft.lastModified = new Date().toISOString();
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json({ message: 'Comment added', draft });
+});
+
 // Helper function to get next blog schedule date (every other day at 9 AM)
 function getNextBlogScheduleDate() {
   const now = new Date();

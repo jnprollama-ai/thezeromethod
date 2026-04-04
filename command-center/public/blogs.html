@@ -7,6 +7,152 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        .content-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow: auto;
+        }
+        
+        .content-modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+        }
+        
+        .content-modal-inner {
+            background: var(--dark-card);
+            border-radius: var(--border-radius);
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .content-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--dark-border);
+        }
+        
+        .content-modal-body {
+            line-height: 1.8;
+            color: var(--text-primary);
+            font-size: 15px;
+        }
+        
+        .content-modal-body h2 {
+            color: var(--text-primary);
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .content-modal-body h3 {
+            color: var(--text-secondary);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .content-modal-body p {
+            margin-bottom: 15px;
+        }
+        
+        .content-modal-body ul, .content-modal-body ol {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .content-modal-body li {
+            margin-bottom: 8px;
+        }
+        
+        .copy-btn {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+        }
+        
+        .comment-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--dark-border);
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--dark-bg);
+            border: 1px solid var(--dark-border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 10px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .comment-item {
+            background: var(--dark-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid var(--dark-border);
+        }
+        
+        .comment-author {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+        
+        .comment-text {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        
+        .comment-date {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 8px;
+        }
+        
+        .no-comments {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+            font-style: italic;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -22,6 +168,7 @@
             <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
             <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
             <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+            <li><a href="/chat" class="nav-link"><span>💬</span> Chat</a></li>
         </ul>
         <div class="nav-status">
             <span class="status-dot online"></span>
@@ -86,43 +233,41 @@
         </section>
     </main>
 
-    <!-- Approval Modal -->
-    <div class="modal-overlay" id="approvalModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modalTitle">📝 Content Preview</h2>
-                <button class="modal-close" onclick="closeApprovalModal()">×</button>
-            </div>
-            
-            <div id="approvalModalContent">
-                <div class="agent-stat">
-                    <span class="stat-label">Word Count:</span>
-                    <span class="stat-value" id="wordCountDisplay">-</span>
-                </div>
-                
-                <div class="agent-stat">
-                    <span class="stat-label">Read Time:</span>
-                    <span class="stat-value" id="readTimeDisplay">-</span>
-                </div>
-                
-                <div class="content-preview" id="contentPreview">Loading...</div>
-                
-                <div style="margin-top: 20px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3);">
-                    <strong>📅 Auto-Schedule:</strong>
-                    <p style="margin: 8px 0; font-size: 13px; color: var(--text-secondary);">
-                        This content will be automatically scheduled for the next available slot:
-                    </p>
-                    <div style="font-size: 14px; color: var(--text-primary);">
-                        • Blog posts: Every other day at 9:00 AM (Dubai time)
+    <!-- Content View Modal -->
+    <div class="content-modal" id="contentModal">
+        <div class="content-modal-inner">
+            <div class="content-modal-header">
+                <div>
+                    <h2 id="contentModalTitle">Blog Content</h2>
+                    <div style="color: var(--text-secondary); font-size: 13px; margin-top: 5px;">
+                        <span id="contentModalMeta"></span>
                     </div>
                 </div>
+                <button class="modal-close" onclick="closeContentModal()" style="font-size: 24px;">×</button>
             </div>
             
-            <div class="agent-actions" style="margin-top: 20px;">
-                <button class="btn btn-secondary" onclick="closeApprovalModal()">Cancel</button>
-                <button class="btn btn-primary" id="confirmApproveBtn" onclick="confirmApprove()">
-                    ✅ Approve & Schedule
-                </button>
+            <div class="content-modal-body" id="contentModalBody">
+                <!-- Content will be inserted here -->
+            </div>
+            
+            <div class="btn-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--dark-border);">
+                <button class="btn btn-secondary" onclick="closeContentModal()">Close</button>
+                <button class="copy-btn" onclick="copyContentToClipboard()">📋 Copy Content</button>
+                <button class="btn btn-primary" id="contentApproveBtn" onclick="approveFromModal()">✅ Approve & Schedule</button>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="comment-section">
+                <h3 style="margin-bottom: 15px; color: var(--text-primary);">💬 Comments</h3>
+                
+                <div id="commentsList">
+                    <!-- Comments will be rendered here -->
+                </div>
+                
+                <div style="margin-top: 15px;">
+                    <textarea class="comment-input" id="commentInput" placeholder="Add a comment..."></textarea>
+                    <button class="btn btn-primary" onclick="addComment()">Add Comment</button>
+                </div>
             </div>
         </div>
     </div>
@@ -135,6 +280,7 @@
         const socket = io();
         let currentStatus = null;
         let currentDraftId = null;
+        let currentDraftContent = '';
 
         socket.on('statusUpdate', (data) => {
             currentStatus = data;
@@ -208,17 +354,13 @@
                             <span class="stat-value">${(draft.tags || []).map(t => `#${t}`).join(' ') || 'None'}</span>
                         </div>
                         
-                        <div class="agent-actions">
-                            <button class="btn btn-secondary" onclick="previewDraft('${draft.id}')">
-                                👁️ Preview
+                        <div class="btn-group">
+                            <button class="btn btn-secondary" onclick="viewFullContent('${draft.id}')">
+                                📄 View Full
                             </button>
                             
                             <button class="btn btn-primary" onclick="approveDraft('${draft.id}')">
                                 ✅ Approve & Schedule
-                            </button>
-                            
-                            <button class="btn btn-secondary" onclick="viewFullContent('${draft.id}')">
-                                📄 View Full
                             </button>
                         </div>
                     </div>
@@ -275,9 +417,13 @@
                             <span class="stat-value">${draft.wordCount || 0} words</span>
                         </div>
                         
-                        <div class="agent-actions">
+                        <div class="btn-group">
                             <button class="btn btn-secondary" onclick="viewFullContent('${draft.id}')">
                                 📄 View Full
+                            </button>
+                            
+                            <button class="btn btn-secondary" onclick="copyForPublishing('${draft.id}')">
+                                📋 Copy for Manual Post
                             </button>
                             
                             <button class="btn btn-secondary" onclick="unscheduleDraft('${draft.id}')">
@@ -331,66 +477,166 @@
         }
 
         function approveDraft(draftId) {
-            currentDraftId = draftId;
-            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
-            if (!draft) return;
-            
-            document.getElementById('modalTitle').textContent = '📝 ' + draft.title;
-            document.getElementById('wordCountDisplay').textContent = draft.wordCount + ' words';
-            document.getElementById('readTimeDisplay').textContent = draft.readTime;
-            document.getElementById('contentPreview').textContent = 'Click "View Full" to see complete content or "Approve & Schedule" to queue for publishing.';
-            document.getElementById('approvalModal').classList.add('active');
-        }
-
-        function previewDraft(draftId) {
-            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
-            if (!draft) return;
-            
-            document.getElementById('modalTitle').textContent = '📝 ' + draft.title;
-            document.getElementById('wordCountDisplay').textContent = draft.wordCount + ' words';
-            document.getElementById('readTimeDisplay').textContent = draft.readTime;
-            document.getElementById('contentPreview').textContent = 'Preview mode - Click "View Full" to read the entire article';
-            document.getElementById('approvalModal').classList.add('active');
-            document.getElementById('confirmApproveBtn').style.display = 'none';
-        }
-
-        async function viewFullContent(draftId) {
-            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
-            if (!draft) return;
-            
-            try {
-                const response = await fetch(`/api/blog-content/${draftId}`);
-                const data = await response.json();
-                document.getElementById('contentPreview').textContent = data.content;
-            } catch (err) {
-                document.getElementById('contentPreview').textContent = 'Error loading content: ' + err.message;
-            }
-        }
-
-        function closeApprovalModal() {
-            document.getElementById('approvalModal').classList.remove('active');
-            document.getElementById('confirmApproveBtn').style.display = 'inline-flex';
-            currentDraftId = null;
-        }
-
-        function confirmApprove() {
-            if (!currentDraftId) return;
-            
             fetch('/api/blog-drafts/approve', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ draftId: currentDraftId })
+                body: JSON.stringify({ draftId: draftId })
             })
             .then(res => res.json())
             .then(data => {
                 alert(`✅ Blog approved and scheduled!\n\nScheduled for: ${new Date(data.scheduledDate).toLocaleDateString()}`);
-                closeApprovalModal();
                 fetch('/api/status')
                     .then(res => res.json())
                     .then(status => socket.emit('statusUpdate', status));
             })
             .catch(err => {
                 alert('Failed to approve content: ' + err.message);
+            });
+        }
+
+        async function viewFullContent(draftId) {
+            currentDraftId = draftId;
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
+            if (!draft) return;
+            
+            document.getElementById('contentModalTitle').textContent = draft.title;
+            document.getElementById('contentModalMeta').textContent = 
+                `${draft.wordCount || 0} words • ${draft.readTime} • Author: ${draft.author}`;
+            
+            // Generate content if not available
+            currentDraftContent = generateBlogContent(draft);
+            document.getElementById('contentModalBody').innerHTML = formatBlogContent(currentDraftContent);
+            
+            // Show/hide approve button based on status
+            const approveBtn = document.getElementById('contentApproveBtn');
+            if (draft.status === 'draft') {
+                approveBtn.style.display = 'inline-block';
+            } else {
+                approveBtn.style.display = 'none';
+            }
+            
+            // Render comments
+            renderComments(draft);
+            
+            document.getElementById('contentModal').classList.add('active');
+        }
+
+        function generateBlogContent(draft) {
+            // Generate full blog content based on the outline
+            if (draft.outline) {
+                let content = `<h1>${draft.title}</h1>\n\n`;
+                content += `<p><strong>Target Audience:</strong> ${draft.outline.targetAudience}</p>\n\n`;
+                content += `<hr>\n\n`;
+                
+                draft.outline.keySections.forEach((section, index) => {
+                    content += `<h2>${section}</h2>\n\n`;
+                    content += `<p>[Content for ${section} would be here - this is a placeholder for the full article content]</p>\n\n`;
+                });
+                
+                content += `<hr>\n\n`;
+                content += `<h2>Key Takeaways</h2>\n\n<ul>\n`;
+                draft.outline.mainTakeaways.forEach(takeaway => {
+                    content += `<li>${takeaway}</li>\n`;
+                });
+                content += `</ul>\n`;
+                
+                return content;
+            }
+            
+            // Fallback content
+            return `<h1>${draft.title}</h1>\n\n<p>This is a ${draft.wordCount}-word article about ${(draft.tags || []).join(', ')}.</p>\n\n<p>[Full article content would be displayed here]</p>\n\n<p><strong>Read time:</strong> ${draft.readTime}</p>`;
+        }
+
+        function formatBlogContent(content) {
+            // Simple markdown-like formatting
+            return content
+                .replace(/<h1>(.*?)<\/h1>/g, '<h1 style="color: var(--text-primary); margin-bottom: 20px; font-size: 28px;">$1</h1>')
+                .replace(/<h2>(.*?)<\/h2>/g, '<h2 style="color: var(--text-primary); margin-top: 25px; margin-bottom: 15px; font-size: 20px; border-bottom: 1px solid var(--dark-border); padding-bottom: 10px;">$1</h2>')
+                .replace(/<p>(.*?)<\/p>/g, '<p style="margin-bottom: 15px; line-height: 1.8;">$1</p>')
+                .replace(/<ul>/g, '<ul style="margin-left: 20px; margin-bottom: 15px;">')
+                .replace(/<li>/g, '<li style="margin-bottom: 8px;">')
+                .replace(/<hr>/g, '<hr style="border: none; border-top: 1px solid var(--dark-border); margin: 30px 0;">');
+        }
+
+        function renderComments(draft) {
+            const commentsList = document.getElementById('commentsList');
+            const comments = draft.comments || [];
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                return;
+            }
+            
+            commentsList.innerHTML = comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-author">${comment.author}</div>
+                    <div class="comment-text">${comment.text}</div>
+                    <div class="comment-date">${new Date(comment.date).toLocaleString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function addComment() {
+            const commentText = document.getElementById('commentInput').value.trim();
+            if (!commentText) return;
+            
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === currentDraftId);
+            if (!draft) return;
+            
+            if (!draft.comments) draft.comments = [];
+            
+            draft.comments.push({
+                author: 'Zero',
+                text: commentText,
+                date: new Date().toISOString()
+            });
+            
+            // Save to server
+            fetch('/api/blog-drafts/comment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ draftId: currentDraftId, comment: commentText })
+            })
+            .then(() => {
+                document.getElementById('commentInput').value = '';
+                renderComments(draft);
+            })
+            .catch(err => console.error('Failed to add comment:', err));
+        }
+
+        function closeContentModal() {
+            document.getElementById('contentModal').classList.remove('active');
+            currentDraftId = null;
+            currentDraftContent = '';
+        }
+
+        function copyContentToClipboard() {
+            navigator.clipboard.writeText(currentDraftContent.replace(/<[^>]*>/g, '')).then(() => {
+                alert('✅ Content copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+        function approveFromModal() {
+            if (currentDraftId) {
+                closeContentModal();
+                approveDraft(currentDraftId);
+            }
+        }
+
+        async function copyForPublishing(draftId) {
+            const draft = (currentStatus.blogDrafts || []).find(d => d.id === draftId);
+            if (!draft) return;
+            
+            const content = generateBlogContent(draft);
+            const plainText = content.replace(/<[^>]*>/g, '');
+            
+            navigator.clipboard.writeText(plainText).then(() => {
+                alert(`✅ "${draft.title}" copied to clipboard!\n\nYou can now paste this into your blog platform.`);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy content. Please try again.');
             });
         }
 
@@ -414,9 +660,16 @@
         }
 
         // Close modal on outside click
-        document.getElementById('approvalModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('approvalModal')) {
-                closeApprovalModal();
+        document.getElementById('contentModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('contentModal')) {
+                closeContentModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeContentModal();
             }
         });
 
