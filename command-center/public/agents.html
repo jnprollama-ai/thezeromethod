@@ -7,6 +7,24 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        .pokemon-avatar {
+            font-size: 36px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--dark-border), var(--dark-card));
+            border: 2px solid var(--dark-border);
+        }
+        
+        .agent-detail-card:hover .pokemon-avatar {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -22,6 +40,7 @@
             <li><a href="/social" class="nav-link"><span>📱</span> Social</a></li>
             <li><a href="/saas" class="nav-link"><span>🚀</span> SaaS</a></li>
             <li><a href="/trading" class="nav-link"><span>💹</span> Trading</a></li>
+            <li><a href="/chat" class="nav-link"><span>💬</span> Chat</a></li>
         </ul>
         <div class="nav-status">
             <span class="status-dot online"></span>
@@ -36,7 +55,7 @@
         </section>
 
         <section class="agents-section">
-            <!-- Agent Stats -->
+            <!-- Stats -->
             <div class="stats-grid" id="agentStats">
                 <div class="stat-card">
                     <div class="stat-icon">👾</div>
@@ -96,11 +115,21 @@
             const container = document.getElementById('agentsContainer');
             const agents = data.agents || [];
             
+            // Pokemon emoji mapping
+            const pokemonEmojis = {
+                'Mewtwo': '🧬',
+                'Alakazam': '🥄',
+                'Rapidash': '🐴',
+                'Porygon': '🔷',
+                'Jigglypuff': '🎵',
+                'Gyarados': '🐉'
+            };
+            
             container.innerHTML = agents.map(agent => `
                 <div class="agent-detail-card">
                     <div class="agent-header">
-                        <div class="agent-avatar-large">
-                            ${agent.pokemon}
+                        <div class="pokemon-avatar" title="${agent.pokemon}">
+                            ${pokemonEmojis[agent.pokemon] || '👾'}
                         </div>
                         <div class="agent-info">
                             <h2>${agent.name}</h2>
@@ -156,7 +185,6 @@
             const task = prompt(`Assign a task to ${agent.name}:`);
             if (!task) return;
             
-            // In a real implementation, this would update the agent's task
             alert(`Task assigned to ${agent.name}!\n\nTask: ${task}\n\nThe agent will begin working on this task shortly.`);
         }
 

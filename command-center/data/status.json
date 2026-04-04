@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-04T13:02:40.170Z",
+  "lastUpdated": "2026-04-04T13:26:45.368Z",
   "website": {
     "status": "operational",
     "uptime": "99.9%",
@@ -210,7 +210,11 @@
       "filePath": "blog_draft_prompt_engineering.md",
       "wordCount": 1500,
       "readTime": "6 min",
-      "tags": ["AI", "Tutorial", "Beginner"],
+      "tags": [
+        "AI",
+        "Tutorial",
+        "Beginner"
+      ],
       "comments": [
         {
           "id": "1775289141913",
@@ -230,7 +234,11 @@
       "filePath": "blog_complete_guide_prompt_engineering.md",
       "wordCount": 4200,
       "readTime": "8 min",
-      "tags": ["AI", "Guide", "Prompt Engineering"],
+      "tags": [
+        "AI",
+        "Guide",
+        "Prompt Engineering"
+      ],
       "comments": [],
       "approvedAt": "2026-04-05T10:00:00.000Z"
     },
@@ -243,7 +251,12 @@
       "filePath": "blog_10_ai_tools_time_saving.md",
       "wordCount": 4800,
       "readTime": "10 min",
-      "tags": ["AI", "Tools", "Productivity", "List"],
+      "tags": [
+        "AI",
+        "Tools",
+        "Productivity",
+        "List"
+      ],
       "comments": [],
       "approvedAt": "2026-04-06T10:00:00.000Z"
     },
@@ -256,21 +269,32 @@
       "filePath": "blog_5_common_ai_mistakes.md",
       "wordCount": 2800,
       "readTime": "5 min",
-      "tags": ["AI", "Mistakes", "Tips"],
+      "tags": [
+        "AI",
+        "Mistakes",
+        "Tips"
+      ],
       "comments": [],
       "approvedAt": "2026-04-07T10:00:00.000Z"
     },
     {
       "id": "personal-ai-assistant",
       "title": "How to Build a Personal AI Assistant (Without Coding)",
-      "status": "draft",
+      "status": "approved",
       "author": "Zero",
-      "lastModified": "2026-04-08T10:00:00.000Z",
+      "lastModified": "2026-04-04T13:26:45.368Z",
       "filePath": "blog_personal_ai_assistant.md",
       "wordCount": 4500,
       "readTime": "7 min",
-      "tags": ["AI", "Tutorial", "No-Code", "Automation"],
-      "comments": []
+      "tags": [
+        "AI",
+        "Tutorial",
+        "No-Code",
+        "Automation"
+      ],
+      "comments": [],
+      "approvedAt": "2026-04-04T13:26:45.368Z",
+      "scheduledPublishDate": "2026-04-05T05:00:00.000Z"
     }
   ]
 }

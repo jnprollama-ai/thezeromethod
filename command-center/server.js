@@ -505,6 +505,10 @@ app.get('/trading', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'trading.html'));
 });
 
+app.get('/chat', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'chat.html'));
+});
+
 // API Routes
 app.get('/api/status', (req, res) => {
   res.json(currentStatus);
