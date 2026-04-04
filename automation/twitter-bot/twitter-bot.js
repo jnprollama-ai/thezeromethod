@@ -2,10 +2,24 @@ const { TwitterApi } = require('twitter-api-v2');
 const fs = require('fs');
 const path = require('path');
 
-// Initialize Twitter client with Bearer Token
-const client = new TwitterApi('AAAAAAAAAAAAAAAAAAAAAFsU8wEAAAAA9ByJ8lbmzjxVTyKwxABbQR8gq5w%3DRto1vFxYkZ39yYoP0MSMXifurKlwKEeaq3NXrIg44CSGWMp9q7');
+// Twitter API Credentials (OAuth 1.0a for posting)
+const CONSUMER_KEY = 'NchfKKavZ3GVxgPE4tQeEChpz';
+const CONSUMER_SECRET = '2AyiQby9WeWyV8S6qKvEucoGRj5Og2RldFjSJuV9SrkMu9ZKVx';
+const ACCESS_TOKEN = '2039630718599376896-JLR41n6v1r0GTxPSvNh0RLe1k3Ianm';
+const ACCESS_SECRET = 'i9wHTIWr0XzvJEnbxo0snzT6IyZC6EvfRpX2ktHynAqB0';
 
-// Read-only client for search operations
+// Initialize Twitter client with OAuth 1.0a (full read/write access)
+const client = new TwitterApi({
+  appKey: CONSUMER_KEY,
+  appSecret: CONSUMER_SECRET,
+  accessToken: ACCESS_TOKEN,
+  accessSecret: ACCESS_SECRET,
+});
+
+// Bearer Token client for search operations
+const bearerClient = new TwitterApi('AAAAAAAAAAAAAAAAAAAAAFsU8wEAAAAA9ByJ8lbmzjxVTyKwxABbQR8gq5w%3DRto1vFxYkZ39yYoP0MSMXifurKlwKEeaq3NXrIg44CSGWMp9q7');
+
+// Read-write client for posting
 const rwClient = client.readWrite;
 
 // Content to post - Educational value only, no promotion until website is live
@@ -246,9 +260,12 @@ async function postThread(threadTexts) {
 // Search and engage with tweets
 async function searchAndEngage() {
   try {
+    // Use bearer client for search (read-only operations)
+    const searchClient = bearerClient.readOnly;
+    
     // Search for recent tweets about AI productivity
     const searchQuery = 'AI productivity OR prompt engineering OR ChatGPT tips -is:retweet lang:en';
-    const tweets = await client.v2.search(searchQuery, {
+    const tweets = await searchClient.v2.search(searchQuery, {
       max_results: 20,
       'tweet.fields': ['author_id', 'created_at', 'public_metrics']
     });
@@ -259,7 +276,7 @@ async function searchAndEngage() {
     const tweetsToEngage = tweets.data.data.slice(0, 5);
     
     for (const tweet of tweetsToEngage) {
-      // Like the tweet
+      // Like the tweet using read-write client
       await client.v2.like(tweet.id);
       logActivity(`Liked tweet: ${tweet.id}`);
       
