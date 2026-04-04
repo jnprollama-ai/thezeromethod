@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Trading Bot | Automated Trading Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(75, 85, 99, 0.4);
+        }
+        .bot-running { animation: pulse-green 2s infinite; }
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+        }
+        .trade-buy { border-left: 4px solid #10b981; }
+        .trade-sell { border-left: 4px solid #ef4444; }
+        .profit { color: #10b981; }
+        .loss { color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Header -->
+        <header class="mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="text-4xl">🤖</div>
+                    <div>
+                        <h1 class="text-3xl font-bold">Zero Trading Bot</h1>
+                        <p class="text-gray-400">Automated Trading Dashboard</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-6">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-400">Bot Status</p>
+                        <div id="botStatusIndicator" class="flex items-center space-x-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                            <span class="font-semibold text-red-400">Stopped</span>
+                        </div>
+                    </div>
+                    
+                    <div class="text-right">
+                        <p class="text-sm text-gray-400">Mode</p>
+                        <span id="tradingMode" class="px-3 py-1 bg-green-900/50 text-green-400 rounded-full text-sm font-semibold">
+                            🧪 Paper Trading
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Control Panel -->
+        <section class="glass-panel rounded-2xl p-6 mb-6">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div class="flex items-center space-x-4">
+                    <button id="startBtn" onclick="startBot()" class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Start Bot</span>
+                    </button>
+                    
+                    <button id="stopBtn" onclick="stopBot()" disabled class="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg font-semibold transition-colors flex items-center space-x-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                        </svg>
+                        <span>Stop Bot</span>
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div>
+                        <label class="text-sm text-gray-400">Strategy</label>
+                        <select id="strategySelect" class="mt-1 block w-40 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="momentum">Momentum</option>
+                            <option value="mean-reversion">Mean Reversion</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="text-sm text-gray-400">Initial Balance</label>
+                        <input type="number" id="initialBalance" value="10000" class="mt-1 block w-32 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="glass-panel rounded-xl p-6">
+                <p class="text-gray-400 text-sm mb-1">Current Balance</p>
+                <p id="currentBalance" class="text-3xl font-bold">$10,000.00</p>
+            </div>
+            
+            <div class="glass-panel rounded-xl p-6">
+                <p class="text-gray-400 text-sm mb-1">Total Return</p>
+                <p id="totalReturn" class="text-3xl font-bold text-gray-400">0.00%</p>
+            </div>
+            
+            <div class="glass-panel rounded-xl p-6">
+                <p class="text-gray-400 text-sm mb-1">Open Positions</p>
+                <p id="openPositions" class="text-3xl font-bold">0</p>
+            </div>
+            
+            <div class="glass-panel rounded-xl p-6">
+                <p class="text-gray-400 text-sm mb-1">Today's Trades</p>
+                <p id="todayTrades" class="text-3xl font-bold">0</p>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Chart -->
+            <section class="lg:col-span-2 glass-panel rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-4">Portfolio Performance</h2>
+                <div class="h-80">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </section>
+
+            <!-- Open Positions -->
+            <section class="glass-panel rounded-2xl p-6">
+                <h2 class="text-xl font-semibold mb-4">Open Positions</h2>
+                <div id="positionsList" class="space-y-3 max-h-80 overflow-y-auto">
+                    <div class="text-gray-500 text-center py-8">
+                        No open positions
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Recent Trades -->
+        <section class="glass-panel rounded-2xl p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4">Recent Trades</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-400 border-b border-gray-700">
+                            <th class="pb-3">Time</th>
+                            <th class="pb-3">Symbol</th>
+                            <th class="pb-3">Action</th>
+                            <th class="pb-3">Quantity</th>
+                            <th class="pb-3">Price</th>
+                            <th class="pb-3">P&L</th>
+                            <th class="pb-3">Reason</th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody id="tradesTable" class="text-sm">
+                        <tr>
+                            <td colspan="7" class="text-gray-500 text-center py-8">
+                                No trades yet. Start the bot to begin trading.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Manual Trading -->
+        <section class="glass-panel rounded-2xl p-6 mt-6">
+            <h2 class="text-xl font-semibold mb-4">Manual Trading</h2>
+            
+            <div class="flex items-end space-x-4">
+                <div>
+                    <label class="text-sm text-gray-400">Symbol</label>
+                    <select id="manualSymbol" class="mt-1 block w-32 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg">
+                        <option value="AAPL">AAPL</option>
+                        <option value="MSFT">MSFT</option>
+                        <option value="GOOGL">GOOGL</option>
+                        <option value="AMZN">AMZN</option>
+                        <option value="TSLA">TSLA</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="text-sm text-gray-400">Action</label>
+                    <select id="manualAction" class="mt-1 block w-24 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg">
+                        <option value="buy">Buy</option>
+                        <option value="sell">Sell</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="text-sm text-gray-400">Quantity</label>
+                    <input type="number" id="manualQuantity" value="10" min="1" class="mt-1 block w-24 px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg">
+                </div>
+                
+                <button onclick="manualTrade()" id="manualTradeBtn" disabled class="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed rounded-lg font-semibold transition-colors">
+                    Execute Trade
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const socket = io();
+        let chart;
+        let portfolioData = [];
+        let isRunning = false;
+
+        // Initialize Chart
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Portfolio Value',
+                    data: [],
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        grid: { color: 'rgba(75, 85, 99, 0.2)' },
+                        ticks: { color: '#9ca3af' }
+                    }
+                }
+            }
+        });
+
+        // Socket event listeners
+        socket.on('connect', () => {
+            console.log('Connected to Trading Bot');
+        });
+
+        socket.on('botStatus', (status) => {
+            updateBotStatus(status);
+        });
+
+        socket.on('portfolioUpdate', (portfolio) => {
+            updatePortfolio(portfolio);
+        });
+
+        socket.on('trade', (trade) => {
+            addTrade(trade);
+        });
+
+        socket.on('positionOpened', (position) => {
+            addPosition(position);
+        });
+
+        socket.on('positionClosed', (position) => {
+            removePosition(position.symbol);
+        });
+
+        socket.on('positionUpdate', (position) => {
+            updatePosition(position);
+        });
+
+        // Bot Controls
+        async function startBot() {
+            const strategy = document.getElementById('strategySelect').value;
+            const initialBalance = parseFloat(document.getElementById('initialBalance').value);
+            
+            try {
+                const response = await fetch('/api/bot/start', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ strategy, config: { initialBalance } })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    isRunning = true;
+                    updateUIState(true);
+                    console.log('Bot started:', data.message);
+                } else {
+                    alert('Failed to start bot: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error starting bot:', error);
+                alert('Error starting bot');
+            }
+        }
+
+        async function stopBot() {
+            try {
+                const response = await fetch('/api/bot/stop', { method: 'POST' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    isRunning = false;
+                    updateUIState(false);
+                    console.log('Bot stopped');
+                }
+            } catch (error) {
+                console.error('Error stopping bot:', error);
+            }
+        }
+
+        async function manualTrade() {
+            const symbol = document.getElementById('manualSymbol').value;
+            const action = document.getElementById('manualAction').value;
+            const quantity = parseInt(document.getElementById('manualQuantity').value);
+            
+            try {
+                const response = await fetch('/api/bot/manual-trade', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ symbol, action, quantity })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log('Trade executed:', data.message);
+                } else {
+                    alert('Trade failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error executing trade:', error);
+            }
+        }
+
+        // UI Updates
+        function updateBotStatus(status) {
+            isRunning = status.isRunning;
+            updateUIState(isRunning);
+            
+            document.getElementById('currentBalance').textContent = 
+                '$' + (status.balance || 10000).toFixed(2);
+            
+            if (status.totalReturn) {
+                const returnEl = document.getElementById('totalReturn');
+                returnEl.textContent = status.totalReturn;
+                returnEl.className = status.totalReturn.includes('+') ? 
+                    'text-3xl font-bold profit' : 'text-3xl font-bold loss';
+            }
+            
+            document.getElementById('openPositions').textContent = 
+                (status.positions || []).length;
+            
+            if (status.dailyStats) {
+                document.getElementById('todayTrades').textContent = 
+                    status.dailyStats.trades || 0;
+            }
+        }
+
+        function updateUIState(running) {
+            const startBtn = document.getElementById('startBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const manualTradeBtn = document.getElementById('manualTradeBtn');
+            const statusIndicator = document.getElementById('botStatusIndicator');
+            
+            if (running) {
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                manualTradeBtn.disabled = false;
+                statusIndicator.innerHTML = `
+                    <div class="w-3 h-3 rounded-full bg-green-500 bot-running"></div>
+                    <span class="font-semibold text-green-400">Running</span>
+                `;
+            } else {
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                manualTradeBtn.disabled = true;
+                statusIndicator.innerHTML = `
+                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span class="font-semibold text-red-400">Stopped</span>
+                `;
+            }
+        }
+
+        function updatePortfolio(portfolio) {
+            document.getElementById('currentBalance').textContent = 
+                '$' + portfolio.balance.toFixed(2);
+            
+            // Update chart
+            const now = new Date().toLocaleTimeString();
+            portfolioData.push(portfolio.totalValue);
+            
+            if (portfolioData.length > 20) {
+                portfolioData.shift();
+                chart.data.labels.shift();
+            }
+            
+            chart.data.labels.push(now);
+            chart.data.datasets[0].data = portfolioData;
+            chart.update();
+            
+            // Update stats
+            document.getElementById('openPositions').textContent = 
+                portfolio.positions.length;
+            document.getElementById('todayTrades').textContent = 
+                portfolio.dailyStats.trades;
+        }
+
+        function addTrade(trade) {
+            const tbody = document.getElementById('tradesTable');
+            
+            // Remove empty message
+            if (tbody.querySelector('td[colspan="7"]')) {
+                tbody.innerHTML = '';
+            }
+            
+            const row = document.createElement('tr');
+            row.className = `border-b border-gray-700 ${trade.action === 'buy' ? 'trade-buy' : 'trade-sell'}`;
+            
+            const pnl = trade.realizedPnL ? 
+                (trade.realizedPnL >= 0 ? '+' : '') + trade.realizedPnL.toFixed(2) : '-';
+            const pnlClass = trade.realizedPnL >= 0 ? 'profit' : 'loss';
+            
+            row.innerHTML = `
+                <td class="py-3">${new Date(trade.timestamp).toLocaleTimeString()}</td>
+                <td class="py-3 font-semibold">${trade.symbol}</td>
+                <td class="py-3">
+                    <span class="px-2 py-1 rounded text-xs ${trade.action === 'buy' ? 'bg-green-900 text-green-400' : 'bg-red-900 text-red-400'}">
+                        ${trade.action.toUpperCase()}
+                    </span>
+                </td>
+                <td class="py-3">${trade.quantity}</td>
+                <td class="py-3">$${trade.price.toFixed(2)}</td>
+                <td class="py-3 ${pnlClass}">${pnl}</td>
+                <td class="py-3 text-gray-400">${trade.reason}</td>
+            `;
+            
+            tbody.insertBefore(row, tbody.firstChild);
+        }
+
+        function addPosition(position) {
+            const list = document.getElementById('positionsList');
+            
+            // Remove empty message
+            if (list.querySelector('.text-gray-500')) {
+                list.innerHTML = '';
+            }
+            
+            const div = document.createElement('div');
+            div.id = `position-${position.symbol}`;
+            div.className = 'glass-panel rounded-lg p-4';
+            div.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-semibold text-lg">${position.symbol}</p>
+                        <p class="text-sm text-gray-400">${position.quantity} shares @ $${position.entryPrice.toFixed(2)}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-400">Unrealized P&L</p>
+                        <p id="pnl-${position.symbol}" class="font-semibold">$${position.unrealizedPnL.toFixed(2)}</p>
+                    </div>
+                </div>
+            `;
+            
+            list.appendChild(div);
+        }
+
+        function updatePosition(position) {
+            const pnlEl = document.getElementById(`pnl-${position.symbol}`);
+            if (pnlEl) {
+                pnlEl.textContent = '$' + position.unrealizedPnL.toFixed(2);
+                pnlEl.className = 'font-semibold ' + (position.unrealizedPnL >= 0 ? 'profit' : 'loss');
+            }
+        }
+
+        function removePosition(symbol) {
+            const el = document.getElementById(`position-${symbol}`);
+            if (el) el.remove();
+            
+            // Check if empty
+            const list = document.getElementById('positionsList');
+            if (list.children.length === 0) {
+                list.innerHTML = `
+                    <div class="text-gray-500 text-center py-8">
+                        No open positions
+                    </div>
+                `;
+            }
+        }
+
+        // Initial status check
+        fetch('/api/bot/status')
+            .then(res => res.json())
+            .then(status => updateBotStatus(status))
+            .catch(err => console.log('Bot not running'));
+    </script>
+</body>
+</html>
