@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero Command Center | Pokemon Office</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-emerald: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --border-color: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(16, 185, 129, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(16, 185, 129, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-blue));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-text span {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            color: var(--accent-emerald);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title-icon {
+            font-size: 20px;
+        }
+
+        /* Agents Grid */
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .agent-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--agent-color, var(--accent-emerald));
+        }
+
+        .agent-card:hover {
+            background: var(--bg-card-hover);
+            transform: scale(1.02);
+        }
+
+        .agent-card.active::before {
+            background: var(--accent-emerald);
+            box-shadow: 0 0 10px var(--accent-emerald);
+        }
+
+        .agent-card.busy::before {
+            background: var(--accent-amber);
+            box-shadow: 0 0 10px var(--accent-amber);
+        }
+
+        .agent-avatar {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: var(--bg-card-hover);
+            border: 2px solid var(--border-color);
+        }
+
+        .agent-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .agent-role {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .agent-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .agent-status.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+        }
+
+        .agent-status.busy {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-amber);
+        }
+
+        .agent-status.idle {
+            background: rgba(148, 163, 184, 0.2);
+            color: var(--text-secondary);
+        }
+
+        /* Projects */
+        .project-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .project-item {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .project-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .project-status {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .project-status.validation {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent-purple);
+        }
+
+        .project-status.planning {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--accent-blue);
+        }
+
+        .project-status.operational {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-card-hover);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-emerald), var(--accent-blue));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        .project-tasks {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .task-item.done {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+        }
+
+        .task-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
+        .task-item.done .task-checkbox {
+            background: var(--accent-emerald);
+            border-color: var(--accent-emerald);
+            color: white;
+        }
+
+        /* Metrics */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-emerald), var(--accent-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .last-updated {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Full width cards */
+        .card-full {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 1024px) {
+            .card-full {
+                grid-column: 1;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
+        .card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">🌀</div>
+                <div class="logo-text">
+                    <h1>Command Center</h1>
+                    <span>Pokemon Office Edition</span>
+                </div>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>System Online</span>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Agents Section -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-icon">👥</span>
+                        Active Agents
+                    </div>
+                </div>
+                <div class="agents-grid" id="agentsGrid">
+                    <!-- Agents injected by JS -->
+                </div>
+            </div>
+
+            <!-- Projects Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-icon">📊</span>
+                        Projects
+                    </div>
+                </div>
+                <div class="project-list" id="projectList">
+                    <!-- Projects injected by JS -->
+                </div>
+            </div>
+
+            <!-- Metrics Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-icon">📈</span>
+                        Key Metrics
+                    </div>
+                </div>
+                <div class="metrics-grid" id="metricsGrid">
+                    <!-- Metrics injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="last-updated">
+                <span>🕐</span>
+                <span id="lastUpdated">Loading...</span>
+            </div>
+            <div>Zero Method • 2026</div>
+        </footer>
+    </div>
+
+    <script>
+        // Pokemon emoji mapping
+        const pokemonEmoji = {
+            'Mewtwo': '👾',
+            'Alakazam': '🥄',
+            'Rapidash': '🦄',
+            'Porygon': '📊',
+            'Jigglypuff': '🎤'
+        };
+
+        // Initialize Socket.io
+        const socket = io();
+
+        // Update dashboard
+        function updateDashboard(data) {
+            updateAgents(data.agents);
+            updateProjects(data.projects);
+            updateMetrics(data.metrics);
+            document.getElementById('lastUpdated').textContent = 
+                'Last updated: ' + new Date(data.lastUpdated).toLocaleString();
+        }
+
+        // Update agents
+        function updateAgents(agents) {
+            const grid = document.getElementById('agentsGrid');
+            grid.innerHTML = agents.map(agent => `
+                <div class="agent-card ${agent.status}">
+                    <div class="agent-avatar">${pokemonEmoji[agent.pokemon] || '👤'}</div>
+                    <div class="agent-name">${agent.name}</div>
+                    <div class="agent-role">${agent.role}</div>
+                    <div class="agent-status ${agent.status}">${agent.status}</div>
+                    <div style="margin-top: 8px; font-size: 11px; color: var(--text-secondary); text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                        ${agent.task}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update projects
+        function updateProjects(projects) {
+            const list = document.getElementById('projectList');
+            list.innerHTML = Object.entries(projects).map(([id, project]) => `
+                <div class="project-item">
+                    <div class="project-header">
+                        <div class="project-name">
+                            <span>${project.name}</span>
+                        </div>
+                        <div class="project-status ${project.status}">${project.status}</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${project.progress}%"></div>
+                    </div>
+                    <div class="project-tasks">
+                        ${project.tasks.slice(0, 4).map(task => `
+                            <div class="task-item ${task.done ? 'done' : ''}">
+                                <div class="task-checkbox">${task.done ? '✓' : ''}</div>
+                                <span>${task.name}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update metrics
+        function updateMetrics(metrics) {
+            const grid = document.getElementById('metricsGrid');
+            const metricData = [
+                { label: 'Website Visits', value: metrics.websiteVisits },
+                { label: 'Email Signups', value: metrics.emailSignups },
+                { label: 'Social Followers', value: metrics.socialFollowers },
+                { label: 'Content Pieces', value: metrics.contentPieces }
+            ];
+            
+            grid.innerHTML = metricData.map(m => `
+                <div class="metric-card">
+                    <div class="metric-value">${m.value}</div>
+                    <div class="metric-label">${m.label}</div>
+                </div>
+            `).join('');
+        }
+
+        // Socket events
+        socket.on('connect', () => {
+            console.log('Connected to Command Center');
+        });
+
+        socket.on('statusUpdate', (data) => {
+            updateDashboard(data);
+        });
+
+        // Initial fetch
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => updateDashboard(data))
+            .catch(err => console.error('Error fetching status:', err));
+    </script>
+</body>
+</html>

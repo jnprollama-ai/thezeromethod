@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const title = "Product | Zero Method - AI Prompts Starter Pack";
+const description = "25 battle-tested AI prompts + 10 email templates for $19. Save 5 hours every week.";
+---
+
+<Layout title={title} description={description}>
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <a href="/" class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+                ◈ Zero Method
+            </a>
+        </div>
+    </header>
+
+    <!-- Product Hero -->
+    <section class="py-20 px-6">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">25 AI Prompts + 10 Email Templates</h1>
+                <p class="text-xl text-slate-400">Save 5 hours every week with copy-paste ready prompts for ChatGPT and Claude.</p>
+            </div>
+
+            <!-- Pricing Card -->
+            <div class="max-w-md mx-auto bg-slate-800 rounded-2xl p-8 border border-slate-700">
+                <div class="text-center mb-6">
+                    <div class="text-sm text-slate-400 mb-2">One-time payment</div>
+                    <div class="text-5xl font-bold text-white">$19</div>
+                    <div class="text-slate-400 mt-2">No subscription. No upsells.</div>
+                </div>
+
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center gap-3">
+                        <span class="text-cyan-400">✓</span>
+                        <span>25 AI Prompts (5 categories)</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="text-cyan-400">✓</span>
+                        <span>10 Email Templates</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="text-cyan-400">✓</span>
+                        <span>PDF + Markdown formats</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="text-cyan-400">✓</span>
+                        <span>Usage instructions</span>
+                    </li>
+                    <li class="flex items-center gap-3">
+                        <span class="text-cyan-400">✓</span>
+                        <span>Free updates (1 year)</span>
+                    </li>
+                </ul>
+
+                <a href="https://buy.stripe.com/test_placeholder" class="block w-full py-4 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-lg font-semibold text-slate-900 text-center hover:opacity-90 transition">
+                    Buy Now — $19
+                </a>
+
+                <p class="text-center text-sm text-slate-500 mt-4">
+                    30-day money-back guarantee
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-20 px-6 bg-slate-900/50">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+
+            <div class="space-y-6">
+                <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
+                    <h3 class="font-semibold mb-2">What's actually included?</h3>
+                    <p class="text-slate-400">You get 25 AI prompts across 5 categories (Email, Reports, Content, Productivity, Research) plus 10 professional email templates. Everything is delivered as PDF and Markdown files.</p>
+                </div>
+
+                <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
+                    <h3 class="font-semibold mb-2">Do I need technical skills?</h3>
+                    <p class="text-slate-400">Not at all. If you can copy and paste, you can use these prompts. Simply copy the prompt template, fill in your specific details, and paste into ChatGPT or Claude.</p>
+                </div>
+
+                <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
+                    <h3 class="font-semibold mb-2">What if I'm not satisfied?</h3>
+                    <p class="text-slate-400">30-day money-back guarantee. If these prompts don't save you time, email us within 30 days for a full refund. No questions asked.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 px-6 border-t border-slate-800">
+        <div class="max-w-6xl mx-auto text-center text-slate-500">
+            <p>© 2026 Zero Method. Built with ◈.</p>
+        </div>
+    </footer>
+</Layout>
