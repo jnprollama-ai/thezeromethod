@@ -689,7 +689,8 @@ app.post('/api/social-media-content/create', (req, res) => {
     postedDate: null,
     engagement: null,
     hashtags,
-    mediaUrl
+    mediaUrl,
+    createdAt: new Date().toISOString()
   };
   
   currentStatus.socialMediaContent = currentStatus.socialMediaContent || [];
