@@ -68,6 +68,17 @@ const defaultStatus = {
         { name: 'Architecture Design', done: false },
         { name: 'MVP Development', done: false }
       ]
+    },
+    saas: {
+      name: 'Zero SaaS',
+      status: 'research',
+      progress: 5,
+      revenue: 0,
+      tasks: [
+        { name: 'Market Validation', done: false },
+        { name: 'Competitive Analysis', done: false },
+        { name: 'Feature Planning', done: false }
+      ]
     }
   },
   metrics: {
@@ -75,7 +86,30 @@ const defaultStatus = {
     emailSignups: 0,
     socialFollowers: 0,
     contentPieces: 3
-  }
+  },
+  dailyProgress: [],
+  upcomingProjects: [
+    {
+      id: 'trading',
+      name: 'Trading Dashboard',
+      description: 'Real-time market data visualization and portfolio tracking',
+      status: 'planning',
+      timeline: 'Months 2-3',
+      dependencies: ['zma'],
+      estimatedTokens: 200000,
+      estimatedBudget: 100
+    },
+    {
+      id: 'saas',
+      name: 'Zero SaaS',
+      description: 'AI-powered tools for solopreneurs and small businesses',
+      status: 'research',
+      timeline: 'Months 4-6',
+      dependencies: ['zma'],
+      estimatedTokens: 500000,
+      estimatedBudget: 250
+    }
+  ]
 };
 
 // Load or initialize status
@@ -139,6 +173,57 @@ app.post('/api/update-project', (req, res) => {
   } else {
     res.status(404).json({ error: 'Project not found' });
   }
+});
+
+app.post('/api/log-progress', (req, res) => {
+  const { date, content, author = 'System' } = req.body;
+  const entry = {
+    id: Date.now().toString(),
+    date: date || new Date().toISOString(),
+    content,
+    author
+  };
+  
+  currentStatus.dailyProgress.unshift(entry); // Add to beginning of array
+  // Keep only last 30 entries
+  if (currentStatus.dailyProgress.length > 30) {
+    currentStatus.dailyProgress = currentStatus.dailyProgress.slice(0, 30);
+  }
+  
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(entry);
+});
+
+app.post('/api/add-project', (req, res) => {
+  const { id, name, description, timeline, dependencies = [] } = req.body;
+  
+  if (!id || !name) {
+    return res.status(400).json({ error: 'Project ID and name are required' });
+  }
+  
+  const newProject = {
+    id,
+    name,
+    description,
+    status: 'planning',
+    timeline,
+    dependencies,
+    progress: 0,
+    revenue: 0,
+    tasks: []
+  };
+  
+  currentStatus.upcomingProjects.push(newProject);
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(newProject);
+});
+
+app.get('/api/history', (req, res) => {
+  res.json(currentStatus.dailyProgress);
 });
 
 // Socket.io connection

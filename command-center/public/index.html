@@ -501,6 +501,32 @@
                     <!-- Metrics injected by JS -->
                 </div>
             </div>
+
+            <!-- Daily Progress Section -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-icon">📅</span>
+                        Daily Progress
+                    </div>
+                </div>
+                <div class="project-tasks" id="dailyProgressList">
+                    <!-- Progress items injected by JS -->
+                </div>
+            </div>
+
+            <!-- Upcoming Projects Section -->
+            <div class="card card-full">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-title-icon">🚀</span>
+                        Upcoming Projects
+                    </div>
+                </div>
+                <div class="project-list" id="upcomingProjectsList">
+                    <!-- Upcoming projects injected by JS -->
+                </div>
+            </div>
         </div>
 
         <footer>
@@ -530,6 +556,8 @@
             updateAgents(data.agents);
             updateProjects(data.projects);
             updateMetrics(data.metrics);
+            updateDailyProgress(data.dailyProgress);
+            updateUpcomingProjects(data.upcomingProjects);
             document.getElementById('lastUpdated').textContent = 
                 'Last updated: ' + new Date(data.lastUpdated).toLocaleString();
         }
@@ -590,6 +618,58 @@
                 <div class="metric-card">
                     <div class="metric-value">${m.value}</div>
                     <div class="metric-label">${m.label}</div>
+                </div>
+            `).join('');
+        }
+
+        // Update daily progress
+        function updateDailyProgress(progressItems) {
+            const list = document.getElementById('dailyProgressList');
+            if (!progressItems || progressItems.length === 0) {
+                list.innerHTML = '<div class="task-item"><span>No progress logged yet</span></div>';
+                return;
+            }
+            
+            list.innerHTML = progressItems.slice(0, 10).map(item => `
+                <div class="task-item">
+                    <div class="task-checkbox">✓</div>
+                    <div>
+                        <div>${item.content}</div>
+                        <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                            ${new Date(item.date).toLocaleDateString()} by ${item.author}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update upcoming projects
+        function updateUpcomingProjects(projects) {
+            const list = document.getElementById('upcomingProjectsList');
+            if (!projects || projects.length === 0) {
+                list.innerHTML = '<div class="project-item" style="text-align: center; color: var(--text-secondary);">No upcoming projects</div>';
+                return;
+            }
+            
+            list.innerHTML = projects.map(project => `
+                <div class="project-item">
+                    <div class="project-header">
+                        <div class="project-name">
+                            <span>${project.name}</span>
+                        </div>
+                        <div class="project-status ${project.status}">${project.status}</div>
+                    </div>
+                    <div style="margin-bottom: 12px; color: var(--text-secondary); font-size: 14px;">
+                        ${project.description}
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 13px;">
+                        <div><strong>Timeline:</strong> ${project.timeline || 'TBD'}</div>
+                        <div><strong>Dependencies:</strong> ${project.dependencies && project.dependencies.length > 0 ? project.dependencies.join(', ') : 'None'}</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                        <div><strong>Est. Tokens:</strong> ${project.estimatedTokens || 'N/A'}</div>
+                        <div><strong>Est. Budget:</strong> $${project.estimatedBudget || 'N/A'}</div>
+                    </div>
                 </div>
             `).join('');
         }
