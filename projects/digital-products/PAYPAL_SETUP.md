@@ -114,10 +114,12 @@
 
 ### Step 1: Create PayPal Account (5 min)
 1. Go to paypal.com
-2. Sign up (Personal or Business)
+2. Sign up with: **jnpr.first@gmail.com**
 3. **Recommendation:** Business account for selling
-4. Verify email
+4. Verify email (check jnpr.first@gmail.com inbox)
 5. Link bank account
+
+**Account Email:** jnpr.first@gmail.com
 
 ### Step 2: Get PayPal.me Link (2 min)
 1. Go to paypal.com/paypalme
