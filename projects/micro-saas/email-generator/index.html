@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Generator | Zero Method</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">✉️</span>
+                    <h1 class="text-2xl font-bold">AI Email Generator</h1>
+                </div>
+                <a href="#pricing" class="bg-white text-purple-600 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Get Pro — $9
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Hero -->
+        <div class="text-center mb-10">
+            <h2 class="text-4xl font-bold text-gray-900 mb-4">
+                Write Professional Emails in Seconds
+            </h2>
+            <p class="text-xl text-gray-600">
+                AI-powered email generator. Free tier: 3 emails/day. Pro: Unlimited.
+            </p>
+        </div>
+
+        <!-- Generator Form -->
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Email Type</label>
+                    <select id="emailType" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="cold-outreach">Cold Outreach</option>
+                        <option value="follow-up">Follow-up</option>
+                        <option value="meeting-request">Meeting Request</option>
+                        <option value="thank-you">Thank You</option>
+                        <option value="proposal">Proposal/Quote</option>
+                        <option value="decline">Polite Decline</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Tone</label>
+                    <select id="tone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="professional">Professional</option>
+                        <option value="friendly">Friendly</option>
+                        <option value="formal">Formal</option>
+                        <option value="casual">Casual</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Recipient</label>
+                <input type="text" id="recipient" placeholder="e.g., John Smith, Marketing Director at TechCorp" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Key Points to Include</label>
+                <textarea id="keyPoints" rows="3" placeholder="Briefly describe what you want to communicate..."
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"></textarea>
+            </div>
+
+            <button onclick="generateEmail()" class="w-full gradient-bg text-white py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition">
+                ✨ Generate Email
+            </button>
+        </div>
+
+        <!-- Result -->
+        <div id="resultSection" class="hidden bg-white rounded-2xl shadow-xl p-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Generated Email</h3>
+                <div class="flex space-x-2">
+                    <button onclick="copyEmail()" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
+                        📋 Copy
+                    </button>
+                    <button onclick="regenerate()" class="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition text-sm font-medium">
+                        🔄 Regenerate
+                    </button>
+                </div>
+            </div>
+            <div id="generatedEmail" class="bg-gray-50 rounded-lg p-6 text-gray-800 whitespace-pre-wrap font-mono text-sm leading-relaxed">
+            </div>
+            
+            <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+                <strong>Free tier:</strong> 3 emails per day. <a href="#pricing" class="text-purple-600 font-semibold hover:underline">Upgrade to Pro</a> for unlimited generation.
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-3 gap-4 mb-10">
+            <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+                <p class="text-3xl font-bold text-purple-600">10,000+</p>
+                <p class="text-gray-600">Emails Generated</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+                <p class="text-3xl font-bold text-purple-600">4.9★</p>
+                <p class="text-gray-600">User Rating</p>
+            </div>
+            <div class="bg-white rounded-xl p-6 text-center shadow-sm">
+                <p class="text-3xl font-bold text-purple-600">2min</p>
+                <p class="text-gray-600">Avg. Time Saved</p>
+            </div>
+        </div>
+
+        <!-- Pricing -->
+        <section id="pricing" class="mb-10">
+            <h2 class="text-3xl font-bold text-center text-gray-900 mb-8">Choose Your Plan</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                <!-- Free -->
+                <div class="bg-white rounded-2xl shadow-lg p-8 border border-gray-200">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Free</h3>
+                    <p class="text-gray-600 mb-4">Perfect for trying out</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-6">$0</p>
+                    
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> 3 emails per day
+                        </li>
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> 6 email types
+                        </li>
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> Copy to clipboard
+                        </li>
+                    </ul>
+                    
+                    <button class="w-full py-3 border-2 border-purple-600 text-purple-600 rounded-lg font-semibold hover:bg-purple-50 transition">
+                        Current Plan
+                    </button>
+                </div>
+
+                <!-- Pro -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-purple-600 relative">
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                        <span class="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">Pro</h3>
+                    <p class="text-gray-600 mb-4">For professionals</p>
+                    <p class="text-4xl font-bold text-gray-900 mb-6">$9 <span class="text-lg text-gray-500">one-time</span></p>
+                    
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> Unlimited emails
+                        </li>
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> All email types
+                        </li>
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> Save & organize drafts
+                        </li>
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> Export to PDF
+                        </li>
+                        <li class="flex items-center text-gray-700">
+                            <span class="text-green-500 mr-2">✓</span> Priority support
+                        </li>
+                    </ul>
+                    
+                    <button class="w-full gradient-bg text-white py-3 rounded-lg font-semibold hover:opacity-90 transition">
+                        Get Pro Access
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mb-10">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-900 mb-2">How does the AI email generation work?</h3>
+                    <p class="text-gray-600">We use your inputs (email type, tone, recipient, key points) and apply proven copywriting frameworks to generate professional emails instantly.</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-900 mb-2">Is the Pro plan really one-time payment?</h3>
+                    <p class="text-gray-600">Yes! Pay $9 once and get unlimited email generation forever. No subscriptions, no hidden fees.</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="font-semibold text-gray-900 mb-2">Can I use this for business emails?</h3>
+                    <p class="text-gray-600">Absolutely. The Pro plan includes commercial use rights. Generate emails for yourself, your team, or your clients.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">© 2026 Zero Method. All rights reserved.</p>
+            <p class="text-gray-400 text-sm">Made with 💜 by Zero</p>
+        </div>
+    </footer>
+
+    <script>
+        let emailCount = 0;
+        const MAX_FREE_EMAILS = 3;
+
+        // Email templates database
+        const emailTemplates = {
+            'cold-outreach': {
+                subject: 'Quick question about {{company}}',
+                body: `Hi {{name}},
+
+I hope this email finds you well. I came across {{company}} and was impressed by {{achievement}}.
+
+I'm reaching out because {{value_proposition}}. We help {{target_audience}} {{benefit}}.
+
+{{social_proof}}
+
+Would you be open to a brief 10-minute call next week to explore if this might be valuable for {{company}}?
+
+Best regards,
+{{sender_name}}`
+            },
+            'follow-up': {
+                subject: 'Following up: {{topic}}',
+                body: `Hi {{name}},
+
+I wanted to follow up on my previous email about {{topic}}. I understand you're busy, so I'll keep this brief.
+
+{{key_point}}
+
+If now isn't the right time, I completely understand. Just let me know and I'll circle back in a few weeks.
+
+Best,
+{{sender_name}}`
+            },
+            'meeting-request': {
+                subject: 'Meeting request: {{purpose}}',
+                body: `Hi {{name}},
+
+I'd like to request a brief meeting to discuss {{purpose}}.
+
+{{meeting_reason}}
+
+Would any of these times work for you?
+• {{time_option_1}}
+• {{time_option_2}}
+• {{time_option_3}}
+
+Looking forward to connecting.
+
+Best regards,
+{{sender_name}}`
+            },
+            'thank-you': {
+                subject: 'Thank you for {{reason}}',
+                body: `Hi {{name}},
+
+I wanted to send a quick note to thank you for {{reason}}.
+
+{{specific_detail}}
+
+{{next_step}}
+
+Thanks again!
+
+Best,
+{{sender_name}}`
+            },
+            'proposal': {
+                subject: 'Proposal for {{project}}',
+                body: `Hi {{name}},
+
+Following our conversation, I've prepared a proposal for {{project}}.
+
+{{project_summary}}
+
+Investment: {{price}}
+Timeline: {{timeline}}
+
+{{value_proposition}}
+
+I've attached the full proposal for your review. Please let me know if you have any questions or would like to discuss further.
+
+Best regards,
+{{sender_name}}`
+            },
+            'decline': {
+                subject: 'Regarding {{topic}}',
+                body: `Hi {{name}},
+
+Thank you for {{opportunity}}. I really appreciate you thinking of me.
+
+After careful consideration, I've decided to {{decision}} at this time. {{reason}}
+
+{{alternative}}
+
+I hope you understand, and I wish you all the best with {{topic}}.
+
+Best regards,
+{{sender_name}}`
+            }
+        };
+
+        // Tone modifiers
+        const toneModifiers = {
+            'professional': { greeting: 'Dear', closing: 'Best regards', style: 'formal' },
+            'friendly': { greeting: 'Hi', closing: 'Best', style: 'casual' },
+            'formal': { greeting: 'Dear', closing: 'Sincerely', style: 'very formal' },
+            'casual': { greeting: 'Hey', closing: 'Thanks', style: 'informal' }
+        };
+
+        function generateEmail() {
+            const emailType = document.getElementById('emailType').value;
+            const tone = document.getElementById('tone').value;
+            const recipient = document.getElementById('recipient').value;
+            const keyPoints = document.getElementById('keyPoints').value;
+
+            // Check free tier limit
+            emailCount++;
+            if (emailCount > MAX_FREE_EMAILS) {
+                alert('Free tier limit reached (3 emails/day). Upgrade to Pro for unlimited access!');
+                document.getElementById('resultSection').classList.add('hidden');
+                return;
+            }
+
+            // Get template
+            const template = emailTemplates[emailType];
+            const toneMod = toneModifiers[tone];
+
+            // Generate email (simplified for demo)
+            const name = recipient.split(',')[0] || 'there';
+            const company = recipient.includes('at') ? recipient.split('at')[1].trim() : 'your company';
+
+            let email = template.body
+                .replace(/{{name}}/g, name)
+                .replace(/{{company}}/g, company)
+                .replace(/{{value_proposition}}/g, keyPoints || 'our solution can help streamline your workflow')
+                .replace(/{{sender_name}}/g, '[Your Name]')
+                .replace(/{{topic}}/g, keyPoints.substring(0, 30) || 'our discussion')
+                .replace(/{{achievement}}/g, 'your recent growth')
+                .replace(/{{target_audience}}/g, 'professionals like you')
+                .replace(/{{benefit}}/g, 'save time and increase productivity')
+                .replace(/{{social_proof}}/g, 'We\'ve helped over 100 companies achieve similar results.')
+                .replace(/{{key_point}}/g, keyPoints || 'The main point I wanted to emphasize')
+                .replace(/{{meeting_reason}}/g, keyPoints || 'to discuss how we can collaborate')
+                .replace(/{{time_option_1}}/g, 'Monday at 2 PM')
+                .replace(/{{time_option_2}}/g, 'Tuesday at 10 AM')
+                .replace(/{{time_option_3}}/g, 'Wednesday at 3 PM')
+                .replace(/{{purpose}}/g, keyPoints.substring(0, 30) || 'our potential collaboration')
+                .replace(/{{reason}}/g, keyPoints || 'taking the time to meet with me')
+                .replace(/{{specific_detail}}/g, keyPoints || 'Your insights were particularly valuable.')
+                .replace(/{{next_step}}/g, 'I look forward to continuing our conversation.')
+                .replace(/{{project}}/g, keyPoints.substring(0, 30) || 'the proposed project')
+                .replace(/{{project_summary}}/g, keyPoints || 'Here\'s what we discussed and what I can deliver:')
+                .replace(/{{price}}/g, '$X,XXX')
+                .replace(/{{timeline}}/g, '2-3 weeks')
+                .replace(/{{opportunity}}/g, keyPoints || 'this opportunity')
+                .replace(/{{decision}}/g, 'decline')
+                .replace(/{{alternative}}/g, 'I\'d be happy to refer you to someone who might be a better fit.')
+                .replace(/{{sender_name}}/g, '[Your Name]');
+
+            // Apply tone
+            email = email.replace('Dear', toneMod.greeting);
+            email = email.replace('Best regards', toneMod.closing);
+
+            // Add subject line
+            const subject = template.subject.replace(/{{company}}/g, company).replace(/{{topic}}/g, keyPoints.substring(0, 30) || 'our discussion').replace(/{{purpose}}/g, keyPoints.substring(0, 30) || 'collaboration').replace(/{{reason}}/g, keyPoints.substring(0, 30) || 'your time').replace(/{{project}}/g, keyPoints.substring(0, 30) || 'project');
+            
+            email = `Subject: ${subject}\n\n` + email;
+
+            // Display result
+            document.getElementById('generatedEmail').textContent = email;
+            document.getElementById('resultSection').classList.remove('hidden');
+            
+            // Scroll to result
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyEmail() {
+            const email = document.getElementById('generatedEmail').textContent;
+            navigator.clipboard.writeText(email).then(() => {
+                alert('Email copied to clipboard!');
+            });
+        }
+
+        function regenerate() {
+            generateEmail();
+        }
+    </script>
+</body>
+</html>
