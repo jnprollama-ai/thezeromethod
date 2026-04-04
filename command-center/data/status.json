@@ -1,9 +1,12 @@
 {
-  "lastUpdated": "2026-04-04T17:42:14.675Z",
+  "lastUpdated": "2026-04-05T04:35:00.000Z",
   "website": {
     "status": "operational",
     "uptime": "99.9%",
-    "lastCheck": "2026-04-04T14:30:00.000Z"
+    "lastCheck": "2026-04-05T04:30:00.000Z",
+    "url": "https://thezeromethod.com",
+    "platform": "Vercel (migrated from Netlify)",
+    "deployedAt": "2026-04-05T00:30:00.000Z"
   },
   "agents": [
     {
@@ -12,7 +15,7 @@
       "pokemon": "Mewtwo",
       "role": "Commander",
       "status": "active",
-      "task": "Content strategy and deployment"
+      "task": "Overseeing website migration and revenue projects"
     },
     {
       "id": "research",
@@ -20,7 +23,7 @@
       "pokemon": "Alakazam",
       "role": "Analyst",
       "status": "idle",
-      "task": "Competitor analysis complete"
+      "task": "Completed market research for revenue strategies"
     },
     {
       "id": "content",
@@ -28,7 +31,7 @@
       "pokemon": "Rapidash",
       "role": "Creator",
       "status": "active",
-      "task": "Generating social media content"
+      "task": "Generating digital products and website content"
     },
     {
       "id": "seo",
@@ -36,7 +39,7 @@
       "pokemon": "Porygon",
       "role": "Optimizer",
       "status": "idle",
-      "task": "Monitoring rankings"
+      "task": "Monitoring search rankings"
     },
     {
       "id": "social",
@@ -44,85 +47,81 @@
       "pokemon": "Jigglypuff",
       "role": "Engager",
       "status": "active",
-      "task": "Managing content buffer"
+      "task": "Managing content buffer for manual posting"
+    },
+    {
+      "id": "trading",
+      "name": "Trading Agent",
+      "pokemon": "Gyarados",
+      "role": "Trader",
+      "status": "active",
+      "task": "Trading bot running on paper mode - port 3457"
     }
   ],
   "projects": {
     "zma": {
       "name": "Zero Marketing Agency",
-      "status": "validation",
-      "progress": 70,
+      "status": "operational",
+      "progress": 85,
       "revenue": 0,
       "tasks": [
-        {
-          "name": "Website Live",
-          "done": true
-        },
-        {
-          "name": "Product Created",
-          "done": true
-        },
-        {
-          "name": "Content Strategy",
-          "done": true
-        },
-        {
-          "name": "Social Media Content",
-          "done": true
-        },
-        {
-          "name": "Blog Posts",
-          "done": false
-        },
-        {
-          "name": "Traffic Generation",
-          "done": false
-        },
-        {
-          "name": "First Sale",
-          "done": false
-        }
-      ]
+        { "name": "Website Live", "done": true },
+        { "name": "Product Created", "done": true },
+        { "name": "Content Strategy", "done": true },
+        { "name": "Social Media Content", "done": true },
+        { "name": "Blog Posts", "done": true },
+        { "name": "Traffic Generation", "done": false },
+        { "name": "First Sale", "done": false },
+        { "name": "Vercel Migration", "done": true }
+      ],
+      "migratedTo": "Vercel",
+      "newRepo": "https://github.com/jnprollama-ai/thezeromethod-site"
     },
     "trading": {
       "name": "Trading Dashboard",
+      "status": "operational",
+      "progress": 75,
+      "revenue": 0,
+      "tasks": [
+        { "name": "Trading Bot Core", "done": true },
+        { "name": "Momentum Strategy", "done": true },
+        { "name": "Mean Reversion Strategy", "done": true },
+        { "name": "Dashboard UI", "done": true },
+        { "name": "Paper Trading Mode", "done": true },
+        { "name": "Live Trading Integration", "done": false },
+        { "name": "Signal Service", "done": false }
+      ],
+      "url": "http://localhost:3457",
+      "mode": "paper",
+      "strategies": ["momentum", "mean-reversion"]
+    },
+    "saas": {
+      "name": "Zero SaaS",
+      "status": "planning",
+      "progress": 15,
+      "revenue": 0,
+      "tasks": [
+        { "name": "AI Email Generator", "done": true },
+        { "name": "Market Validation", "done": false },
+        { "name": "Landing Page", "done": false },
+        { "name": "Payment Integration", "done": false }
+      ],
+      "idea": "AI Email Generator Micro-SaaS",
+      "price": "$9 one-time"
+    },
+    "digital-products": {
+      "name": "Digital Products Store",
       "status": "planning",
       "progress": 10,
       "revenue": 0,
       "tasks": [
-        {
-          "name": "Concept Defined",
-          "done": true
-        },
-        {
-          "name": "Architecture Design",
-          "done": false
-        },
-        {
-          "name": "MVP Development",
-          "done": false
-        }
-      ]
-    },
-    "saas": {
-      "name": "Zero SaaS",
-      "status": "research",
-      "progress": 5,
-      "revenue": 0,
-      "tasks": [
-        {
-          "name": "Market Validation",
-          "done": false
-        },
-        {
-          "name": "Competitive Analysis",
-          "done": false
-        },
-        {
-          "name": "Feature Planning",
-          "done": false
-        }
-      ]
+        { "name": "Product Strategy", "done": true },
+        { "name": "AI Art Packs", "done": false },
+        { "name": "Printable Planners", "done": false },
+        { "name": "Etsy/Gumroad Setup", "done": false }
+      ],
+      "platforms": ["Etsy", "Gumroad", "Creative Market"],
+      "projectedMonthlyRevenue": "$685"
     }
   },
   "metrics": {
@@ -130,88 +129,70 @@
     "emailSignups": 0,
     "socialFollowers": 42,
     "twitterFollowers": 0,
-    "contentPieces": 20
+    "contentPieces": 25,
+    "tradesExecuted": 0,
+    "portfolioValue": 10000
   },
   "socialMediaContent": [
     {
       "id": "post-1775312400000",
       "platform": "twitter",
       "content": "🧠 The AI Prompt Formula:\n\nContext + Task + Constraints = Perfect Output\n\n❌ Bad: \"Write about marketing\"\n✅ Good: \"Write 3 SaaS email subjects for founders, focus on urgency\"\n\nSpecificity = Quality\n\n#AIPrompts #Productivity",
-      "status": "scheduled",
-      "scheduledDate": "2026-04-05T05:00:00.000Z",
+      "status": "draft",
+      "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": [
-        "#AIPrompts",
-        "#Productivity"
-      ],
+      "hashtags": ["#AIPrompts", "#Productivity"],
       "mediaUrl": null,
-      "createdAt": "2026-04-04T14:20:00.000Z",
-      "lastModified": "2026-04-04T17:36:52.978Z"
+      "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775313000000",
       "platform": "twitter",
       "content": "⏱️ AI Batch Processing:\n\nInstead of 10 separate prompts:\n\n\"Generate 10 LinkedIn ideas about remote work. Include hooks + 3 key points + CTA.\"\n\nBatch = 10x faster\n\n#AIProductivity #ContentCreation",
-      "status": "scheduled",
-      "scheduledDate": "2026-04-05T10:00:00.000Z",
+      "status": "draft",
+      "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": [
-        "#AIProductivity",
-        "#ContentCreation"
-      ],
+      "hashtags": ["#AIProductivity", "#ContentCreation"],
       "mediaUrl": null,
-      "createdAt": "2026-04-04T14:20:00.000Z",
-      "lastModified": "2026-04-04T17:37:53.026Z"
+      "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775313600000",
       "platform": "twitter",
       "content": "🔄 AI Feedback Loop:\n\n1. Ask AI to draft\n2. Review & edit\n3. Show AI your version\n4. Ask for improvements\n5. Repeat until perfect\n\nIteration beats first drafts every time\n\n#AIWorkflow #BestPractices",
-      "status": "scheduled",
-      "scheduledDate": "2026-04-05T14:00:00.000Z",
+      "status": "draft",
+      "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": [
-        "#AIWorkflow",
-        "#BestPractices"
-      ],
+      "hashtags": ["#AIWorkflow", "#BestPractices"],
       "mediaUrl": null,
-      "createdAt": "2026-04-04T14:20:00.000Z",
-      "lastModified": "2026-04-04T17:38:55.024Z"
+      "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775314200000",
       "platform": "twitter",
       "content": "🎯 AI for Solopreneurs:\n\nSave 60+ hours/year:\n• Emails: 30 min/day\n• Content: 2 hrs/week\n• Research: 5 hrs/month\n• Descriptions: 10 hrs/month\n\nReclaim time. Scale faster.\n\n#Solopreneur #AIForBusiness",
-      "status": "scheduled",
-      "scheduledDate": "2026-04-06T05:00:00.000Z",
+      "status": "draft",
+      "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": [
-        "#Solopreneur",
-        "#AIForBusiness"
-      ],
+      "hashtags": ["#Solopreneur", "#AIForBusiness"],
       "mediaUrl": null,
-      "createdAt": "2026-04-04T14:20:00.000Z",
-      "lastModified": "2026-04-04T17:40:03.609Z"
+      "createdAt": "2026-04-04T14:20:00.000Z"
     },
     {
       "id": "post-1775314800000",
       "platform": "twitter",
       "content": "🔍 AI Quality Check:\n\nBefore publishing, ask:\n• \"What's unclear?\"\n• \"Who might misunderstand?\"\n• \"What assumptions did I make?\"\n\n2 minutes of QA prevents embarrassing mistakes\n\n#AIBestPractices #QualityControl",
-      "status": "scheduled",
-      "scheduledDate": "2026-04-06T10:00:00.000Z",
+      "status": "draft",
+      "scheduledDate": null,
       "postedDate": null,
       "engagement": null,
-      "hashtags": [
-        "#AIBestPractices",
-        "#QualityControl"
-      ],
+      "hashtags": ["#AIBestPractices", "#QualityControl"],
       "mediaUrl": null,
-      "createdAt": "2026-04-04T14:20:00.000Z",
-      "lastModified": "2026-04-04T17:42:14.675Z"
+      "createdAt": "2026-04-04T14:20:00.000Z"
     }
   ],
   "blogDrafts": [
@@ -224,11 +205,7 @@
       "filePath": "blog_professionals_guide_ai_prompt_engineering.md",
       "wordCount": 2400,
       "readTime": "12 min",
-      "tags": [
-        "AI",
-        "Prompt Engineering",
-        "Professional Development"
-      ],
+      "tags": ["AI", "Prompt Engineering", "Professional Development"],
       "comments": [],
       "createdAt": "2026-04-04T14:20:00.000Z",
       "outline": {
@@ -261,12 +238,7 @@
       "filePath": "blog_10_ai_automation_strategies.md",
       "wordCount": 2200,
       "readTime": "11 min",
-      "tags": [
-        "AI",
-        "Automation",
-        "Productivity",
-        "Time Management"
-      ],
+      "tags": ["AI", "Automation", "Productivity", "Time Management"],
       "comments": [],
       "createdAt": "2026-04-04T14:20:00.000Z",
       "outline": {
@@ -304,12 +276,7 @@
       "filePath": "blog_ai_powered_professional_practice.md",
       "wordCount": 2600,
       "readTime": "13 min",
-      "tags": [
-        "AI",
-        "Professional Development",
-        "Business Strategy",
-        "Framework"
-      ],
+      "tags": ["AI", "Professional Development", "Business Strategy", "Framework"],
       "comments": [],
       "createdAt": "2026-04-04T14:20:00.000Z",
       "outline": {
@@ -340,46 +307,79 @@
     "isRunning": false,
     "username": "@ZeroMethodAI",
     "lastPost": null,
-    "followerCount": 0
+    "followerCount": 0,
+    "note": "Manual posting mode active - API credentials need refresh"
+  },
+  "tradingBot": {
+    "isRunning": true,
+    "url": "http://localhost:3457",
+    "mode": "paper",
+    "balance": 10000,
+    "positions": [],
+    "strategies": ["momentum", "mean-reversion"],
+    "dailyStats": {
+      "trades": 0,
+      "profit": 0,
+      "loss": 0
+    }
   },
   "dailyProgress": [
     {
-      "id": "1775310000002",
-      "date": "2026-04-04T13:45:00.000Z",
-      "content": "Content buffer populated with sample posts",
-      "author": "System"
+      "id": "1775335800001",
+      "date": "2026-04-05T04:30:00.000Z",
+      "content": "Migrated website from Netlify to Vercel - clean deployment with honest product description",
+      "author": "Zero"
     },
     {
-      "id": "1775312400003",
-      "date": "2026-04-04T14:20:00.000Z",
-      "content": "Generated new content buffer with 5 Twitter posts and 3 blog drafts",
-      "author": "Content Agent"
+      "id": "1775335800002",
+      "date": "2026-04-05T04:30:00.000Z",
+      "content": "Trading Bot operational on port 3457 with paper trading mode",
+      "author": "Trading Agent"
+    },
+    {
+      "id": "1775335800003",
+      "date": "2026-04-05T04:30:00.000Z",
+      "content": "Fixed blog 404 errors with Vercel rewrite rules",
+      "author": "Zero"
     }
   ],
   "upcomingProjects": [
     {
-      "id": "trading",
-      "name": "Trading Dashboard",
-      "description": "Real-time market data visualization and portfolio tracking",
+      "id": "digital-products",
+      "name": "Digital Products Store",
+      "description": "AI-generated art packs, printable planners, social media templates for sale on Etsy/Gumroad",
       "status": "planning",
-      "timeline": "Months 2-3",
-      "dependencies": [
-        "zma"
-      ],
-      "estimatedTokens": 200000,
-      "estimatedBudget": 100
+      "timeline": "Week 1-2",
+      "dependencies": [],
+      "estimatedTokens": 50000,
+      "estimatedBudget": 10
     },
     {
       "id": "saas",
-      "name": "Zero SaaS",
-      "description": "AI-powered tools for solopreneurs and small businesses",
-      "status": "research",
-      "timeline": "Months 4-6",
-      "dependencies": [
-        "zma"
-      ],
-      "estimatedTokens": 500000,
-      "estimatedBudget": 250
+      "name": "AI Email Generator Micro-SaaS",
+      "description": "Simple web tool for generating professional emails with AI",
+      "status": "planning",
+      "timeline": "Week 2-3",
+      "dependencies": ["website"],
+      "estimatedTokens": 100000,
+      "estimatedBudget": 0
     }
-  ]
+  ],
+  "revenue": {
+    "currentMonth": 0,
+    "target": 500,
+    "streams": [
+      {
+        "name": "AI Prompts Starter Pack",
+        "status": "active",
+        "price": "$19",
+        "sales": 0
+      },
+      {
+        "name": "Digital Products",
+        "status": "planning",
+        "projectedMonthly": "$685"
+      }
+    ]
+  }
 }
