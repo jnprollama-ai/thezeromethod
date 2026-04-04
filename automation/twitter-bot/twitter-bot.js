@@ -8,51 +8,45 @@ const client = new TwitterApi('AAAAAAAAAAAAAAAAAAAAAFsU8wEAAAAA9ByJ8lbmzjxVTyKwx
 // Read-only client for search operations
 const rwClient = client.readWrite;
 
-// Content to post
+// Content to post - All reviewed for compliance with etiquette guidelines
 const tweets = [
   {
-    text: `I've bought 10+ AI prompt bundles.
+    text: `After testing dozens of AI prompt resources, I noticed a pattern:
 
-Every single one was disappointing.
+Most are either too generic or too complex.
 
-Here's what actually works:
+Here's what actually works for busy professionals:
 
 🧵 (1/5)`,
     thread: [
-      `Most "AI prompt packs" are bloated garbage.
+      `The best prompts are:
 
-1,000 mediocre prompts you'll never use.
-
-The creators never actually tested them.
-
-Just copy-pasted from Reddit. (2/5)`,
+• Specific to your actual workflow
+• Tested with real use cases
+• Clear enough for consistent results
+• Focused on one outcome at a time (2/5)`,
       
-      `The prompts that ACTUALLY work:
+      `That's why I created something different:
 
-• Specific to YOUR workflow
-• Tested across multiple AI models
-• Include clear instructions
-• Focused on one outcome (3/5)`,
+25 prompts I use daily.
+Not overwhelming. Just practical.
+
+Each saves 10+ minutes.
+Email, Reports, Content, Research. (3/5)`,
       
-      `I built something different:
+      `No complex frameworks.
+No "10,000 prompts" overwhelm.
 
-25 prompts I actually use daily.
-Not 1,000. Just 25.
-
-Each one tested. Each one saves 10+ minutes.
-
-Email, Reports, Content, Research.
-
-That's it. No fluff. (4/5)`,
-      
-      `Honest pricing:
+Just 25 that work.
 
 $19 one-time.
-Not $200. Not $49/month.
+Updates included for a year. (4/5)`,
+      
+      `Want to try before you buy?
 
-Just $19 for prompts that actually work.
+Reply "PROMPTS" and I'll DM you 3 free ones.
 
-Or reply "PROMPTS" for 3 free ones to try.
+No obligations. Just tested tools that work.
 
 https://thezeromethod.com (5/5)`
     ]
@@ -78,19 +72,15 @@ Learn prompt engineering. It's the difference between:
 Small skill, massive payoff.`,
   },
   {
-    text: `5 categories of AI prompts every professional needs:
+    text: `Prompt engineering isn't about complexity.
 
-1. Email management
-2. Report summaries  
-3. Content creation
-4. Research analysis
-5. Meeting notes
+It's about specificity.
 
-I built 25 prompts covering all 5.
+Instead of: "Write an email"
 
-$19. Copy-paste ready.
+Try: "Write a professional follow-up email to a client who hasn't responded in 3 days. Maintain a friendly but firm tone. Ask for a specific update on the project."
 
-https://thezeromethod.com`,
+See the difference?`,
   },
   {
     text: `AI won't replace professionals.
