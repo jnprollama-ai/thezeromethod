@@ -9,7 +9,6 @@
     <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-brand">
             <span class="nav-logo">🌀</span>
@@ -30,9 +29,7 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Hero Section -->
         <section class="page-header">
             <h1>🌀 Command Center Dashboard</h1>
             <p class="page-subtitle">Real-time monitoring of Zero Method operations</p>
@@ -42,19 +39,18 @@
             </div>
         </section>
 
-        <!-- Quick Stats Grid -->
         <section class="stats-section">
             <h2 class="section-title">📊 Quick Stats</h2>
             
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-icon">👥</div>
+                    <div class="stat-icon">👾</div>
                     <div class="stat-value" id="activeAgents">-</div>
                     <div class="stat-label">Active Agents</div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">📈</div>
+                    <div class="stat-icon">📊</div>
                     <div class="stat-value" id="projectsProgress">-</div>
                     <div class="stat-label">Avg. Progress</div>
                 </div>
@@ -73,7 +69,6 @@
             </div>
         </section>
 
-        <!-- Recent Activity -->
         <section class="activity-section">
             <h2 class="section-title">📋 Recent Activity</h2>
             
@@ -88,7 +83,6 @@
             </div>
         </section>
 
-        <!-- Quick Navigation Cards -->
         <section class="quick-nav-section">
             <h2 class="section-title">⚡ Quick Access</h2>
             
@@ -116,12 +110,60 @@
                     <div class="quick-nav-title">Social Media</div>
                     <div class="quick-nav-desc">Manage social media automation</div>
                 </a>
+                
+                <a href="/saas" class="quick-nav-card">
+                    <div class="quick-nav-icon">🚀</div>
+                    <div class="quick-nav-title">SaaS Tools</div>
+                    <div class="quick-nav-desc">Monitor SaaS products and analytics</div>
+                </a>
+                
+                <a href="/trading" class="quick-nav-card">
+                    <div class="quick-nav-icon">💹</div>
+                    <div class="quick-nav-title">Trading</div>
+                    <div class="quick-nav-desc">Trading bot and market monitoring</div>
+                </a>
+            </div>
+        </section>
+
+        <section class="activity-section">
+            <h2 class="section-title">🎯 System Overview</h2>
+            
+            <div class="agent-detail-card">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">🌀</div>
+                    <div class="agent-info">
+                        <h2>Zero Method Operations</h2>
+                        <p>Current system status and performance metrics</p>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <div class="agent-stat">
+                        <span class="stat-label">Website Status</span>
+                        <span class="stat-value" id="websiteStatus">-</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Uptime</span>
+                        <span class="stat-value" id="uptime">-</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Trading Bot</span>
+                        <span class="stat-value" id="tradingBotStatus">-</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Social Media</span>
+                        <span class="stat-value" id="socialStatus">-</span>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>© 2026 Zero Method | Command Center v2.0</p>
+        <p>© 2026 Zero Method | Command Center v2.1</p>
     </footer>
 
     <script>
@@ -142,7 +184,19 @@
             
             document.getElementById('blogDraftsCount').textContent = data.blogDrafts ? data.blogDrafts.length : 0;
             
-            document.getElementById('revenueAmount').textContent = data.projects.zma.revenue || '0';
+            // Calculate total revenue
+            let totalRevenue = 0;
+            if (data.projects) {
+                Object.values(data.projects).forEach(p => {
+                    totalRevenue += p.revenue || 0;
+                });
+            }
+            if (data.saasTools) {
+                data.saasTools.forEach(t => {
+                    totalRevenue += t.revenue || 0;
+                });
+            }
+            document.getElementById('revenueAmount').textContent = totalRevenue.toLocaleString();
             
             // Update activity
             const activityList = document.getElementById('activityList');
@@ -167,6 +221,24 @@
                     </div>
                 `;
             }
+            
+            // Update system overview
+            if (data.website) {
+                document.getElementById('websiteStatus').innerHTML = 
+                    `<span class="status-indicator online">${data.website.status}</span>`;
+                document.getElementById('uptime').textContent = data.website.uptime;
+            }
+            
+            if (data.tradingBot) {
+                document.getElementById('tradingBotStatus').innerHTML = 
+                    `<span class="status-indicator ${data.tradingBot.status}">${data.tradingBot.status}</span>`;
+            }
+            
+            // Count scheduled/pending social posts
+            const socialPosts = data.socialMediaContent || [];
+            const pendingPosts = socialPosts.filter(p => p.status === 'draft' || p.status === 'scheduled').length;
+            document.getElementById('socialStatus').innerHTML = 
+                `<span class="status-indicator online">${pendingPosts} pending posts</span>`;
         });
 
         // Initial load

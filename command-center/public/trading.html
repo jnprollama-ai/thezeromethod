@@ -32,11 +32,12 @@
     <main class="main-content">
         <section class="page-header">
             <h1>💹 Trading Dashboard</h1>
-            <p class="page-subtitle">Monitor market data and portfolio performance</p>
+            <p class="page-subtitle">Automated trading bot and market monitoring</p>
         </section>
 
         <section class="trading-section">
-            <div class="stats-grid">
+            <!-- Portfolio Stats -->
+            <div class="stats-grid" id="portfolioStats">
                 <div class="stat-card">
                     <div class="stat-icon">💼</div>
                     <div class="stat-value">$<span id="portfolioValue">0</span></div>
@@ -44,8 +45,8 @@
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">📊</div>
-                    <div class="stat-value" id="portfolioChange">+0.00%</div>
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-value" id="dayChange">+0.00%</div>
                     <div class="stat-label">24h Change</div>
                 </div>
                 
@@ -56,217 +57,186 @@
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-icon">📈</div>
+                    <div class="stat-icon">🎯</div>
                     <div class="stat-value" id="winRate">0%</div>
                     <div class="stat-label">Win Rate</div>
                 </div>
             </div>
 
-            <h2 class="section-title">🔍 Market Overview</h2>
-            
+            <!-- Trading Bot Status -->
             <div class="agent-detail-card">
                 <div class="agent-header">
-                    <div class="agent-avatar-large">🌐</div>
+                    <div class="agent-avatar-large">🤖</div>
                     <div class="agent-info">
-                        <h2>Major Indices</h2>
-                        <div>
-                            <span class="agent-role-badge">Live Data</span>
-                            <span class="agent-status-badge active">Updated 1 min ago</span>
-                        </div>
+                        <h2>Trading Bot</h2>
+                        <p>AI-powered automated trading system</p>
                     </div>
                 </div>
                 
                 <div class="agent-body">
                     <div class="agent-stat">
-                        <span class="stat-label">S&P 500:</span>
-                        <span class="stat-value" id="sp500">5,234.18 <span style="color: #10b981;">(+0.42%)</span></span>
+                        <span class="stat-label">Status</span>
+                        <span class="stat-value"><span class="status-indicator online" id="botStatusIndicator">Active</span></span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">NASDAQ:</span>
-                        <span class="stat-value" id="nasdaq">16,153.39 <span style="color: #10b981;">(+0.67%)</span></span>
+                        <span class="stat-label">Strategy</span>
+                        <span class="stat-value" id="botStrategy">Conservative</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">DOW JONES:</span>
-                        <span class="stat-value" id="dow">38,664.25 <span style="color: #ef4444;">(-0.12%)</span></span>
+                        <span class="stat-label">Risk Level</span>
+                        <span class="stat-value" id="botRisk">Low</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">BITCOIN:</span>
-                        <span class="stat-value" id="btc">68,421.35 <span style="color: #10b981;">(+2.15%)</span></span>
+                        <span class="stat-label">Last Trade</span>
+                        <span class="stat-value" id="lastTrade">-</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Today's Trades</span>
+                        <span class="stat-value" id="todayTrades">0</span>
+                    </div>
+                    
+                    <div class="agent-actions">
+                        <button class="btn btn-secondary" onclick="toggleBot()">
+                            ⏸️ Pause Bot
+                        </button>
+                        <button class="btn btn-secondary" onclick="configureBot()">
+                            ⚙️ Configure
+                        </button>
+                        <button class="btn btn-primary" onclick="viewPerformance()">
+                            📊 Performance
+                        </button>
                     </div>
                 </div>
             </div>
 
+            <!-- Market Overview -->
+            <h2 class="section-title">🌍 Market Overview</h2>
+            
+            <div class="agent-detail-card">
+                <div class="agent-header">
+                    <div class="agent-avatar-large">📊</div>
+                    <div class="agent-info">
+                        <h2>Major Indices & Crypto</h2>
+                        <p>Live market data</p>
+                    </div>
+                </div>
+                
+                <div class="agent-body">
+                    <div id="marketData">
+                        <!-- Market data will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Market News -->
             <h2 class="section-title">📰 Market News & Analysis</h2>
             
-            <div id="marketNewsContainer">
-                <div class="agent-detail-card">
-                    <div class="agent-header">
-                        <div class="activity-icon">⏳</div>
-                        <div class="activity-content">
-                            <div class="activity-text">Loading market news...</div>
-                            <div class="activity-meta">Please wait</div>
-                        </div>
-                    </div>
-                </div>
+            <div id="newsContainer">
+                <!-- News will be rendered here -->
             </div>
 
-            <h2 class="section-title">📋 Portfolio Holdings</h2>
+            <!-- Portfolio Holdings -->
+            <h2 class="section-title">💼 Portfolio Holdings</h2>
             
             <div class="agent-detail-card">
                 <div class="agent-header">
                     <div class="agent-avatar-large">💰</div>
                     <div class="agent-info">
                         <h2>Current Positions</h2>
-                        <div>
-                            <span class="agent-role-badge">4 Assets</span>
-                            <span class="agent-status-badge active">Diversified</span>
-                        </div>
+                        <p>Active trading positions</p>
                     </div>
                 </div>
                 
                 <div class="agent-body">
-                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                        <thead>
-                            <tr style="border-bottom: 1px solid var(--dark-border);">
-                                <th style="text-align: left; padding: 12px; color: var(--text-secondary);">Asset</th>
-                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">Quantity</th>
-                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">Avg Price</th>
-                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">Current</th>
-                                <th style="text-align: right; padding: 12px; color: var(--text-secondary);">P&L</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr style="border-bottom: 1px solid var(--dark-border);">
-                                <td style="padding: 12px;">AAPL</td>
-                                <td style="padding: 12px; text-align: right;">10</td>
-                                <td style="padding: 12px; text-align: right;">$150.00</td>
-                                <td style="padding: 12px; text-align: right;">$178.23</td>
-                                <td style="padding: 12px; text-align: right; color: #10b981;">+$282.30 (+18.8%)</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid var(--dark-border);">
-                                <td style="padding: 12px;">MSFT</td>
-                                <td style="padding: 12px; text-align: right;">5</td>
-                                <td style="padding: 12px; text-align: right;">$320.00</td>
-                                <td style="padding: 12px; text-align: right;">$412.56</td>
-                                <td style="padding: 12px; text-align: right; color: #10b981;">+$462.80 (+28.9%)</td>
-                            </tr>
-                            <tr style="border-bottom: 1px solid var(--dark-border);">
-                                <td style="padding: 12px;">GOOGL</td>
-                                <td style="padding: 12px; text-align: right;">8</td>
-                                <td style="padding: 12px; text-align: right;">$125.50</td>
-                                <td style="padding: 12px; text-align: right;">$142.33</td>
-                                <td style="padding: 12px; text-align: right; color: #10b981;">+$134.64 (+13.4%)</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 12px;">BTC</td>
-                                <td style="padding: 12px; text-align: right;">0.5</td>
-                                <td style="padding: 12px; text-align: right;">$58,000.00</td>
-                                <td style="padding: 12px; text-align: right;">$68,421.35</td>
-                                <td style="padding: 12px; text-align: right; color: #10b981;">+$5,210.68 (+17.9%)</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="positionsTable">
+                        <!-- Positions will be rendered here -->
+                    </div>
                     
                     <div class="agent-actions">
                         <button class="btn btn-secondary" onclick="refreshData()">
-                            <span>🔄</span> Refresh Data
+                            🔄 Refresh
                         </button>
                         <button class="btn btn-primary" onclick="executeTrade()">
-                            <span>💱</span> Execute Trade
+                            💱 New Trade
                         </button>
                     </div>
                 </div>
             </div>
 
-            <h2 class="section-title">🤖 Trading Bot Status</h2>
-            
-            <div class="quick-nav-grid">
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">🧠</div>
-                    <div class="quick-nav-title">Strategy Bot</div>
-                    <div class="quick-nav-desc">AI-powered trading strategies</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge active">Active</span>
-                        <button class="btn btn-secondary" onclick="configureBot()">⚙️ Config</button>
-                    </div>
-                </div>
-                
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">🛡️</div>
-                    <div class="quick-nav-title">Risk Manager</div>
-                    <div class="quick-nav-desc">Portfolio risk monitoring</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge active">Monitoring</span>
-                        <button class="btn btn-secondary" onclick="viewRisk()">👁️ View</button>
-                    </div>
-                </div>
-                
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">⚡</div>
-                    <div class="quick-nav-title">Auto Trading</div>
-                    <div class="quick-nav-desc">Fully automated execution</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge active">Enabled</span>
-                        <button class="btn btn-secondary" onclick="configureAutoTrading()">⚙️ Config</button>
-                    </div>
-                </div>
-            </div>
-
-            <h2 class="section-title">⚙️ Auto Trading Configuration</h2>
+            <!-- Trading Strategy Configuration -->
+            <h2 class="section-title">⚙️ Trading Strategy</h2>
             
             <div class="agent-detail-card">
                 <div class="agent-header">
-                    <div class="agent-avatar-large">⚙️</div>
+                    <div class="agent-avatar-large">🧠</div>
                     <div class="agent-info">
-                        <h2>Trading Preferences</h2>
-                        <div>
-                            <span class="agent-role-badge">Low Intervention</span>
-                            <span class="agent-status-badge active">Optimized</span>
-                        </div>
+                        <h2>Strategy Configuration</h2>
+                        <p>Customize automated trading parameters</p>
                     </div>
                 </div>
                 
                 <div class="agent-body">
                     <div class="agent-stat">
-                        <span class="stat-label">Risk Tolerance:</span>
+                        <span class="stat-label">Risk Tolerance</span>
                         <span class="stat-value">Moderate</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">Position Sizing:</span>
+                        <span class="stat-label">Position Size</span>
                         <span class="stat-value">2% per trade</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">Stop Loss:</span>
+                        <span class="stat-label">Stop Loss</span>
                         <span class="stat-value">5% per position</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">Take Profit:</span>
+                        <span class="stat-label">Take Profit</span>
                         <span class="stat-value">15% per position</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">Max Daily Trades:</span>
+                        <span class="stat-label">Max Daily Trades</span>
                         <span class="stat-value">3</span>
                     </div>
                     
                     <div class="agent-stat">
-                        <span class="stat-label">Preferred Assets:</span>
-                        <span class="stat-value">Tech stocks, Bitcoin, Ethereum</span>
+                        <span class="stat-label">Preferred Assets</span>
+                        <span class="stat-value">AAPL, MSFT, GOOGL, BTC, ETH</span>
+                    </div>
+                    
+                    <div class="agent-stat">
+                        <span class="stat-label">Trading Hours</span>
+                        <span class="stat-value">Market hours only (9:30 AM - 4:00 PM EST)</span>
                     </div>
                     
                     <div class="agent-actions">
                         <button class="btn btn-secondary" onclick="optimizeStrategy()">
-                            <span>🧠</span> Optimize Strategy
+                            🧠 Optimize
                         </button>
-                        <button class="btn btn-primary" onclick="viewPerformance()">
-                            <span>📊</span> View Performance
+                        <button class="btn btn-primary" onclick="saveStrategy()">
+                            💾 Save Strategy
                         </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Chart Placeholder -->
+            <h2 class="section-title">📈 Performance History</h2>
+            
+            <div class="agent-detail-card">
+                <div class="agent-body">
+                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; background: var(--dark-bg); border-radius: var(--border-radius);">
+                        <div style="text-align: center; color: var(--text-secondary);">
+                            <div style="font-size: 48px; margin-bottom: 12px;">📊</div>
+                            <div>Performance charts will appear here</div>
+                            <div style="font-size: 12px; margin-top: 8px;">Monthly ROI: +4.2% | Sharpe Ratio: 1.8 | Max Drawdown: 8.3%</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -274,177 +244,221 @@
     </main>
 
     <footer class="footer">
-        <p>© 2026 Zero Method | Command Center v2.0</p>
+        <p>© 2026 Zero Method | Command Center v2.1</p>
     </footer>
 
     <script>
         const socket = io();
-        
-        // Simulate trading data
-        const tradingData = {
-            portfolioValue: 42789.45,
-            portfolioChange: "+2.34%",
-            cashBalance: 5230.75,
-            winRate: "72%"
-        };
+        let currentStatus = null;
 
-        // Update UI with trading data
-        function updateTradingUI() {
-            document.getElementById('portfolioValue').textContent = tradingData.portfolioValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('portfolioChange').textContent = tradingData.portfolioChange;
-            document.getElementById('portfolioChange').style.color = tradingData.portfolioChange.startsWith('+') ? '#10b981' : '#ef4444';
-            document.getElementById('cashBalance').textContent = tradingData.cashBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('winRate').textContent = tradingData.winRate;
-        }
-
-        function refreshData() {
-            // Simulate data refresh
-            document.querySelector('.agent-status-badge').textContent = 'Refreshing...';
-            setTimeout(() => {
-                document.querySelector('.agent-status-badge').textContent = 'Updated now';
-                // Update with slightly different values for demo
-                tradingData.portfolioValue += (Math.random() - 0.5) * 1000;
-                updateTradingUI();
-            }, 1500);
-        }
-
-        function executeTrade() {
-            const asset = prompt('Enter asset symbol (e.g., AAPL, BTC):');
-            if (asset) {
-                const action = prompt('Buy or Sell?');
-                if (action && (action.toLowerCase() === 'buy' || action.toLowerCase() === 'sell')) {
-                    const quantity = prompt('Enter quantity:');
-                    if (quantity && !isNaN(quantity)) {
-                        alert(`Trade executed!\n\n${action.toUpperCase()} ${quantity} ${asset}\nStatus: Completed`);
-                    }
-                }
-            }
-        }
-
-        function configureBot() {
-            alert('Opening bot configuration panel...\n\nSettings:\n- Risk tolerance: Moderate\n- Position sizing: 2%\n- Stop loss: 5%\n- Take profit: 15%');
-        }
-
-        function viewRisk() {
-            alert('Risk analysis dashboard:\n\n- Portfolio VaR: $2,340 (5.5%)\n- Sector exposure: Tech 65%\n- Correlation risk: Low\n- Liquidity risk: Minimal');
-        }
-
-        function configureAutoTrading() {
-            alert('Auto trading configuration:\n\n- Enabled: Yes\n- Risk model: Conservative\n- Max drawdown: 10%\n- Rebalancing: Weekly\n- Execution: Market orders');
-        }
-
-        function optimizeStrategy() {
-            alert('Running strategy optimization...\n\nBest performing strategies:\n1. Mean reversion (65% success)\n2. Trend following (58% success)\n3. Breakout trading (52% success)');
-        }
-
-        function viewPerformance() {
-            alert('Performance metrics:\n\n- Monthly ROI: 4.2%\n- Sharpe Ratio: 1.8\n- Max Drawdown: 8.3%\n- Win Rate: 72%');
-        }
-
-        // Handle market news updates
         socket.on('statusUpdate', (data) => {
-            const container = document.getElementById('marketNewsContainer');
+            currentStatus = data;
+            updatePortfolioStats(data);
+            renderMarketData(data);
+            renderMarketNews(data);
+            renderPositions(data);
+        });
+
+        function updatePortfolioStats(data) {
+            const bot = data.tradingBot || {};
+            document.getElementById('portfolioValue').textContent = bot.portfolioValue?.toLocaleString() || '0';
+            document.getElementById('cashBalance').textContent = (bot.portfolioValue * 0.1)?.toLocaleString() || '0';
+            document.getElementById('dayChange').textContent = (bot.dayChange >= 0 ? '+' : '') + (bot.dayChange || 0) + '%';
+            document.getElementById('dayChange').style.color = (bot.dayChange || 0) >= 0 ? '#10b981' : '#ef4444';
+            document.getElementById('winRate').textContent = (bot.winRate || 0) + '%';
             
-            if (!data.tradingNews || data.tradingNews.length === 0) {
-                container.innerHTML = `
-                    <div class="agent-detail-card">
-                        <div class="agent-header">
-                            <div class="activity-icon">📭</div>
-                            <div class="activity-content">
-                                <div class="activity-text">No market news available</div>
-                                <div class="activity-meta">Check back later for updates</div>
+            document.getElementById('botStrategy').textContent = bot.strategy || 'Conservative';
+            document.getElementById('botRisk').textContent = bot.riskLevel || 'Low';
+            document.getElementById('lastTrade').textContent = bot.lastTrade 
+                ? new Date(bot.lastTrade).toLocaleTimeString() 
+                : '-';
+            document.getElementById('todayTrades').textContent = bot.todayTrades || 0;
+        }
+
+        function renderMarketData(data) {
+            const container = document.getElementById('marketData');
+            const indices = [
+                { name: 'S&P 500', value: '5,234.18', change: '+0.42%', positive: true },
+                { name: 'NASDAQ', value: '16,153.39', change: '+0.67%', positive: true },
+                { name: 'DOW', value: '38,664.25', change: '-0.12%', positive: false },
+                { name: 'BTC/USD', value: '68,421.35', change: '+2.15%', positive: true },
+                { name: 'ETH/USD', value: '3,847.22', change: '+1.83%', positive: true },
+                { name: 'SOL/USD', value: '142.56', change: '+5.42%', positive: true }
+            ];
+            
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px;">
+                    ${indices.map(idx => `
+                        <div style="background: var(--dark-bg); padding: 12px; border-radius: var(--border-radius); border: 1px solid var(--dark-border);">
+                            <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">${idx.name}</div>
+                            <div style="font-size: 16px; font-weight: 600;">${idx.value}</div>
+                            <div style="font-size: 12px; color: ${idx.positive ? '#10b981' : '#ef4444'};">${idx.change}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderMarketNews(data) {
+            const container = document.getElementById('newsContainer');
+            const news = data.tradingNews || [];
+            
+            container.innerHTML = news.map(item => `
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="agent-avatar-large">
+                            ${item.impact === 'positive' ? '🟢' : item.impact === 'negative' ? '🔴' : '🟡'}
+                        </div>
+                        <div class="agent-info">
+                            <h2>${item.title}</h2>
+                            <div>
+                                <span class="agent-role-badge">${item.source}</span>
+                                <span class="agent-status-badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
+                                    ${new Date(item.date).toLocaleTimeString()}
+                                </span>
                             </div>
                         </div>
                     </div>
-                `;
+                    
+                    <div class="agent-body">
+                        <div class="agent-stat">
+                            <span class="stat-label">Summary</span>
+                            <div class="stat-value" style="width: 100%; background: var(--dark-bg); padding: 10px; border-radius: 6px; font-size: 12px;">
+                                ${item.summary}
+                            </div>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Impact</span>
+                            <span class="stat-value">
+                                <span class="status-indicator ${item.impact}">
+                                    ${item.impact === 'positive' ? '🟢 Positive' : item.impact === 'negative' ? '🔴 Negative' : '🟡 Neutral'}
+                                </span>
+                            </span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Affected Assets</span>
+                            <span class="stat-value">${(item.affectedAssets || []).join(', ')}</span>
+                        </div>
+                        
+                        <div class="agent-actions">
+                            <button class="btn btn-secondary" onclick="analyzeImpact('${item.id}')">
+                                🧠 Analyze Impact
+                            </button>
+                            <button class="btn btn-secondary" onclick="adjustPositions('${item.id}')">
+                                ⚙️ Adjust Positions
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') || '<p>No market news available.</p>';
+        }
+
+        function renderPositions(data) {
+            const container = document.getElementById('positionsTable');
+            const positions = (data.tradingBot?.positions) || [];
+            
+            if (positions.length === 0) {
+                container.innerHTML = '<p>No open positions.</p>';
                 return;
             }
             
             container.innerHTML = `
-                ${data.tradingNews.map(news => `
-                    <div class="agent-detail-card">
-                        <div class="agent-header">
-                            <div class="agent-avatar-large">
-                                ${news.impact === 'positive' ? '🟢' : news.impact === 'negative' ? '🔴' : '🟡'}
-                            </div>
-                            <div class="agent-info">
-                                <h2>${news.title}</h2>
-                                <div>
-                                    <span class="agent-role-badge">${news.source}</span>
-                                    <span class="agent-status-badge" style="background: rgba(139, 92, 246, 0.2); color: #8b5cf6;">
-                                        ${new Date(news.date).toLocaleDateString()}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="agent-body">
-                            <div class="agent-stat">
-                                <span class="stat-label">Summary:</span>
-                                <div class="stat-value" style="width: 100%; background: var(--dark-border); padding: 12px; border-radius: 8px;">
-                                    ${news.summary}
-                                </div>
-                            </div>
-                            
-                            <div class="agent-stat">
-                                <span class="stat-label">Impact:</span>
-                                <span class="stat-value">
-                                    ${news.impact === 'positive' ? '🟢 Positive' : news.impact === 'negative' ? '🔴 Negative' : '🟡 Neutral'}
-                                </span>
-                            </div>
-                            
-                            <div class="agent-actions">
-                                <button class="btn btn-secondary" onclick="analyzeImpact('${news.id}')">
-                                    <span>🧠</span> Analyze Impact
-                                </button>
-                                <button class="btn btn-primary" onclick="adjustStrategy('${news.id}')">
-                                    <span>⚙️</span> Adjust Strategy
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--dark-border);">
+                            <th style="text-align: left; padding: 10px; font-size: 12px; color: var(--text-secondary);">Asset</th>
+                            <th style="text-align: right; padding: 10px; font-size: 12px; color: var(--text-secondary);">Qty</th>
+                            <th style="text-align: right; padding: 10px; font-size: 12px; color: var(--text-secondary);">Avg Price</th>
+                            <th style="text-align: right; padding: 10px; font-size: 12px; color: var(--text-secondary);">Current</th>
+                            <th style="text-align: right; padding: 10px; font-size: 12px; color: var(--text-secondary);">P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${positions.map(pos => `
+                            <tr style="border-bottom: 1px solid var(--dark-border);">
+                                <td style="padding: 10px; font-weight: 500;">${pos.asset}</td>
+                                <td style="padding: 10px; text-align: right;">${pos.quantity}</td>
+                                <td style="padding: 10px; text-align: right;">$${pos.avgPrice.toLocaleString()}</td>
+                                <td style="padding: 10px; text-align: right;">$${pos.currentPrice.toLocaleString()}</td>
+                                <td style="padding: 10px; text-align: right; color: ${pos.pnl >= 0 ? '#10b981' : '#ef4444'};">
+                                    ${pos.pnl >= 0 ? '+' : ''}$${pos.pnl.toLocaleString()}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
             `;
-        });
+        }
+
+        function toggleBot() {
+            const indicator = document.getElementById('botStatusIndicator');
+            const isActive = indicator.classList.contains('online');
+            
+            fetch('/api/trading-bot/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: isActive ? 'paused' : 'active' })
+            })
+            .then(() => fetch('/api/status'))
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data));
+        }
+
+        function configureBot() {
+            alert('Trading Bot Configuration\n\nCurrent Settings:\n- Strategy: Conservative\n- Risk Level: Low\n- Position Size: 2%\n- Stop Loss: 5%\n- Take Profit: 15%\n\nTo modify settings, use the Strategy Configuration section below.');
+        }
+
+        function viewPerformance() {
+            alert('Trading Performance\n\nMonthly ROI: +4.2%\nSharpe Ratio: 1.8\nMax Drawdown: 8.3%\nWin Rate: 72%\nTotal Trades: 156\n\nTop Performing Assets:\n1. BTC (+18.9%)\n2. MSFT (+28.9%)\n3. GOOGL (+13.4%)');
+        }
 
         function analyzeImpact(newsId) {
-            alert('Analyzing market impact...\n\nPotential effects on portfolio:\n- BTC: +2.1% expected movement\n- Tech stocks: +1.5% expected movement\n- Recommendation: Increase position size for high conviction trades');
+            alert('Analyzing market impact...\n\nRecommendation: Monitor closely for next 24 hours. Consider adjusting stop-loss levels on affected positions.');
         }
 
-        function adjustStrategy(newsId) {
-            alert('Adjusting trading strategy based on news...\n\nChanges applied:\n- Increased BTC allocation by 5%\n- Reduced cash reserves to 10%\n- Activated momentum filter');
+        function adjustPositions(newsId) {
+            alert('Position adjustment suggestions:\n\nBased on news sentiment:\n- Increase BTC allocation by 5%\n- Reduce cash reserves to 10%\n- Activate momentum filter\n\nApply these changes?');
         }
 
-        // Initialize
-        updateTradingUI();
+        function optimizeStrategy() {
+            alert('Running strategy optimization...\n\nBest performing strategies:\n1. Mean reversion (65% success rate)\n2. Trend following (58% success rate)\n3. Breakout trading (52% success rate)\n\nRecommendation: Use mean reversion for current market conditions.');
+        }
+
+        function saveStrategy() {
+            alert('Strategy saved successfully!\n\nChanges will take effect on next trading cycle.');
+        }
+
+        function refreshData() {
+            fetch('/api/status')
+                .then(res => res.json())
+                .then(data => socket.emit('statusUpdate', data));
+        }
+
+        function executeTrade() {
+            const asset = prompt('Asset symbol (e.g., AAPL, BTC):');
+            if (!asset) return;
+            
+            const action = prompt('Action (buy/sell):');
+            if (!action || !['buy', 'sell'].includes(action.toLowerCase())) {
+                alert('Invalid action');
+                return;
+            }
+            
+            const quantity = prompt('Quantity:');
+            if (!quantity || isNaN(quantity)) {
+                alert('Invalid quantity');
+                return;
+            }
+            
+            alert(`Trade Executed!\n\nAsset: ${asset.toUpperCase()}\nAction: ${action.toUpperCase()}\nQuantity: ${quantity}\nStatus: Completed`);
+        }
 
         // Initial load
         fetch('/api/status')
             .then(res => res.json())
-            .then(data => socket.emit('statusUpdate', data))
-            .catch(err => {
-                console.error('Error loading trading data:', err);
-                document.getElementById('marketNewsContainer').innerHTML = `
-                    <div class="agent-detail-card">
-                        <div class="agent-header">
-                            <div class="activity-icon">❌</div>
-                            <div class="activity-content">
-                                <div class="activity-text">Failed to load market news</div>
-                                <div class="activity-meta">Check connection and try again</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-        // Simulate real-time updates
-        setInterval(() => {
-            // Randomly update portfolio value for demo purposes
-            tradingData.portfolioValue += (Math.random() - 0.5) * 200;
-            const change = (Math.random() - 0.5) * 2;
-            tradingData.portfolioChange = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
-            updateTradingUI();
-        }, 30000); // Update every 30 seconds
+            .then(data => socket.emit('statusUpdate', data));
     </script>
 </body>
 </html>

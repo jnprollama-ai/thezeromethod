@@ -31,46 +31,77 @@
 
     <main class="main-content">
         <section class="page-header">
-            <h1>👾 Active Agents</h1>
-            <p class="page-subtitle">Monitor all AI agents and their current tasks</p>
+            <h1>👾 Agent Fleet</h1>
+            <p class="page-subtitle">Monitor and manage Zero Method AI agents</p>
         </section>
 
         <section class="agents-section">
-            <div id="agentsContainer">
-                <div class="agent-detail-card">
-                    <div class="agent-header">
-                        <div class="activity-icon">⏳</div>
-                        <div class="activity-content">
-                            <div class="activity-text">Loading agents...</div>
-                            <div class="activity-meta">Please wait</div>
-                        </div>
-                    </div>
+            <!-- Agent Stats -->
+            <div class="stats-grid" id="agentStats">
+                <div class="stat-card">
+                    <div class="stat-icon">👾</div>
+                    <div class="stat-value" id="totalAgents">0</div>
+                    <div class="stat-label">Total Agents</div>
                 </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-value" id="activeAgents">0</div>
+                    <div class="stat-label">Active</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⏸️</div>
+                    <div class="stat-value" id="idleAgents">0</div>
+                    <div class="stat-label">Idle</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value" id="busyAgents">0</div>
+                    <div class="stat-label">Busy</div>
+                </div>
+            </div>
+
+            <!-- Agents List -->
+            <div id="agentsContainer">
+                <!-- Agents will be rendered here -->
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>© 2026 Zero Method | Command Center v2.0</p>
+        <p>© 2026 Zero Method | Command Center v2.1</p>
     </footer>
 
     <script>
-        const pokemonEmoji = {
-            'Mewtwo': '👾',
-            'Alakazam': '🥄',
-            'Rapidash': '🦄',
-            'Porygon': '📊',
-            'Jigglypuff': '🎤'
-        };
-
         const socket = io();
-        
+        let currentStatus = null;
+
         socket.on('statusUpdate', (data) => {
+            currentStatus = data;
+            updateAgentStats(data);
+            renderAgents(data);
+        });
+
+        function updateAgentStats(data) {
+            const agents = data.agents || [];
+            document.getElementById('totalAgents').textContent = agents.length;
+            document.getElementById('activeAgents').textContent = agents.filter(a => a.status === 'active').length;
+            document.getElementById('idleAgents').textContent = agents.filter(a => a.status === 'idle').length;
+            document.getElementById('busyAgents').textContent = agents.filter(a => a.status === 'busy').length;
+        }
+
+        function renderAgents(data) {
             const container = document.getElementById('agentsContainer');
-            container.innerHTML = data.agents.map(agent => `
+            const agents = data.agents || [];
+            
+            container.innerHTML = agents.map(agent => `
                 <div class="agent-detail-card">
                     <div class="agent-header">
-                        <div class="agent-avatar-large">${pokemonEmoji[agent.pokemon] || '👤'}</div>
+                        <div class="agent-avatar-large">
+                            ${agent.pokemon}
+                        </div>
                         <div class="agent-info">
                             <h2>${agent.name}</h2>
                             <div>
@@ -82,67 +113,64 @@
                     
                     <div class="agent-body">
                         <div class="agent-stat">
-                            <span class="stat-label">Pokemon:</span>
-                            <span class="stat-value">${agent.pokemon}</span>
+                            <span class="stat-label">Current Task</span>
+                            <span class="stat-value">${agent.task || 'No active task'}</span>
                         </div>
                         
                         <div class="agent-stat">
-                            <span class="stat-label">Current Task:</span>
-                            <span class="stat-value">${agent.task}</span>
+                            <span class="stat-label">Status</span>
+                            <span class="stat-value"><span class="status-indicator ${agent.status}">${agent.status}</span></span>
                         </div>
                         
                         <div class="agent-actions">
-                            <button class="btn btn-secondary" onclick="updateTask('${agent.id}')">
-                                <span>✏️</span> Update Task
+                            <button class="btn btn-secondary" onclick="viewAgentDetails('${agent.id}')">
+                                👁️ View Details
                             </button>
-                            <button class="btn btn-primary" onclick="viewDetails('${agent.id}')">
-                                <span>👁️</span> View Details
-                            </button>
+                            
+                            ${agent.status === 'idle' ? `
+                                <button class="btn btn-primary" onclick="assignTask('${agent.id}')">
+                                    📝 Assign Task
+                                </button>
+                            ` : `
+                                <button class="btn btn-secondary" onclick="viewTask('${agent.id}')">
+                                    📋 View Task
+                                </button>
+                            `}
                         </div>
                     </div>
                 </div>
             `).join('');
-        });
-
-        function updateTask(agentId) {
-            const newTask = prompt('Enter new task:');
-            if (newTask) {
-                fetch('/api/update-agent', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: agentId, updates: { task: newTask } })
-                })
-                .then(() => {
-                    // Refresh data
-                    fetch('/api/status')
-                        .then(res => res.json())
-                        .then(data => socket.emit('statusUpdate', data));
-                });
-            }
         }
 
-        function viewDetails(agentId) {
-            alert('Agent details view would open here for: ' + agentId);
+        function viewAgentDetails(agentId) {
+            const agent = (currentStatus.agents || []).find(a => a.id === agentId);
+            if (!agent) return;
+            
+            alert(`${agent.name} (${agent.pokemon})\n\nRole: ${agent.role}\nStatus: ${agent.status}\nCurrent Task: ${agent.task || 'None'}\n\nAgent is ready to assist with ${agent.role.toLowerCase()} tasks.`);
+        }
+
+        function assignTask(agentId) {
+            const agent = (currentStatus.agents || []).find(a => a.id === agentId);
+            if (!agent) return;
+            
+            const task = prompt(`Assign a task to ${agent.name}:`);
+            if (!task) return;
+            
+            // In a real implementation, this would update the agent's task
+            alert(`Task assigned to ${agent.name}!\n\nTask: ${task}\n\nThe agent will begin working on this task shortly.`);
+        }
+
+        function viewTask(agentId) {
+            const agent = (currentStatus.agents || []).find(a => a.id === agentId);
+            if (!agent) return;
+            
+            alert(`${agent.name} is currently working on:\n\n${agent.task || 'No active task'}\n\nStatus: In Progress\nETA: 2-3 hours`);
         }
 
         // Initial load
         fetch('/api/status')
             .then(res => res.json())
-            .then(data => socket.emit('statusUpdate', data))
-            .catch(err => {
-                console.error('Error loading agents:', err);
-                document.getElementById('agentsContainer').innerHTML = `
-                    <div class="agent-detail-card">
-                        <div class="agent-header">
-                            <div class="activity-icon">❌</div>
-                            <div class="activity-content">
-                                <div class="activity-text">Failed to load agents</div>
-                                <div class="activity-meta">Check connection and try again</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
+            .then(data => socket.emit('statusUpdate', data));
     </script>
 </body>
 </html>

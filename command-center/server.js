@@ -21,11 +21,71 @@ app.use(express.json());
 
 // Data storage
 const DATA_FILE = path.join(__dirname, 'data', 'status.json');
+const BLOG_CONTENT_DIR = path.join(__dirname, 'data', 'blogs');
 
-// Ensure data directory exists
+// Ensure data directories exist
 if (!fs.existsSync(path.join(__dirname, 'data'))) {
   fs.mkdirSync(path.join(__dirname, 'data'));
 }
+if (!fs.existsSync(BLOG_CONTENT_DIR)) {
+  fs.mkdirSync(BLOG_CONTENT_DIR);
+}
+
+// Default blog content
+const defaultBlogContent = `# AI Prompt Engineering Basics for Non-Technical Professionals
+
+## Introduction
+
+In today's AI-powered world, understanding how to communicate effectively with AI tools is becoming as essential as knowing how to use email. This guide breaks down prompt engineering into simple, actionable concepts that anyone can master.
+
+## What is Prompt Engineering?
+
+Prompt engineering is the art and science of crafting instructions that help AI systems understand exactly what you want. Think of it as learning to ask the right questions to get the best answers.
+
+## Key Principles
+
+### 1. Be Specific
+Instead of: "Write about marketing"
+Try: "Write a 500-word blog post about email marketing strategies for small businesses, focusing on automation tools"
+
+### 2. Provide Context
+Include background information, target audience, and desired tone in your prompts.
+
+### 3. Use Examples
+Show the AI what you want by including examples of good outputs.
+
+### 4. Break Complex Tasks
+Divide large requests into smaller, manageable steps.
+
+## Common Mistakes to Avoid
+
+- Being too vague in your requests
+- Not providing enough context
+- Expecting perfect results on the first try
+- Not iterating and refining prompts
+
+## Practical Applications
+
+1. **Content Creation**: Generate blog posts, social media content, and emails
+2. **Data Analysis**: Ask AI to analyze spreadsheets and create reports
+3. **Research**: Quickly summarize articles and documents
+4. **Problem Solving**: Brainstorm solutions to business challenges
+
+## Getting Started
+
+Start with these simple prompt templates:
+
+- "Explain [topic] as if I'm a beginner"
+- "Create a [type of content] about [subject] for [audience]"
+- "Analyze this [data/text] and provide [specific insights]"
+
+## Conclusion
+
+Mastering prompt engineering is like learning a new language—it takes practice, but the payoff is enormous. Start with these basics and gradually build your skills as you discover what works best for your needs.
+
+---
+
+*Ready to dive deeper? Explore our advanced prompt engineering techniques in the next guide.*`;
 
 // Load or initialize status
 function loadStatus() {
@@ -37,12 +97,17 @@ function loadStatus() {
   } catch (err) {
     console.error('Error loading status:', err);
   }
+  return getDefaultStatus();
+}
+
+function getDefaultStatus() {
+  const now = new Date();
   return {
-    "lastUpdated": new Date().toISOString(),
+    "lastUpdated": now.toISOString(),
     "website": {
       "status": "operational",
       "uptime": "99.9%",
-      "lastCheck": new Date().toISOString()
+      "lastCheck": now.toISOString()
     },
     "agents": [
       {
@@ -84,6 +149,14 @@ function loadStatus() {
         "role": "Engager",
         "status": "active",
         "task": "Social media content ready"
+      },
+      {
+        "id": "trading",
+        "name": "Trading Bot",
+        "pokemon": "Gyarados",
+        "role": "Trader",
+        "status": "idle",
+        "task": "Waiting for market signals"
       }
     ],
     "projects": {
@@ -92,35 +165,20 @@ function loadStatus() {
         "status": "validation",
         "progress": 65,
         "revenue": 0,
+        "description": "AI-powered marketing services and digital products",
         "tasks": [
-          {
-            "name": "Website Live",
-            "done": true
-          },
-          {
-            "name": "Product Created",
-            "done": true
-          },
-          {
-            "name": "Content Strategy",
-            "done": true
-          },
-          {
-            "name": "Social Media Content",
-            "done": true
-          },
-          {
-            "name": "Blog Posts",
-            "done": false
-          },
-          {
-            "name": "Traffic Generation",
-            "done": false
-          },
-          {
-            "name": "First Sale",
-            "done": false
-          }
+          { "name": "Website Live", "done": true },
+          { "name": "Product Created", "done": true },
+          { "name": "Content Strategy", "done": true },
+          { "name": "Social Media Content", "done": true },
+          { "name": "Blog Posts", "done": false },
+          { "name": "Traffic Generation", "done": false },
+          { "name": "First Sale", "done": false }
+        ],
+        "milestones": [
+          { "date": "2026-03-15", "title": "Website Launch", "completed": true },
+          { "date": "2026-03-31", "title": "Product Creation", "completed": true },
+          { "date": "2026-04-15", "title": "First Sale", "completed": false }
         ]
       },
       "trading": {
@@ -128,19 +186,18 @@ function loadStatus() {
         "status": "planning",
         "progress": 10,
         "revenue": 0,
+        "description": "Automated trading bot with AI strategies",
         "tasks": [
-          {
-            "name": "Concept Defined",
-            "done": true
-          },
-          {
-            "name": "Architecture Design",
-            "done": false
-          },
-          {
-            "name": "MVP Development",
-            "done": false
-          }
+          { "name": "Concept Defined", "done": true },
+          { "name": "Architecture Design", "done": false },
+          { "name": "MVP Development", "done": false },
+          { "name": "Testing Phase", "done": false },
+          { "name": "Live Deployment", "done": false }
+        ],
+        "milestones": [
+          { "date": "2026-04-01", "title": "Concept Phase", "completed": true },
+          { "date": "2026-04-30", "title": "Architecture", "completed": false },
+          { "date": "2026-05-31", "title": "MVP", "completed": false }
         ]
       },
       "saas": {
@@ -148,71 +205,31 @@ function loadStatus() {
         "status": "research",
         "progress": 5,
         "revenue": 0,
+        "description": "AI-powered SaaS tools for solopreneurs",
         "tasks": [
-          {
-            "name": "Market Validation",
-            "done": false
-          },
-          {
-            "name": "Competitive Analysis",
-            "done": false
-          },
-          {
-            "name": "Feature Planning",
-            "done": false
-          }
+          { "name": "Market Validation", "done": false },
+          { "name": "Competitive Analysis", "done": false },
+          { "name": "Feature Planning", "done": false },
+          { "name": "Prototype Development", "done": false }
+        ],
+        "milestones": [
+          { "date": "2026-04-15", "title": "Market Research", "completed": false },
+          { "date": "2026-05-01", "title": "Feature Definition", "completed": false }
         ]
       }
     },
     "metrics": {
       "websiteVisits": 0,
       "emailSignups": 0,
-      "socialFollowers": 0,
+      "socialFollowers": 42,
       "contentPieces": 3
     },
     "dailyProgress": [
       {
         "id": Date.now().toString(),
-        "date": new Date().toISOString(),
-        "content": "Initialized Command Center",
+        "date": now.toISOString(),
+        "content": "Initialized Command Center v2.0",
         "author": "System"
-      }
-    ],
-    "upcomingProjects": [
-      {
-        "id": "trading",
-        "name": "Trading Dashboard",
-        "description": "Real-time market data visualization and portfolio tracking",
-        "status": "planning",
-        "timeline": "Months 2-3",
-        "dependencies": [
-          "zma"
-        ],
-        "estimatedTokens": 200000,
-        "estimatedBudget": 100
-      },
-      {
-        "id": "saas",
-        "name": "Zero SaaS",
-        "description": "AI-powered tools for solopreneurs and small businesses",
-        "status": "research",
-        "timeline": "Months 4-6",
-        "dependencies": [
-          "zma"
-        ],
-        "estimatedTokens": 500000,
-        "estimatedBudget": 250
-      },
-      {
-        "id": "content-automation",
-        "name": "Content Automation",
-        "description": "Automate blog and social media content creation",
-        "status": "planning",
-        "timeline": "Month 2",
-        "dependencies": [],
-        "progress": 0,
-        "revenue": 0,
-        "tasks": []
       }
     ],
     "blogDrafts": [
@@ -221,29 +238,96 @@ function loadStatus() {
         "title": "AI Prompt Engineering Basics for Non-Technical Professionals",
         "status": "draft",
         "author": "Zero",
-        "lastModified": new Date().toISOString(),
-        "filePath": "blog_draft_prompt_engineering.md",
+        "lastModified": now.toISOString(),
+        "filePath": "blog_prompt_engineering_basics.md",
+        "wordCount": 450,
+        "readTime": "3 min",
+        "tags": ["AI", "Tutorial", "Beginner"],
         "comments": []
+      },
+      {
+        "id": "advanced-prompts",
+        "title": "10 Advanced Prompt Techniques for Maximum AI Output",
+        "status": "in-progress",
+        "author": "Content Agent",
+        "lastModified": now.toISOString(),
+        "filePath": "blog_advanced_prompts.md",
+        "wordCount": 0,
+        "readTime": "5 min",
+        "tags": ["AI", "Advanced", "Tips"],
+        "comments": [
+          {
+            "id": "1",
+            "author": "Jon",
+            "comment": "Great draft! Please add more examples for business use cases.",
+            "timestamp": now.toISOString()
+          }
+        ]
+      },
+      {
+        "id": "productivity-guide",
+        "title": "The Complete AI Productivity Guide for Busy Professionals",
+        "status": "approved",
+        "author": "Zero",
+        "lastModified": now.toISOString(),
+        "filePath": "blog_productivity_guide.md",
+        "wordCount": 1200,
+        "readTime": "8 min",
+        "tags": ["Productivity", "AI", "Guide"],
+        "comments": [],
+        "approvedAt": now.toISOString(),
+        "scheduledPublishDate": new Date(now.getTime() + 86400000).toISOString()
       }
     ],
     "socialMediaContent": [
       {
         "id": "social-1",
         "platform": "twitter",
-        "content": "Did you know that AI prompt engineering can save professionals 5+ hours per week? Our new guide breaks down the essentials for non-technical users.",
-        "status": "draft",
-        "scheduledDate": null,
+        "content": "🚀 Did you know AI prompt engineering can save professionals 5+ hours per week?\n\nOur new guide breaks down the essentials for non-technical users.\n\nThread below 👇",
+        "status": "approved",
+        "scheduledDate": new Date(now.getTime() + 3600000).toISOString(),
         "postedDate": null,
-        "engagement": null
+        "engagement": null,
+        "hashtags": ["#AI", "#Productivity", "#PromptEngineering"],
+        "mediaUrl": null
       },
       {
         "id": "social-2",
         "platform": "linkedin",
-        "content": "The future of work is here: AI-powered productivity tools that don't require technical expertise. Learn how to leverage these tools effectively.",
-        "status": "approved",
-        "scheduledDate": new Date(Date.now() + 86400000).toISOString(), // Tomorrow
+        "content": "The future of work is here: AI-powered productivity tools that don't require technical expertise.\n\nLearn how to leverage these tools effectively and stay ahead of the curve.\n\n#AI #Productivity #FutureOfWork",
+        "status": "scheduled",
+        "scheduledDate": new Date(now.getTime() + 172800000).toISOString(),
         "postedDate": null,
-        "engagement": null
+        "engagement": null,
+        "hashtags": ["#AI", "#Productivity", "#FutureOfWork"],
+        "mediaUrl": null
+      },
+      {
+        "id": "social-3",
+        "platform": "twitter",
+        "content": "💡 Quick tip: When using AI for content creation, always provide context about your target audience.\n\nResults improve by 300% when AI knows who it's writing for.\n\n#AITips #ContentCreation",
+        "status": "published",
+        "scheduledDate": new Date(now.getTime() - 86400000).toISOString(),
+        "postedDate": new Date(now.getTime() - 86400000).toISOString(),
+        "engagement": {
+          "likes": 23,
+          "retweets": 8,
+          "replies": 5,
+          "impressions": 1247
+        },
+        "hashtags": ["#AITips", "#ContentCreation"],
+        "mediaUrl": null
+      },
+      {
+        "id": "social-4",
+        "platform": "twitter",
+        "content": "🎯 New blog post alert: 10 Advanced Prompt Techniques\n\nReady to level up your AI game? Check out our latest guide.\n\nLink in bio! 👆",
+        "status": "draft",
+        "scheduledDate": null,
+        "postedDate": null,
+        "engagement": null,
+        "hashtags": ["#AI", "#BlogPost"],
+        "mediaUrl": null
       }
     ],
     "tradingNews": [
@@ -251,17 +335,111 @@ function loadStatus() {
         "id": "news-1",
         "title": "Bitcoin ETF Approval Rumors Continue to Boost Crypto Markets",
         "source": "Crypto Daily",
-        "date": new Date().toISOString(),
+        "date": now.toISOString(),
         "impact": "positive",
-        "summary": "Regulatory developments continue to drive optimism in the cryptocurrency markets as institutional adoption accelerates."
+        "summary": "Regulatory developments continue to drive optimism in the cryptocurrency markets as institutional adoption accelerates. Bitcoin surged 3% on renewed ETF speculation.",
+        "affectedAssets": ["BTC", "ETH", "SOL"],
+        "sentiment": "bullish"
       },
       {
         "id": "news-2",
         "title": "Tech Stocks Rally Amid AI Innovation Surge",
         "source": "Market Watch",
-        "date": new Date().toISOString(),
+        "date": new Date(now.getTime() - 7200000).toISOString(),
         "impact": "positive",
-        "summary": "Major tech companies are reporting strong earnings driven by AI integration, leading to broad market gains."
+        "summary": "Major tech companies are reporting strong earnings driven by AI integration. NVIDIA, Microsoft, and Google leading gains as AI adoption accelerates enterprise spending.",
+        "affectedAssets": ["NVDA", "MSFT", "GOOGL", "AAPL"],
+        "sentiment": "bullish"
+      },
+      {
+        "id": "news-3",
+        "title": "Fed Signals Potential Rate Cuts in Q3 2026",
+        "source": "Financial Times",
+        "date": new Date(now.getTime() - 14400000).toISOString(),
+        "impact": "positive",
+        "summary": "Federal Reserve officials hint at possible rate reductions as inflation shows signs of cooling. Markets react positively to dovish tone.",
+        "affectedAssets": ["SPY", "QQQ", "DOW", "BTC"],
+        "sentiment": "bullish"
+      },
+      {
+        "id": "news-4",
+        "title": "Ethereum Network Upgrade Delays Concern Developers",
+        "source": "CoinDesk",
+        "date": new Date(now.getTime() - 21600000).toISOString(),
+        "impact": "negative",
+        "summary": "Technical challenges push back expected timeline for major Ethereum scalability upgrade. Development team working on solutions.",
+        "affectedAssets": ["ETH"],
+        "sentiment": "bearish"
+      }
+    ],
+    "tradingBot": {
+      "status": "active",
+      "strategy": "conservative",
+      "riskLevel": "low",
+      "lastTrade": new Date(now.getTime() - 3600000).toISOString(),
+      "todayTrades": 2,
+      "winRate": 72,
+      "portfolioValue": 42789.45,
+      "dayChange": 2.34,
+      "positions": [
+        { "asset": "AAPL", "quantity": 10, "avgPrice": 150.00, "currentPrice": 178.23, "pnl": 282.30 },
+        { "asset": "MSFT", "quantity": 5, "avgPrice": 320.00, "currentPrice": 412.56, "pnl": 462.80 },
+        { "asset": "GOOGL", "quantity": 8, "avgPrice": 125.50, "currentPrice": 142.33, "pnl": 134.64 },
+        { "asset": "BTC", "quantity": 0.5, "avgPrice": 58000.00, "currentPrice": 68421.35, "pnl": 5210.68 }
+      ]
+    },
+    "saasTools": [
+      {
+        "id": "pdf-tools",
+        "name": "PDF Tools",
+        "description": "Merge, split, compress, and convert PDFs",
+        "status": "operational",
+        "users": 142,
+        "revenue": 247,
+        "rating": 4.7,
+        "uptime": 99.9,
+        "features": ["Merge PDFs", "Split PDFs", "Compress PDFs", "Convert to Word", "OCR Text"],
+        "usageToday": 89,
+        "popularFeature": "Merge PDFs"
+      },
+      {
+        "id": "image-tools",
+        "name": "Image Tools",
+        "description": "Resize, compress, convert, and edit images",
+        "status": "beta",
+        "users": 23,
+        "revenue": 0,
+        "rating": 4.2,
+        "uptime": 98.5,
+        "features": ["Resize Images", "Compress Images", "Remove Background", "Add Watermark", "Convert Format"],
+        "usageToday": 12,
+        "popularFeature": "Remove Background"
+      },
+      {
+        "id": "calculator-suite",
+        "name": "Calculator Suite",
+        "description": "Financial and business calculators",
+        "status": "planning",
+        "users": 0,
+        "revenue": 0,
+        "rating": 0,
+        "uptime": 0,
+        "features": ["ROI Calculator", "Loan Calculator", "Break-even Analysis", "Compound Interest", "Currency Converter"],
+        "usageToday": 0,
+        "popularFeature": null
+      },
+      {
+        "id": "url-shortener",
+        "name": "URL Shortener",
+        "description": "Custom short links with analytics",
+        "status": "planning",
+        "users": 0,
+        "revenue": 0,
+        "rating": 0,
+        "uptime": 0,
+        "features": ["Custom Links", "Click Analytics", "QR Codes", "Link Expiration", "API Access"],
+        "usageToday": 0,
+        "popularFeature": null
       }
     ]
   };
@@ -270,12 +448,29 @@ function loadStatus() {
 function saveStatus(status) {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(status, null, 2));
+    
+    // Save blog content separately
+    if (status.blogDrafts) {
+      status.blogDrafts.forEach(draft => {
+        if (draft.filePath) {
+          const contentPath = path.join(BLOG_CONTENT_DIR, draft.filePath);
+          if (!fs.existsSync(contentPath) && draft.id === 'prompt-engineering-basics') {
+            fs.writeFileSync(contentPath, defaultBlogContent);
+          }
+        }
+      });
+    }
   } catch (err) {
     console.error('Error saving status:', err);
   }
 }
 
 let currentStatus = loadStatus();
+
+// Save initial blog content
+if (!fs.existsSync(path.join(BLOG_CONTENT_DIR, 'blog_prompt_engineering_basics.md'))) {
+  fs.writeFileSync(path.join(BLOG_CONTENT_DIR, 'blog_prompt_engineering_basics.md'), defaultBlogContent);
+}
 
 // Routes for each page
 app.get('/', (req, res) => {
@@ -338,6 +533,41 @@ app.post('/api/log-progress', (req, res) => {
   res.json(entry);
 });
 
+// Blog content API
+app.get('/api/blog-content/:id', (req, res) => {
+  const draft = currentStatus.blogDrafts.find(d => d.id === req.params.id);
+  if (draft && draft.filePath) {
+    const contentPath = path.join(BLOG_CONTENT_DIR, draft.filePath);
+    if (fs.existsSync(contentPath)) {
+      const content = fs.readFileSync(contentPath, 'utf8');
+      res.json({ content });
+    } else {
+      // Return default content for demo
+      res.json({ content: defaultBlogContent });
+    }
+  } else {
+    res.status(404).json({ error: 'Draft not found' });
+  }
+});
+
+app.post('/api/blog-content/:id', (req, res) => {
+  const { content } = req.body;
+  const draft = currentStatus.blogDrafts.find(d => d.id === req.params.id);
+  if (draft) {
+    const filePath = draft.filePath || `blog_${req.params.id}.md`;
+    const contentPath = path.join(BLOG_CONTENT_DIR, filePath);
+    fs.writeFileSync(contentPath, content);
+    draft.filePath = filePath;
+    draft.wordCount = content.split(/\s+/).length;
+    draft.lastModified = new Date().toISOString();
+    saveStatus(currentStatus);
+    io.emit('statusUpdate', currentStatus);
+    res.json({ success: true });
+  } else {
+    res.status(404).json({ error: 'Draft not found' });
+  }
+});
+
 app.post('/api/blog-drafts/comment', (req, res) => {
   const { draftId, comment, author = 'Reviewer' } = req.body;
   const draft = currentStatus.blogDrafts.find(d => d.id === draftId);
@@ -353,7 +583,9 @@ app.post('/api/blog-drafts/comment', (req, res) => {
     timestamp: new Date().toISOString()
   };
   
+  draft.comments = draft.comments || [];
   draft.comments.push(commentObj);
+  draft.lastModified = new Date().toISOString();
   currentStatus.lastUpdated = new Date().toISOString();
   saveStatus(currentStatus);
   io.emit('statusUpdate', currentStatus);
@@ -370,6 +602,7 @@ app.post('/api/blog-drafts/approve', (req, res) => {
   
   draft.status = 'approved';
   draft.approvedAt = new Date().toISOString();
+  draft.lastModified = new Date().toISOString();
   currentStatus.lastUpdated = new Date().toISOString();
   saveStatus(currentStatus);
   io.emit('statusUpdate', currentStatus);
@@ -385,8 +618,17 @@ app.post('/api/blog-drafts/create', (req, res) => {
     status: 'draft',
     author,
     lastModified: new Date().toISOString(),
+    wordCount: content ? content.split(/\s+/).length : 0,
+    readTime: content ? Math.ceil(content.split(/\s+/).length / 200) + ' min' : '0 min',
+    tags: [],
     comments: []
   };
+  
+  // Save content to file
+  const filePath = `blog_${draft.id}.md`;
+  const contentPath = path.join(BLOG_CONTENT_DIR, filePath);
+  fs.writeFileSync(contentPath, content || '');
+  draft.filePath = filePath;
   
   currentStatus.blogDrafts.push(draft);
   currentStatus.lastUpdated = new Date().toISOString();
@@ -395,8 +637,9 @@ app.post('/api/blog-drafts/create', (req, res) => {
   res.json(draft);
 });
 
+// Social media API
 app.post('/api/social-media-content/create', (req, res) => {
-  const { platform, content } = req.body;
+  const { platform, content, hashtags = [], mediaUrl = null } = req.body;
   const post = {
     id: `post-${Date.now()}`,
     platform,
@@ -404,9 +647,12 @@ app.post('/api/social-media-content/create', (req, res) => {
     status: 'draft',
     scheduledDate: null,
     postedDate: null,
-    engagement: null
+    engagement: null,
+    hashtags,
+    mediaUrl
   };
   
+  currentStatus.socialMediaContent = currentStatus.socialMediaContent || [];
   currentStatus.socialMediaContent.push(post);
   currentStatus.lastUpdated = new Date().toISOString();
   saveStatus(currentStatus);
@@ -447,6 +693,25 @@ app.post('/api/social-media-content/schedule', (req, res) => {
   res.json({ message: 'Post scheduled', post });
 });
 
+app.post('/api/social-media-content/publish', (req, res) => {
+  const { postId } = req.body;
+  const post = currentStatus.socialMediaContent.find(p => p.id === postId);
+  
+  if (!post) {
+    return res.status(404).json({ error: 'Post not found' });
+  }
+  
+  post.status = 'published';
+  post.postedDate = new Date().toISOString();
+  post.engagement = { likes: 0, retweets: 0, replies: 0, impressions: 0 };
+  post.lastModified = new Date().toISOString();
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json({ message: 'Post published', post });
+});
+
+// Projects API
 app.post('/api/projects/update', (req, res) => {
   const { projectId, updates } = req.body;
   if (currentStatus.projects[projectId]) {
@@ -477,12 +742,64 @@ app.post('/api/projects/task/update', (req, res) => {
       currentStatus.lastUpdated = new Date().toISOString();
       saveStatus(currentStatus);
       io.emit('statusUpdate', currentStatus);
-      res.json({ message: 'Task updated', task });
+      res.json({ message: 'Task updated', task, progress: currentStatus.projects[projectId].progress });
     } else {
       res.status(404).json({ error: 'Task not found' });
     }
   } else {
     res.status(404).json({ error: 'Project not found' });
+  }
+});
+
+// Trading bot API
+app.post('/api/trading-bot/toggle', (req, res) => {
+  const { status } = req.body;
+  currentStatus.tradingBot = currentStatus.tradingBot || {};
+  currentStatus.tradingBot.status = status;
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json({ status: currentStatus.tradingBot.status });
+});
+
+app.post('/api/trading-bot/config', (req, res) => {
+  const { strategy, riskLevel } = req.body;
+  currentStatus.tradingBot = currentStatus.tradingBot || {};
+  currentStatus.tradingBot.strategy = strategy || currentStatus.tradingBot.strategy;
+  currentStatus.tradingBot.riskLevel = riskLevel || currentStatus.tradingBot.riskLevel;
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  res.json(currentStatus.tradingBot);
+});
+
+// SaaS Tools API
+app.post('/api/saas-tools/update', (req, res) => {
+  const { toolId, updates } = req.body;
+  const tool = currentStatus.saasTools.find(t => t.id === toolId);
+  if (tool) {
+    Object.assign(tool, updates);
+    currentStatus.lastUpdated = new Date().toISOString();
+    saveStatus(currentStatus);
+    io.emit('statusUpdate', currentStatus);
+    res.json(tool);
+  } else {
+    res.status(404).json({ error: 'Tool not found' });
+  }
+});
+
+app.post('/api/saas-tools/deploy', (req, res) => {
+  const { toolId } = req.body;
+  const tool = currentStatus.saasTools.find(t => t.id === toolId);
+  if (tool) {
+    tool.status = 'operational';
+    tool.deployedAt = new Date().toISOString();
+    currentStatus.lastUpdated = new Date().toISOString();
+    saveStatus(currentStatus);
+    io.emit('statusUpdate', currentStatus);
+    res.json({ message: 'Tool deployed', tool });
+  } else {
+    res.status(404).json({ error: 'Tool not found' });
   }
 });
 
@@ -497,6 +814,6 @@ io.on('connection', (socket) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`🌀 Command Center v2.0 running on http://localhost:${PORT}`);
+  console.log(`🌀 Command Center v2.1 running on http://localhost:${PORT}`);
   console.log('Navigation: Home | Agents | Projects | Blogs | Social | SaaS | Trading');
 });

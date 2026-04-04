@@ -32,11 +32,12 @@
     <main class="main-content">
         <section class="page-header">
             <h1>🚀 SaaS Tools Suite</h1>
-            <p class="page-subtitle">Monitor and manage Zero Method SaaS products</p>
+            <p class="page-subtitle">Manage Zero Method's suite of productivity tools</p>
         </section>
 
         <section class="saas-section">
-            <div class="stats-grid">
+            <!-- Revenue Overview -->
+            <div class="stats-grid" id="saasStats">
                 <div class="stat-card">
                     <div class="stat-icon">👥</div>
                     <div class="stat-value" id="totalUsers">0</div>
@@ -62,145 +63,291 @@
                 </div>
             </div>
 
-            <h2 class="section-title">🛠️ Tool Status</h2>
+            <!-- Tools Grid -->
+            <h2 class="section-title">🛠️ Active Tools</h2>
             
-            <div class="quick-nav-grid">
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">📄</div>
-                    <div class="quick-nav-title">PDF Tools</div>
-                    <div class="quick-nav-desc">Merge, split, compress PDFs</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge active">Operational</span>
-                        <button class="btn btn-secondary" onclick="deployTool('pdf')">Deploy</button>
-                    </div>
-                </div>
-                
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">🖼️</div>
-                    <div class="quick-nav-title">Image Tools</div>
-                    <div class="quick-nav-desc">Resize, compress, edit images</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">Planning</span>
-                        <button class="btn btn-secondary" onclick="planTool('image')" disabled>Plan</button>
-                    </div>
-                </div>
-                
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">🧮</div>
-                    <div class="quick-nav-title">Calculator Suite</div>
-                    <div class="quick-nav-desc">Financial and business calculators</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge" style="background: rgba(148, 163, 184, 0.2); color: var(--text-secondary);">Ideation</span>
-                        <button class="btn btn-secondary" onclick="ideaTool('calculator')" disabled>Idea</button>
-                    </div>
-                </div>
-                
-                <div class="quick-nav-card">
-                    <div class="quick-nav-icon">🔗</div>
-                    <div class="quick-nav-title">URL Shortener</div>
-                    <div class="quick-nav-desc">Custom short links with analytics</div>
-                    <div class="agent-actions" style="margin-top: 16px; justify-content: space-between;">
-                        <span class="agent-status-badge" style="background: rgba(148, 163, 184, 0.2); color: var(--text-secondary);">Ideation</span>
-                        <button class="btn btn-secondary" onclick="ideaTool('url')" disabled>Idea</button>
-                    </div>
-                </div>
+            <div class="quick-nav-grid" id="toolsGrid">
+                <!-- Tools will be rendered here -->
             </div>
 
-            <div class="agent-detail-card" style="margin-top: 40px;">
+            <!-- Tool Details -->
+            <h2 class="section-title">📊 Tool Analytics</h2>
+            
+            <div id="analyticsContainer">
+                <!-- Analytics will be rendered here -->
+            </div>
+
+            <!-- Roadmap -->
+            <h2 class="section-title">🗺️ Product Roadmap</h2>
+            
+            <div class="agent-detail-card">
                 <div class="agent-header">
-                    <div class="agent-avatar-large">📊</div>
+                    <div class="agent-avatar-large">🗓️</div>
                     <div class="agent-info">
-                        <h2>Analytics Dashboard</h2>
-                        <div>
-                            <span class="agent-role-badge">Live Data</span>
-                            <span class="agent-status-badge active">Updated 2 mins ago</span>
-                        </div>
+                        <h2>2026 Development Timeline</h2>
+                        <p>Planned features and releases</p>
                     </div>
                 </div>
                 
                 <div class="agent-body">
-                    <div class="agent-stat">
-                        <span class="stat-label">PDF Tools Usage:</span>
-                        <span class="stat-value">142 users today</span>
-                    </div>
-                    
-                    <div class="agent-stat">
-                        <span class="stat-label">Top Features:</span>
-                        <span class="stat-value">Merge (45%), Compress (35%), Split (20%)</span>
-                    </div>
-                    
-                    <div class="agent-stat">
-                        <span class="stat-label">Revenue Projections:</span>
-                        <span class="stat-value">$247/month (current), $892/month (6-month forecast)</span>
-                    </div>
-                    
-                    <div class="agent-actions">
-                        <button class="btn btn-secondary" onclick="viewAnalytics()">
-                            <span>📈</span> View Detailed Analytics
-                        </button>
-                        <button class="btn btn-primary" onclick="launchNewTool()">
-                            <span>🚀</span> Launch New Tool
-                        </button>
+                    <div class="timeline">
+                        <div class="timeline-item active">
+                            <div class="timeline-content">
+                                <strong>Q1 2026</strong>
+                                <div>PDF Tools Suite Launch</div>
+                                <div class="timeline-time">Completed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item active">
+                            <div class="timeline-content">
+                                <strong>Q2 2026</strong>
+                                <div>Image Tools Beta + Calculator Suite</div>
+                                <div class="timeline-time">In Progress</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Q3 2026</strong>
+                                <div>URL Shortener + API Access</div>
+                                <div class="timeline-time">Planned</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-content">
+                                <strong>Q4 2026</strong>
+                                <div>AI-Powered Tools Suite</div>
+                                <div class="timeline-time">Planned</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div style="text-align: center; margin-top: 32px;">
+                <button class="btn btn-primary" onclick="launchNewTool()">
+                    <span>🚀</span> Launch New Tool
+                </button>
             </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>© 2026 Zero Method | Command Center v2.0</p>
+        <p>© 2026 Zero Method | Command Center v2.1</p>
     </footer>
 
     <script>
-        // Simulate SaaS data
-        const saasData = {
-            totalUsers: 142,
-            monthlyRevenue: 247,
-            growthRate: 12.5,
-            avgRating: 4.7
-        };
+        const socket = io();
+        let currentStatus = null;
 
-        // Update UI with SaaS data
-        function updateSaaSUI() {
-            document.getElementById('totalUsers').textContent = saasData.totalUsers;
-            document.getElementById('monthlyRevenue').textContent = saasData.monthlyRevenue;
-            document.getElementById('growthRate').textContent = saasData.growthRate + '%';
-            document.getElementById('avgRating').textContent = saasData.avgRating;
+        socket.on('statusUpdate', (data) => {
+            currentStatus = data;
+            updateStats(data);
+            renderTools(data);
+            renderAnalytics(data);
+        });
+
+        function updateStats(data) {
+            const tools = data.saasTools || [];
+            
+            const totalUsers = tools.reduce((sum, t) => sum + (t.users || 0), 0);
+            document.getElementById('totalUsers').textContent = totalUsers.toLocaleString();
+            
+            const monthlyRevenue = tools.reduce((sum, t) => sum + (t.revenue || 0), 0);
+            document.getElementById('monthlyRevenue').textContent = monthlyRevenue.toLocaleString();
+            
+            const ratedTools = tools.filter(t => t.rating > 0);
+            const avgRating = ratedTools.length > 0 
+                ? (ratedTools.reduce((sum, t) => sum + t.rating, 0) / ratedTools.length).toFixed(1)
+                : '0.0';
+            document.getElementById('avgRating').textContent = avgRating;
+            
+            // Calculate growth rate (mock)
+            document.getElementById('growthRate').textContent = '+12.5%';
         }
 
-        function deployTool(toolName) {
-            alert(`${toolName.toUpperCase()} tools deployment initiated!\n\nStatus: Building...\nEstimated completion: 2 minutes`);
+        function renderTools(data) {
+            const container = document.getElementById('toolsGrid');
+            const tools = data.saasTools || [];
+            
+            container.innerHTML = tools.map(tool => `
+                <div class="quick-nav-card">
+                    <div class="quick-nav-icon">${getToolIcon(tool.id)}</div>
+                    <div class="quick-nav-title">${tool.name}</div>
+                    <div class="quick-nav-desc">${tool.description}</div>
+                    
+                    <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                        <span class="agent-status-badge ${tool.status === 'operational' ? 'active' : ''}">
+                            ${tool.status}
+                        </span>
+                        ${tool.rating > 0 ? `
+                            <span class="agent-status-badge" style="background: rgba(245, 158, 11, 0.2); color: #f59e0b;">
+                                ⭐ ${tool.rating}
+                            </span>
+                        ` : ''}
+                        ${tool.users > 0 ? `
+                            <span class="agent-status-badge" style="background: rgba(99, 102, 241, 0.2); color: #6366f1;">
+                                👥 ${tool.users}
+                            </span>
+                        ` : ''}
+                    </div>
+                    
+                    <div class="agent-actions" style="margin-top: 16px;">
+                        ${tool.status === 'planning' || tool.status === 'beta' ? `
+                            <button class="btn btn-primary btn-sm" onclick="deployTool('${tool.id}')">Deploy</button>
+                        ` : `
+                            <button class="btn btn-secondary btn-sm" onclick="viewToolDetails('${tool.id}')">Details</button>
+                        `}
+                        <button class="btn btn-secondary btn-sm" onclick="viewToolAnalytics('${tool.id}')">Analytics</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function planTool(toolName) {
-            alert(`Planning phase started for ${toolName} tools.\n\nNext steps:\n1. Requirements gathering\n2. Technical specification\n3. Resource allocation`);
+        function getToolIcon(toolId) {
+            const icons = {
+                'pdf-tools': '📄',
+                'image-tools': '🖼️',
+                'calculator-suite': '🧮',
+                'url-shortener': '🔗'
+            };
+            return icons[toolId] || '🛠️';
         }
 
-        function ideaTool(toolName) {
-            alert(`New idea registered for ${toolName} tools.\n\nAdded to innovation backlog.`);
+        function renderAnalytics(data) {
+            const container = document.getElementById('analyticsContainer');
+            const tools = data.saasTools || [];
+            const activeTools = tools.filter(t => t.status === 'operational');
+            
+            if (activeTools.length === 0) {
+                container.innerHTML = `
+                    <div class="agent-detail-card">
+                        <div class="agent-header">
+                            <div class="activity-icon">📊</div>
+                            <div class="activity-content">
+                                <div class="activity-text">No analytics available yet</div>
+                                <div class="activity-meta">Deploy tools to see usage data</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = activeTools.map(tool => `
+                <div class="agent-detail-card">
+                    <div class="agent-header">
+                        <div class="agent-avatar-large">${getToolIcon(tool.id)}</div>
+                        <div class="agent-info">
+                            <h2>${tool.name} Analytics</h2>
+                            <div>
+                                <span class="agent-role-badge">${tool.status}</span>
+                                <span class="agent-status-badge active">${tool.uptime}% uptime</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="agent-body">
+                        <div class="agent-stat">
+                            <span class="stat-label">Total Users</span>
+                            <span class="stat-value">${tool.users.toLocaleString()}</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Revenue</span>
+                            <span class="stat-value">$${tool.revenue.toLocaleString()}/month</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Rating</span>
+                            <span class="stat-value">⭐ ${tool.rating}/5.0</span>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Usage Today</span>
+                            <span class="stat-value">${tool.usageToday} operations</span>
+                        </div>
+                        
+                        ${tool.popularFeature ? `
+                        <div class="agent-stat">
+                            <span class="stat-label">Most Popular Feature</span>
+                            <span class="stat-value">${tool.popularFeature}</span>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Features</span>
+                            <div class="stat-value" style="width: 100%;">
+                                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                    ${tool.features.map(f => `
+                                        <span class="agent-status-badge" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+                                            ${f}
+                                        </span>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="agent-stat">
+                            <span class="stat-label">Usage Trend</span>
+                            <div class="stat-value" style="width: 100%;">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${Math.min((tool.usageToday / 100) * 100, 100)}%"></div>
+                                </div>
+                                <div style="font-size: 11px; color: var(--text-secondary); margin-top: 4px;">
+                                    ${tool.usageToday} uses today
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function viewAnalytics() {
-            alert('Opening detailed analytics dashboard...\n\nFeatures:\n- User behavior tracking\n- Conversion funnel analysis\n- Revenue attribution\n- Performance metrics');
+        function deployTool(toolId) {
+            if (!confirm('Deploy this tool to production?')) return;
+            
+            fetch('/api/saas-tools/deploy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ toolId })
+            })
+            .then(() => fetch('/api/status'))
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data));
+        }
+
+        function viewToolDetails(toolId) {
+            const tool = (currentStatus.saasTools || []).find(t => t.id === toolId);
+            if (!tool) return;
+            
+            alert(`${tool.name}\n\n${tool.description}\n\nStatus: ${tool.status}\nUsers: ${tool.users}\nRevenue: $${tool.revenue}/month\n\nFeatures:\n${tool.features.join('\n')}`);
+        }
+
+        function viewToolAnalytics(toolId) {
+            const tool = (currentStatus.saasTools || []).find(t => t.id === toolId);
+            if (!tool) return;
+            
+            alert(`${tool.name} Analytics\n\nDaily Active Users: ${tool.users}\nMonthly Revenue: $${tool.revenue}\nAverage Rating: ${tool.rating}/5.0\nUptime: ${tool.uptime}%\nToday's Usage: ${tool.usageToday}\n\nTop Features:\n${tool.popularFeature || 'N/A'}`);
         }
 
         function launchNewTool() {
-            const toolName = prompt('Enter new tool name:');
-            if (toolName) {
-                alert(`New tool "${toolName}" added to development pipeline!\n\nDevelopment phases:\n1. Ideation & Planning\n2. Design & Prototyping\n3. Development\n4. Testing\n5. Launch`);
-            }
+            const name = prompt('Tool name:');
+            if (!name) return;
+            
+            const description = prompt('Brief description:');
+            if (!description) return;
+            
+            alert(`New tool "${name}" added to development pipeline!\n\nDevelopment phases:\n1. Requirements gathering\n2. Design & prototyping\n3. Development\n4. Testing\n5. Launch\n\nEstimated completion: 4-6 weeks`);
         }
 
-        // Initialize
-        updateSaaSUI();
-
-        // Simulate real-time updates
-        setInterval(() => {
-            // Randomly update some metrics for demo purposes
-            saasData.totalUsers += Math.floor(Math.random() * 3);
-            saasData.monthlyRevenue += Math.floor(Math.random() * 5);
-            updateSaaSUI();
-        }, 45000); // Update every 45 seconds
+        // Initial load
+        fetch('/api/status')
+            .then(res => res.json())
+            .then(data => socket.emit('statusUpdate', data));
     </script>
 </body>
 </html>
