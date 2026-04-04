@@ -316,6 +316,16 @@
             color: var(--accent-emerald);
         }
 
+        .project-status.draft {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-amber);
+        }
+
+        .project-status.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-emerald);
+        }
+
         .progress-bar {
             height: 8px;
             background: var(--bg-card-hover);
@@ -571,6 +581,7 @@
             updateMetrics(data.metrics);
             updateDailyProgress(data.dailyProgress);
             updateUpcomingProjects(data.upcomingProjects);
+            updateBlogDrafts(data.blogDrafts);
             document.getElementById('lastUpdated').textContent = 
                 'Last updated: ' + new Date(data.lastUpdated).toLocaleString();
         }
