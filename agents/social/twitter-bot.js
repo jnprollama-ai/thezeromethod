@@ -1,27 +1,39 @@
-// Twitter Bot with fallback for read-only mode
+// Twitter Bot with OAuth 2.0 and environment variables
 const { TwitterApi } = require('twitter-api-v2');
 const fs = require('fs');
 const path = require('path');
 
+// Load environment variables
+require('dotenv').config();
+
 class TwitterBot {
   constructor() {
-    // Twitter API credentials from TOOLS.md
+    // Twitter API credentials - prioritize env vars, fallback to hardcoded
+    // NOTE: Using working tokens with read access as fallback
     this.client = new TwitterApi({
-      appKey: 'NchfKKavZ3GVxgPE4tQeEChpz',
-      appSecret: '2AyiQby9WeWyV8S6qKvEucoGRj5Og2RldFjSJuV9SrkMu9ZKVx',
-      accessToken: '2039630718599376896-JLR41n6v1r0GTxPSvNh0RLe1k3Ianm',
-      accessSecret: 'i9wHTIWr0XzvJEnbxo0snzT6IyZC6EvfRpX2ktHynAqB0',
+      appKey: process.env.TWITTER_API_KEY || 'NchfKKavZ3GVxgPE4tQeEChpz',
+      appSecret: process.env.TWITTER_API_SECRET || '2AyiQby9WeWyV8S6qKvEucoGRj5Og2RldFjSJuV9SrkMu9ZKVx',
+      accessToken: process.env.TWITTER_ACCESS_TOKEN || '2039630718599376896-JLR41n6v1r0GTxPSvNh0RLe1k3Ianm',
+      accessSecret: process.env.TWITTER_ACCESS_SECRET || 'i9wHTIWr0XzvJEnbxo0snzT6IyZC6EvfRpX2ktHynAqB0',
     });
     
-    this.username = '@ZeroMethodAI';
+    this.username = process.env.TWITTER_USERNAME || '@ZeroMethodAI';
     this.isRunning = false;
     this.hasWriteAccess = false;
-    this.postingSchedule = [
+    this.postingSchedule = this.parseSchedule(process.env.TWITTER_POST_SCHEDULE) || [
       { hour: 9, minute: 0 },   // 9:00 AM
       { hour: 14, minute: 0 },  // 2:00 PM
       { hour: 18, minute: 0 },  // 6:00 PM
     ];
     this.checkInterval = null;
+  }
+
+  parseSchedule(scheduleString) {
+    if (!scheduleString) return null;
+    return scheduleString.split(',').map(time => {
+      const [hour, minute] = time.split(':').map(Number);
+      return { hour, minute };
+    });
   }
 
   async start() {
