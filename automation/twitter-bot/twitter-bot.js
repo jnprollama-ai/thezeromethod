@@ -8,49 +8,139 @@ const client = new TwitterApi('AAAAAAAAAAAAAAAAAAAAAFsU8wEAAAAA9ByJ8lbmzjxVTyKwx
 // Read-only client for search operations
 const rwClient = client.readWrite;
 
-// Content to post - All reviewed for compliance with etiquette guidelines
+// Content to post - Educational value only, no promotion until website is live
 const tweets = [
   {
-    text: `After testing dozens of AI prompt resources, I noticed a pattern:
+    text: `Prompt engineering isn't about complexity—it's about specificity.
 
-Most are either too generic or too complex.
+Instead of: "Write an email"
 
-Here's what actually works for busy professionals:
+Try: "Write a professional follow-up email to a client who hasn't responded in 3 days. Maintain a friendly but firm tone. Ask for a specific update on project status."
 
-🧵 (1/5)`,
+See the difference? 🧵`,
     thread: [
-      `The best prompts are:
+      `Most people use AI like a search engine.
 
-• Specific to your actual workflow
-• Tested with real use cases
-• Clear enough for consistent results
-• Focused on one outcome at a time (2/5)`,
+They ask: "What is X?" or "How do I Y?"
+
+But AI works best when you give it context, role, and specific instructions. (1/5)`,
       
-      `That's why I created something different:
+      `Here's a framework that works every time:
 
-25 prompts I use daily.
-Not overwhelming. Just practical.
+1. Give it a role ("Act as a...")
+2. Provide context ("Here's the situation...")
+3. Be specific about output ("Format as...")
+4. Add constraints ("Keep under 200 words")
 
-Each saves 10+ minutes.
-Email, Reports, Content, Research. (3/5)`,
+Try it. (2/5)`,
       
-      `No complex frameworks.
-No "10,000 prompts" overwhelm.
+      `Real example:
 
-Just 25 that work.
+❌ "Summarize this report"
+✅ "Act as a marketing director. Summarize this Q3 sales report for executives. Focus on: revenue trends, top 3 opportunities, and recommended actions. Use bullet points."
 
-$19 one-time.
-Updates included for a year. (4/5)`,
+The second gets you exactly what you need. (3/5)`,
       
-      `Want to try before you buy?
+      `Common mistakes to avoid:
+• Being too vague
+• Not providing context
+• Not specifying format
+• Accepting first result (iterate!)
 
-Reply "PROMPTS" and I'll DM you 3 free ones.
+Small tweaks = Big improvements (4/5)`,
+      
+      `The key insight:
 
-No obligations. Just tested tools that work.
+AI doesn't replace thinking—it amplifies it.
 
-https://thezeromethod.com (5/5)`
+Your prompts reflect your clarity of thought. The clearer you are, the better results you get.
+
+Start with one specific task. Master that. Build from there. (5/5)`
     ]
   },
+  
+  {
+    text: `5 AI prompts that save time (no tools required):
+
+1. "Turn this meeting transcript into action items with owners and deadlines"
+
+2. "Rewrite this paragraph for a 5th-grade reading level"
+
+3. "Create 5 headline options for this article"
+
+4. "Extract key dates and deadlines from this email chain"
+
+5. "Summarize this in 3 bullet points a busy CEO would read"
+
+Simple. Specific. Useful.`,
+  },
+  
+  {
+    text: `Most professionals waste AI potential.
+
+They ask generic questions and get generic answers.
+
+The fix? Treat AI like a smart intern:
+
+• Give context
+• Explain the goal
+• Specify the format
+• Ask it to ask clarifying questions
+
+Results improve 10x instantly.`,
+  },
+  
+  {
+    text: `Quick tip for better ChatGPT results:
+
+End your prompts with:
+
+"Ask me clarifying questions before you respond."
+
+This forces the AI to understand your actual need instead of making assumptions.
+
+Simple addition, massive improvement.`,
+  },
+  
+  {
+    text: `AI won't replace professionals.
+
+Professionals who use AI will replace those who don't.
+
+The gap isn't technical skill—it's knowing how to ask the right questions.
+
+Start with one repetitive task this week. Optimize it.
+
+Small wins compound.`,
+  },
+  
+  {
+    text: `Writing good prompts is like writing good emails:
+
+• Clear subject (what you want)
+• Context (why you need it)
+• Specific ask (exactly what to do)
+• Format (how you want it)
+
+The skills transfer. Practice with one AI tool this week.`,
+  },
+  
+  {
+    text: `If you're new to AI tools, start here:
+
+1. Pick ONE repetitive task (emails, reports, research)
+
+2. Write down exactly what you do manually
+
+3. Ask AI to do step 2, but be specific
+
+4. Refine based on results
+
+5. Repeat until it's faster than doing it yourself
+
+That's it. No courses needed.`,
+  }
+];
   {
     text: `Quick AI productivity tip:
 
