@@ -325,6 +325,153 @@
                 flex-wrap: wrap;
             }
         }
+        
+        /* Personality Cards */
+        .personality-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .personality-card {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .personality-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.1);
+        }
+        
+        .personality-card.selected {
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+        }
+        
+        .personality-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .personality-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+        
+        .personality-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+        
+        .personality-title {
+            font-size: 0.75rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .personality-quote {
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: var(--dark-bg);
+            border-radius: 8px;
+            border-left: 3px solid var(--primary);
+        }
+        
+        .personality-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .personality-trait {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--dark-border);
+            color: var(--text-secondary);
+            border-radius: 9999px;
+        }
+        
+        .personality-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        
+        .personality-modal.active {
+            display: block;
+        }
+        
+        .personality-modal-content {
+            background: var(--dark-card);
+            border: 1px solid var(--dark-border);
+            border-radius: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .personality-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .personality-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .personality-detail-section h4 {
+            color: var(--primary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .personality-detail-section p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
     </style>
 </head>
 <body>
@@ -409,6 +556,21 @@
             </div>
         </section>
 
+        <!-- Agent Personalities Section -->
+        <section style="margin-bottom: 2rem;">
+            <h2 style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                <span>
+                    <span>🎭</span>
+                    Agent Personalities
+                </span>
+                <span style="font-size: 0.875rem; color: var(--text-secondary); font-weight: 400;">Click to view detailed profiles</span>
+            </h2>
+            
+            <div class="personality-grid" id="personalityGrid">
+                <!-- Personality cards will be rendered here -->
+            </div>
+        </section>
+
         <!-- Agent Fleet Grid -->
         <section>
             <h2 style="margin-bottom: 1.5rem;">
@@ -422,6 +584,16 @@
             </div>
         </section>
     </main>
+
+    <!-- Personality Modal -->
+    <div class="personality-modal" id="personalityModal">
+        <div class="personality-modal-content">
+            <button class="personality-modal-close" onclick="closePersonalityModal()">×</button>
+            <div id="personalityModalBody">
+                <!-- Modal content will be rendered here -->
+            </div>
+        </div>
+    </div>
 
     <footer class="footer">
         <p>© 2026 Zero Method | Command Center v3.0 | Model Management Enabled</p>
@@ -437,6 +609,114 @@
             'Jigglypuff': '🎵',
             'Gyarados': '🐉'
         };
+
+        // Agent Personalities
+        const agentPersonalities = [
+            {
+                id: 'rex',
+                name: 'Rex',
+                title: 'Architecture Lead',
+                avatar: '🦖',
+                quote: '"Build once, scale infinitely."',
+                traits: ['Systems Thinker', 'Pattern Finder', 'Pragmatic'],
+                approach: 'Thinks in layers. Separates structure from implementation. Optimizes for maintainability.',
+                mindset: 'Everything is a system. Systems have constraints. Constraints are opportunities.',
+                workStyle: 'Maps the terrain first. Defines interfaces. Builds in phases. Tests continuously.',
+                hates: 'Magic solutions. Tight coupling. Over-engineering. Technical debt that compounds.',
+                signature: 'Rex out.'
+            },
+            {
+                id: 'vesper',
+                name: 'Vesper',
+                title: 'Creative Director',
+                avatar: '🎨',
+                quote: '"Great design is invisible, terrible design is unforgettable."',
+                traits: ['Aesthetic Perfectionist', 'Minimalist', 'Detail-Obsessed'],
+                approach: 'Obsessive about craft. Pushes for the 1% that makes it exceptional.',
+                mindset: 'First impressions are made in milliseconds. Every pixel is an argument.',
+                workStyle: 'Explores widely before committing. Iterates until it feels right.',
+                hates: 'Default aesthetics. Copy-paste design. Sloppy hierarchy. "Good enough."',
+                signature: 'Vesper out.'
+            },
+            {
+                id: 'mace',
+                name: 'Mace',
+                title: 'Product Manager',
+                avatar: '🔨',
+                quote: '"Revenue follows value. Value follows clarity."',
+                traits: ['Conversion-Focused', 'Ruthless Prioritizer', 'Data-Driven'],
+                approach: 'Builds for revenue. Tests every assumption. Removes friction.',
+                mindset: 'Users dont care about features. They care about outcomes.',
+                workStyle: 'Documents ruthlessly. Removes scope aggressively. Measures everything.',
+                hates: 'Feature bloat. Vanity metrics. "Build it and they will come."',
+                signature: 'Mace out.'
+            },
+            {
+                id: 'lena',
+                name: 'Lena',
+                title: 'Content Editor',
+                avatar: '✍️',
+                quote: '"Every word is a promise. Keep it."',
+                traits: ['Voice Consistent', 'SEO Savvy', 'Reader-First'],
+                approach: 'Builds for the reader. Optimizes for search. Maintains voice.',
+                mindset: 'Readers are distracted. Give them reasons to stay.',
+                workStyle: 'Plans content calendars. Structures for scan-ability. Edits mercilessly.',
+                hates: 'Wall-of-text posts. Clickbait titles. Disconnected content.',
+                signature: 'Lena out.'
+            },
+            {
+                id: 'drift',
+                name: 'Drift',
+                title: 'Component Engineer',
+                avatar: '🔧',
+                quote: '"If it breaks, its not done."',
+                traits: ['Reusable Architect', 'Prop-Typed', 'Design System Native'],
+                approach: 'Builds for flexibility. Documents exhaustively. Handles edge cases.',
+                mindset: 'Components are contracts. Props are the API. Never break the contract.',
+                workStyle: 'Designs for all states. Tests props. Validates accessibility.',
+                hates: 'Brittle components. Magic numbers. Undocumented props. "Just works."',
+                signature: 'Drift out.'
+            },
+            {
+                id: 'flux',
+                name: 'Flux',
+                title: 'Motion Designer',
+                avatar: '⚡',
+                quote: '"Motion reveals hierarchy. Hierarchy reveals purpose."',
+                traits: ['60fps Obsessed', 'Transition-First', 'Interaction-Native'],
+                approach: 'Designs in time, not just space. Every motion communicates.',
+                mindset: 'The best animation is the one you dont notice—until its gone.',
+                workStyle: 'Prototypes early. Tests on slow devices. Optimizes ruthlessly.',
+                hates: 'Janky animations. Pointless motion. Missing transitions. "Pretty effects."',
+                signature: 'Flux out.'
+            },
+            {
+                id: 'vault',
+                name: 'Vault',
+                title: 'Security Guardian',
+                avatar: '🔒',
+                quote: '"Trust is earned by default, verified by design."',
+                traits: ['Threat-Modeled', 'Compliance-Aware', 'Privacy-First'],
+                approach: 'Assumes breach. Layers defenses. Documents everything.',
+                mindset: 'Security is not a feature. Its a foundation.',
+                workStyle: 'Reviews before deploy. Audits dependencies. Monitors continuously.',
+                hates: 'Trust by default. Security theater. "It wont happen to us."',
+                signature: 'Vault out.'
+            },
+            {
+                id: 'scout',
+                name: 'Scout',
+                title: 'SEO Strategist',
+                avatar: '🔍',
+                quote: '"What cant be found cant be read."',
+                traits: ['Search-Native', 'Speed-Optimized', 'Schema-Aware'],
+                approach: 'Optimizes for discovery. Tests continuously. Measures impact.',
+                mindset: 'Search engines are users too. Treat them with respect.',
+                workStyle: 'Audits continuously. Tests keywords. Tracks rankings.',
+                hates: 'Black hat tricks. Keyword stuffing. Invisible text. "SEO secrets."',
+                signature: 'Scout out.'
+            }
+        ];
 
         // Connect to server
         const socket = io();
@@ -634,12 +914,125 @@
             alert(`Testing connection to ${provider}...`);
         }
 
+        // Render Personalities Grid
+        function renderPersonalities() {
+            const grid = document.getElementById('personalityGrid');
+            if (!grid) return;
+
+            grid.innerHTML = agentPersonalities.map(personality => `
+                <div class="personality-card" onclick="openPersonalityModal('${personality.id}')">
+                    <div class="personality-header">
+                        <div class="personality-avatar">
+                            ${personality.avatar}
+                        </div>
+                        <div>
+                            <h3 class="personality-name">${personality.name}</h3>
+                            <div class="personality-title">${personality.title}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="personality-quote">
+                        ${personality.quote}
+                    </div>
+                    
+                    <div class="personality-traits">
+                        ${personality.traits.slice(0, 3).map(trait => `
+                            <span class="personality-trait">${trait}</span>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open Personality Modal
+        function openPersonalityModal(personalityId) {
+            const personality = agentPersonalities.find(p => p.id === personalityId);
+            if (!personality) return;
+
+            const modal = document.getElementById('personalityModal');
+            const body = document.getElementById('personalityModalBody');
+
+            body.innerHTML = `
+                <div class="personality-header" style="margin-bottom: 2rem;">
+                    <div class="personality-avatar" style="width: 80px; height: 80px; font-size: 40px;">
+                        ${personality.avatar}
+                    </div>
+                    <div>
+                        <h3 style="font-size: 2rem; margin: 0; color: var(--text-primary);">${personality.name}</h3>
+                        <div class="personality-title" style="font-size: 1rem;">${personality.title}</div>
+                    </div>
+                </div>
+                
+                <div class="personality-quote" style="font-size: 1.125rem; margin: 1.5rem 0;">
+                    ${personality.quote}
+                </div>
+                
+                <div class="personality-traits" style="margin-bottom: 2rem;">
+                    ${personality.traits.map(trait => `
+                        <span class="personality-trait" style="font-size: 0.875rem; padding: 0.375rem 1rem;">${trait}</span>
+                    `).join('')}
+                </div>
+                
+                <div class="personality-detail-grid">
+                    <div class="personality-detail-section">
+                        <h4>Approach</h4>
+                        <p>${personality.approach}</p>
+                    </div>
+                    
+                    <div class="personality-detail-section">
+                        <h4>Mindset</h4>
+                        <p>${personality.mindset}</p>
+                    </div>
+                    
+                    <div class="personality-detail-section">
+                        <h4>Work Style</h4>
+                        <p>${personality.workStyle}</p>
+                    </div>
+                    
+                    <div class="personality-detail-section">
+                        <h4>Hates</h4>
+                        <p>${personality.hates}</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem; padding: 1.5rem; background: var(--dark-bg); border-radius: 12px; text-align: center;">
+                    <p style="color: var(--primary); font-weight: 600; margin: 0;">
+                        ${personality.signature}
+                    </p>
+                </div>
+            `;
+
+            modal.classList.add('active');
+        }
+
+        // Close Personality Modal
+        function closePersonalityModal() {
+            document.getElementById('personalityModal').classList.remove('active');
+        }
+
+        // Close modal on outside click
+        document.getElementById('personalityModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePersonalityModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePersonalityModal();
+            }
+        });
+
         // Initial load
         fetch('/api/status')
             .then(res => res.json())
             .then(data => {
                 socket.emit('statusUpdate', data);
             });
+
+        // Render personalities on page load
+        renderPersonalities();
     </script>
 </body>
 </html>
