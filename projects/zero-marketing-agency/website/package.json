@@ -14,8 +14,11 @@
     "qa:full": "npm run qa"
   },
   "dependencies": {
-    "@astrojs/netlify": "^5.5.4",
+    "@astrojs/rss": "^4.0.0",
+    "@astrojs/sitemap": "^3.7.2",
     "@astrojs/tailwind": "^5.1.0",
+    "@astrojs/vercel": "^8.1.0",
+    "@openrouter/sdk": "^0.11.2",
     "@paypal/paypal-js": "^9.5.0",
     "@tailwindcss/typography": "^0.5.10",
     "astro": "^4.15.0",

@@ -1,5 +1,6 @@
 {
-  "name": "zero-method-website",
-  "version": 2,
-  "framework": "astro"
+  "framework": "astro",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install"
 }

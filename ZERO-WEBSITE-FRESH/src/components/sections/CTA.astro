@@ -1,0 +1,77 @@
+---
+import Button from '../ui/Button.astro';
+
+export interface Props {
+  title: string;
+  subtitle?: string;
+  cta: {
+    text: string;
+    href: string;
+  };
+  variant?: 'default' | 'gradient' | 'dark';
+  centered?: boolean;
+}
+
+const { 
+  title,
+  subtitle,
+  cta,
+  variant = 'gradient',
+  centered = true
+} = Astro.props;
+
+const variantStyles = {
+  default: 'bg-slate-900 border border-slate-800',
+  gradient: 'bg-gradient-to-br from-cyan-500/20 via-purple-500/20 to-slate-900 border border-cyan-500/30',
+  dark: 'bg-slate-950 border border-slate-800'
+};
+---
+
+<section class="py-20 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <div class={`${variantStyles[variant]} rounded-2xl p-8 sm:p-12 ${centered ? 'text-center' : ''}`}>
+      <!-- Title -->
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
+        {title}
+      </h2>
+      
+      <!-- Subtitle -->
+      {subtitle && (
+        <p class="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+          {subtitle}
+        </p>
+      )}
+      
+      <!-- CTA Button -->
+      <div class={`flex flex-col sm:flex-row gap-4 ${centered ? 'justify-center' : ''}`}>
+        <Button href={cta.href} variant="primary" size="lg">
+          {cta.text}
+        </Button>
+      </div>
+      
+      <!-- Trust badges -->
+      <div class="mt-8 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-500">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <span>30-day guarantee</span>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          <span>Secure payment</span>
+        </div>
+        
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+          </svg>
+          <span>Instant download</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -43,7 +43,33 @@ const { title, description, keywords = "AI productivity, prompts, templates, wor
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+		
+		<!-- Design System CSS -->
+		<link rel="stylesheet" href="/src/styles/design-system.css" />
+		
+		<!-- Global Styles -->
+		<style>
+			/* Font families - NO Inter allowed */
+			body {
+				font-family: 'DM Sans', system-ui, sans-serif;
+				background-color: var(--bg);
+				color: var(--text);
+			}
+			
+			.font-display {
+				font-family: 'Playfair Display', Georgia, serif;
+			}
+			
+			.font-mono {
+				font-family: 'JetBrains Mono', 'Fira Code', monospace;
+			}
+			
+			/* Smooth scroll behavior */
+			html {
+				scroll-behavior: smooth;
+			}
+		</style>
 		
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -56,23 +82,23 @@ const { title, description, keywords = "AI productivity, prompts, templates, wor
 			"name": "Zero Method - AI Prompts Starter Pack",
 			"image": "{Astro.site}/og-image.jpg",
 			"description": "25 battle-tested AI prompts + 10 email templates. Save 5 hours every week with copy-paste ready prompts for ChatGPT and Claude.",
-			"brand": {
+			"brand": {{
 				"@type": "Brand",
 				"name": "Zero Method"
-			},
-			"offers": {
+			}},
+			"offers": {{
 				"@type": "Offer",
 				"url": "{Astro.site}/product",
 				"price": "19.00",
 				"priceCurrency": "USD",
 				"availability": "https://schema.org/InStock",
 				"priceValidUntil": "2026-12-31"
-			},
-			"aggregateRating": {
+			}},
+			"aggregateRating": {{
 				"@type": "AggregateRating",
 				"ratingValue": "4.8",
 				"reviewCount": "12"
-			}
+			}}
 		}}
 		</script>
 		
@@ -97,7 +123,7 @@ const { title, description, keywords = "AI productivity, prompts, templates, wor
 		
 		<title>{title}</title>
 	</head>
-	<body class="bg-navy-950 text-white font-sans antialiased">
+	<body class="antialiased">
 		<slot />
 	</body>
 </html>

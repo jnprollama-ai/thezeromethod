@@ -1,0 +1,128 @@
+---
+export interface Props {
+  title?: string;
+  subtitle?: string;
+  items: Array<{
+    question: string;
+    answer: string;
+  }>;
+}
+
+const { 
+  title = "Frequently Asked Questions",
+  subtitle = "Everything you need to know about the Zero Method Prompt Pack.",
+  items
+} = Astro.props;
+---
+
+<section id="faq" class="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900/30">
+  <div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4">{title}</h2>
+      {subtitle && <p class="text-lg text-slate-400">{subtitle}</p>}
+    </div>
+    
+    <!-- FAQ Items -->
+    <div class="space-y-4" data-faq-container>
+      {items.map((item, index) => (
+        <div 
+          class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden"
+          data-faq-item
+        >
+          <button
+            type="button"
+            class="w-full flex items-center justify-between p-6 text-left hover:bg-slate-800/80 transition-colors"
+            aria-expanded="false"
+            aria-controls={`faq-answer-${index}`}
+            data-faq-trigger
+          >
+            <span class="font-semibold text-slate-100 pr-4">{item.question}</span>
+            <svg 
+              class="w-5 h-5 text-slate-400 flex-shrink-0 transition-transform duration-200"
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+              data-faq-icon
+            >
+              <path 
+                stroke-linecap="round" 
+                stroke-linejoin="round" 
+                stroke-width="2" 
+                d="M19 9l-7 7-7-7" 
+              />
+            </svg>
+          </button>
+          
+          <div
+            id={`faq-answer-${index}`}
+            class="hidden px-6 pb-6"
+            data-faq-answer
+          >
+            <p class="text-slate-400 leading-relaxed">
+              {item.answer}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+    
+    <!-- Contact -->
+    <div class="mt-12 text-center">
+      <p class="text-slate-400">
+        Still have questions?{' '}
+        <a 
+          href="mailto:support@thezeromethod.com" 
+          class="text-cyan-400 hover:text-cyan-300 transition-colors"
+        >
+          Get in touch
+        </a>
+      </p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // FAQ Accordion functionality
+  const faqContainer = document.querySelector('[data-faq-container]');
+  
+  if (faqContainer) {
+    faqContainer.addEventListener('click', (e) => {
+      const trigger = e.target.closest('[data-faq-trigger]');
+      if (!trigger) return;
+      
+      const item = trigger.closest('[data-faq-item]');
+      const answer = item?.querySelector('[data-faq-answer]');
+      const icon = trigger.querySelector('[data-faq-icon]');
+      const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+      
+      // Close all other items
+      document.querySelectorAll('[data-faq-trigger]').forEach((otherTrigger) => {
+        if (otherTrigger !== trigger) {
+          otherTrigger.setAttribute('aria-expanded', 'false');
+          const otherItem = otherTrigger.closest('[data-faq-item]');
+          const otherAnswer = otherItem?.querySelector('[data-faq-answer]');
+          const otherIcon = otherTrigger.querySelector('[data-faq-icon]');
+          
+          if (otherAnswer) {
+            otherAnswer.classList.add('hidden');
+          }
+          if (otherIcon) {
+            otherIcon.style.transform = 'rotate(0deg)';
+          }
+        }
+      });
+      
+      // Toggle current item
+      trigger.setAttribute('aria-expanded', String(!isExpanded));
+      
+      if (answer) {
+        answer.classList.toggle('hidden');
+      }
+      
+      if (icon) {
+        icon.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+      }
+    });
+  }
+</script>

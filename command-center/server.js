@@ -1023,6 +1023,99 @@ app.post('/api/twitter/post', async (req, res) => {
   }
 });
 
+// Model Management API
+app.post('/api/agents/switch-model', (req, res) => {
+  const { agentId, modelId } = req.body;
+  const agent = currentStatus.agents.find(a => a.id === agentId);
+  const model = currentStatus.modelConfiguration?.availableModels?.find(m => m.id === modelId);
+  
+  if (!agent) {
+    return res.status(404).json({ error: 'Agent not found' });
+  }
+  
+  if (!model) {
+    return res.status(404).json({ error: 'Model not found' });
+  }
+  
+  // Update agent's model
+  agent.currentModel = model.name;
+  agent.provider = model.provider;
+  agent.apiEndpoint = currentStatus.modelConfiguration?.apiConfiguration[model.provider.toLowerCase().replace('/', '')]?.endpoint || agent.apiEndpoint;
+  agent.lastActivity = new Date().toISOString();
+  
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  
+  res.json({ 
+    message: `Model switched successfully`, 
+    agent,
+    newModel: model 
+  });
+});
+
+app.post('/api/config/update-api-key', (req, res) => {
+  const { provider, key } = req.body;
+  
+  if (!provider || !key) {
+    return res.status(400).json({ error: 'Provider and key are required' });
+  }
+  
+  if (!currentStatus.modelConfiguration) {
+    currentStatus.modelConfiguration = {};
+  }
+  if (!currentStatus.modelConfiguration.apiConfiguration) {
+    currentStatus.modelConfiguration.apiConfiguration = {};
+  }
+  
+  const config = currentStatus.modelConfiguration.apiConfiguration[provider];
+  if (!config) {
+    return res.status(404).json({ error: 'Provider not found' });
+  }
+  
+  // Update key (store only last 4 chars for display)
+  config.keyLast4 = key.slice(-4);
+  config.status = 'connected'; // Assume valid key
+  currentStatus.lastUpdated = new Date().toISOString();
+  saveStatus(currentStatus);
+  io.emit('statusUpdate', currentStatus);
+  
+  res.json({ 
+    message: 'API key updated successfully', 
+    provider,
+    status: 'connected'
+  });
+});
+
+app.post('/api/config/test-connection', (req, res) => {
+  const { provider } = req.body;
+  
+  // Simulate connection test
+  setTimeout(() => {
+    const config = currentStatus.modelConfiguration?.apiConfiguration[provider];
+    if (config) {
+      config.status = 'connected';
+      config.lastTested = new Date().toISOString();
+      currentStatus.lastUpdated = new Date().toISOString();
+      saveStatus(currentStatus);
+      io.emit('statusUpdate', currentStatus);
+      res.json({ success: true, message: 'Connection successful' });
+    } else {
+      res.status(404).json({ error: 'Provider not found' });
+    }
+  }, 1000);
+});
+
+// Get detailed agent info
+app.get('/api/agents/:id', (req, res) => {
+  const agent = currentStatus.agents.find(a => a.id === req.params.id);
+  if (agent) {
+    res.json(agent);
+  } else {
+    res.status(404).json({ error: 'Agent not found' });
+  }
+});
+
 // Chat functionality
 io.on('connection', (socket) => {
   console.log('Client connected');

@@ -1,110 +1,164 @@
 ---
 interface Props {
-  price: string; // Price in USD (e.g., "19.00")
-  productName: string; // Name of the product
+  price: string;
+  productName: string;
   buttonText?: string;
   class?: string;
 }
 
-const { price, productName, buttonText = "Buy with PayPal", class: className = "" } = Astro.props;
+const { price, productName, buttonText = "Pay with PayPal", class: className = "" } = Astro.props;
 
-// Check if running in production
-const isProduction = import.meta.env.PROD;
-const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || '';
+const paypalClientId = import.meta.env.PUBLIC_PAYPAL_CLIENT_ID || '';
 ---
 
-{
-  isProduction && paypalClientId ? (
-    <button
-      class={`paypal-checkout-btn ${className}`}
-      data-price={price}
-      data-product={productName}
-      type="button"
-    >
+<div class="paypal-wrapper">
+  <button
+    type="button"
+    class={`paypal-checkout-btn ${className}`}
+    data-price={price}
+    data-product={productName}
+  >
+    <span class="flex items-center justify-center gap-2">
+      <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.77.77 0 0 1 .757-.629h6.715c2.127 0 3.752.483 4.815 1.399 1.032.885 1.487 2.17 1.336 3.745a4.96 4.96 0 0 1-.355 1.273c-.058.123-.122.24-.19.356a5.38 5.38 0 0 1-.384.548c-.02.025-.04.049-.062.074a4.08 4.08 0 0 1-.502.49 5.21 5.21 0 0 1-.703.494c-.11.065-.224.127-.34.186a6.43 6.43 0 0 1-.788.332c-.096.032-.193.062-.291.089a7.48 7.48 0 0 1-.854.19c-.11.017-.222.032-.334.044a9.35 9.35 0 0 1-.89.048h-2.96a.64.64 0 0 0-.634.54l-.166 1.059-.252 1.595-.04.258-.253 1.614-.004.022-.148.945-.003.02-.253 1.609-.01.064-.002.014-.253 1.607-.05.321a.64.64 0 0 1-.632.538z"/>
+        <path d="M22.127 9.51c-.031.15-.068.298-.111.444a5.38 5.38 0 0 1-.384.548c-.02.025-.04.049-.062.074a4.08 4.08 0 0 1-.502.49 5.21 5.21 0 0 1-.703.494c-.11.065-.224.127-.34.186a6.43 6.43 0 0 1-.788.332c-.096.032-.193.062-.291.089a7.48 7.48 0 0 1-.854.19c-.11.017-.222.032-.334.044a9.35 9.35 0 0 1-.89.048h-2.96a.64.64 0 0 0-.634.54l-.166 1.059-.252 1.595-.04.258-.253 1.614-.004.022-.148.945h4.12c.34 0 .618-.254.64-.593l.008-.156v-.08l.33-2.097.026-.135.004-.022.148-.945.003-.02.253-1.609.01-.064.002-.014.253-1.607.05-.321a.64.64 0 0 1 .632-.538h.382c2.127 0 3.752-.483 4.815-1.399.352-.302.644-.649.872-1.035.26-.435.433-.917.512-1.432.02-.137.034-.275.041-.413z"/>
+      </svg>
       {buttonText}
-    </button>
-  ) : (
-    <a
-      href="mailto:support@thezeromethod.com?subject=Interested%20in%20Zero%20Method%20Starter%20Pack"
-      class={className}
-    >
-      {buttonText} (Coming Soon)
-    </a>
-  )
-}
+    </span>
+  </button>
+  
+  <div id="paypal-button-container" class="hidden mt-4"></div>
+</div>
 
-{
-  isProduction && paypalClientId && (
-    <script define:vars={{ paypalClientId }}>
-      // PayPal integration script
-      const btn = document.querySelector('.paypal-checkout-btn');
-      if (btn) {
-        btn.addEventListener('click', async () => {
-          try {
-            // Create PayPal order
-            const response = await fetch('/api/create-paypal-order', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                price: btn.getAttribute('data-price'),
-                productName: btn.getAttribute('data-product'),
-              }),
-            });
-            
-            const orderData = await response.json();
-            
-            if (orderData.id) {
-              // Load PayPal SDK and initialize payment
-              const paypal = await loadPayPalSDK(paypalClientId);
-              
-              // Render the PayPal buttons
-              paypal.Buttons({
-                createOrder: function(data, actions) {
-                  return actions.order.create({
-                    purchase_units: [{
-                      amount: {
-                        value: btn.getAttribute('data-price')
-                      }
-                    }]
-                  });
-                },
-                onApprove: function(data, actions) {
-                  return actions.order.capture().then(function(details) {
-                    // Redirect to success page
-                    window.location.href = `/success?paymentId=${details.id}&payerId=${details.payer.payer_id}`;
-                  });
-                },
-                onError: function(err) {
-                  console.error('PayPal error:', err);
-                  alert('Payment failed. Please try again or contact support.');
-                }
-              }).render('#paypal-button-container');
-            } else {
-              alert('Something went wrong. Please try again or contact support.');
-            }
-          } catch (error) {
-            console.error('PayPal error:', error);
-            alert('Payment system not configured yet. Email us at support@thezeromethod.com');
-          }
-        });
+<script define:vars={{ paypalClientId }}>
+  // Load PayPal SDK
+  function loadPayPalSDK(clientId) {
+    return new Promise((resolve, reject) => {
+      if (window.paypal) {
+        resolve(window.paypal);
+        return;
       }
-      
-      // Load PayPal SDK
-      function loadPayPalSDK(clientId) {
-        return new Promise((resolve, reject) => {
-          if (window.paypal) {
-            resolve(window.paypal);
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=capture`;
+      script.onload = () => resolve(window.paypal);
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  // Initialize PayPal checkout
+  document.addEventListener('DOMContentLoaded', async () => {
+    const buttons = document.querySelectorAll('.paypal-checkout-btn');
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', async () => {
+        try {
+          if (!paypalClientId) {
+            alert('PayPal is being configured. Please use the card payment option or contact support.');
             return;
           }
-          const script = document.createElement('script');
-          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
-          script.onload = () => resolve(window.paypal);
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-    </script>
-  )
-}
+
+          const price = button.getAttribute('data-price');
+          const productName = button.getAttribute('data-product');
+          const container = button.closest('.paypal-wrapper').querySelector('#paypal-button-container');
+          
+          // Show loading state
+          const originalText = button.innerHTML;
+          button.innerHTML = '<span class="flex items-center justify-center gap-2">Loading PayPal...</span>';
+          button.disabled = true;
+          
+          // Load PayPal SDK
+          const paypal = await loadPayPalSDK(paypalClientId);
+          
+          // Hide the button and show PayPal buttons
+          button.classList.add('hidden');
+          container.classList.remove('hidden');
+          
+          // Render PayPal buttons
+          paypal.Buttons({
+            style: {
+              layout: 'vertical',
+              color: 'gold',
+              shape: 'rect',
+              label: 'paypal'
+            },
+            createOrder: function(data, actions) {
+              return actions.order.create({
+                purchase_units: [{
+                  amount: {
+                    value: price,
+                    currency_code: 'USD'
+                  },
+                  description: productName
+                }]
+              });
+            },
+            onApprove: function(data, actions) {
+              return actions.order.capture().then(function(details) {
+                // Redirect to success page with payment details
+                const params = new URLSearchParams({
+                  paymentId: details.id,
+                  payerId: details.payer.payer_id,
+                  status: 'completed',
+                  method: 'paypal'
+                });
+                window.location.href = `/success?${params.toString()}`;
+              });
+            },
+            onError: function(err) {
+              console.error('PayPal error:', err);
+              alert('Payment failed. Please try again or contact support.');
+              container.classList.add('hidden');
+              button.classList.remove('hidden');
+              button.innerHTML = originalText;
+              button.disabled = false;
+            },
+            onCancel: function() {
+              container.classList.add('hidden');
+              button.classList.remove('hidden');
+              button.innerHTML = originalText;
+              button.disabled = false;
+            }
+          }).render(container);
+          
+        } catch (error) {
+          console.error('PayPal initialization error:', error);
+          alert('PayPal is currently unavailable. Please use the card payment option.');
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .paypal-checkout-btn {
+    background: #0070BA;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .paypal-checkout-btn:hover {
+    background: #005ea6;
+    transform: translateY(-1px);
+  }
+  
+  .paypal-checkout-btn:active {
+    transform: translateY(0);
+  }
+  
+  .paypal-checkout-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .paypal-checkout-btn.hidden {
+    display: none;
+  }
+  
+  #paypal-button-container.hidden {
+    display: none;
+  }
+</style>

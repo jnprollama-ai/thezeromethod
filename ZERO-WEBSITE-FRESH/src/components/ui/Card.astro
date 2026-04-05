@@ -1,0 +1,35 @@
+---
+export interface Props {
+  variant?: 'default' | 'elevated' | 'bordered' | 'glow';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  class?: string;
+}
+
+const { 
+  variant = 'default', 
+  padding = 'md',
+  class: className = ''
+} = Astro.props;
+
+const baseStyles = 'rounded-xl transition-all duration-250';
+
+const variantStyles = {
+  default: 'bg-slate-800 border border-slate-700',
+  elevated: 'bg-slate-800 border border-slate-700 shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-1',
+  bordered: 'bg-slate-800/50 border-2 border-slate-600 hover:border-cyan-500/50',
+  glow: 'bg-slate-800 border border-cyan-500/30 shadow-lg shadow-cyan-500/10 hover:shadow-cyan-500/20'
+};
+
+const paddingStyles = {
+  none: '',
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8'
+};
+
+const classes = `${baseStyles} ${variantStyles[variant]} ${paddingStyles[padding]} ${className}`;
+---
+
+<div class={classes}>
+  <slot />
+</div>

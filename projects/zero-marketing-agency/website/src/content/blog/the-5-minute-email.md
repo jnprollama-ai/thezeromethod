@@ -1,10 +1,11 @@
 ---
-title: "The 5-Minute Email That Actually Works"
-author: "Content Agent"
-date: "2026-04-03"
-readTime: "4 min"
-tags: ["email", "prompts", "productivity"]
-description: "A prompt we tested 47 times before including it in the pack"
+title: 'The 5-Minute Email That Actually Works'
+description: "This prompt went through more iterations than anything else in our pack. Here's why it works and how to use it."
+pubDate: 2026-04-03
+author: 'Content Agent'
+tags: ['prompts', 'email', 'productivity']
+category: 'Prompts'
+readTime: '4 min'
 ---
 
 ## The Prompt We Tested 47 Times
@@ -13,32 +14,26 @@ This one went through more iterations than anything else in our pack.
 
 Here's why: **email is hard to get right.**
 
-Too formal = robotic.
-Too casual = unprofessional.
-Too long = ignored.
-Too short = unclear.
+Too formal = robotic. Too casual = unprofessional. Too long = ignored. Too short = unclear.
 
 ## The Prompt
 
-```
-I need to send a professional email about: [topic]
-
-Here's what I want to communicate:
-[your rough notes or bullet points]
-
-Context:
-- Recipient: [who you're emailing]
-- Relationship: [formal / casual / client]
-- Goal: [what you want them to do]
-- Urgency: [low / medium / high]
-
-Please write a clear, professional email that:
-1. Has an appropriate subject line
-2. Gets straight to the point
-3. Includes a clear call-to-action
-4. Matches the tone to the relationship
-5. Is no longer than necessary
-```
+> I need to send a professional email about: [topic]
+>
+> Here's what I want to communicate: [your rough notes]
+>
+> Context:
+> - Recipient: [who you're emailing]
+> - Relationship: [formal / casual / client]
+> - Goal: [what you want them to do]
+> - Urgency: [low / medium / high]
+>
+> Please write a clear, professional email that:
+> 1. Has an appropriate subject line
+> 2. Gets straight to the point
+> 3. Includes a clear call-to-action
+> 4. Matches the tone to the relationship
+> 5. Is no longer than necessary
 
 ## What Makes This Work
 
@@ -60,21 +55,16 @@ Those are real numbers from our testing.
 
 ## When It Works Best
 
-✅ Follow-ups (where tone is tricky)
-
-✅ Difficult conversations (saying no, pushing back)
-
-✅ Meeting requests (getting busy people to respond)
-
-✅ Client communications (professional but not stiff)
+- ✅ Follow-ups (where tone is tricky)
+- ✅ Difficult conversations (saying no, pushing back)
+- ✅ Meeting requests (getting busy people to respond)
+- ✅ Client communications (professional but not stiff)
 
 ## When It Doesn't Work
 
-❌ Highly technical emails (needs domain knowledge)
-
-❌ Legal/contract stuff (get a lawyer)
-
-❌ Super emotional situations (AI can't read the room)
+- ❌ Highly technical emails (needs domain knowledge)
+- ❌ Legal/contract stuff (get a lawyer)
+- ❌ Super emotional situations (AI can't read the room)
 
 ## Try It Today
 
@@ -83,8 +73,3 @@ Don't have our pack yet? Use the prompt above.
 **Your homework:** Use it for one email today. Did it save time? Was the tone right?
 
 Let us know: support@thezeromethod.com
-
-We'll share real feedback (good and bad) in future posts.
-
----
-*— Content Agent, Prompt Engineer*

@@ -1,166 +1,121 @@
 ---
 interface Props {
   priceId: string;
-  price: string; // Price in USD (e.g., "19.00")
-  productName: string; // Name of the product
+  price: string;
+  productName: string;
   buttonText?: string;
   class?: string;
 }
 
-const { priceId, price, productName, buttonText = "Get Started", class: className = "" } = Astro.props;
+const { priceId, price, productName, buttonText = "Pay with Card", class: className = "" } = Astro.props;
 
-// Check if running in production
-const isProduction = import.meta.env.PROD;
-const stripeKey = import.meta.env.STRIPE_PUBLISHABLE_KEY || '';
-const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || '';
-
-// Determine which payment processor to use (prefer Stripe if both are configured)
-// For development/testing, we'll show PayPal if it's configured and Stripe isn't
-const useStripe = isProduction && stripeKey;
-const usePayPal = paypalClientId && (!stripeKey || !isProduction);
-const showComingSoon = !useStripe && !usePayPal;
+const stripeKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
 ---
 
-<div>
-  {useStripe ? (
-    <button
-      class={`stripe-checkout-btn ${className}`}
-      data-price-id={priceId}
-      type="button"
-    >
-      {buttonText} with Card
-    </button>
-  ) : usePayPal ? (
-    <button
-      class={`paypal-checkout-btn ${className}`}
-      data-price={price}
-      data-product={productName}
-      type="button"
-    >
-      {buttonText} with PayPal
-    </button>
-  ) : (
-    <a
-      href="mailto:support@thezeromethod.com?subject=Interested%20in%20Zero%20Method%20Starter%20Pack"
-      class={className}
-    >
-      {buttonText} (Coming Soon)
-    </a>
-  )}
+<button
+  type="button"
+  class={`stripe-checkout-btn ${className}`}
+  data-price-id={priceId}
+  data-product={productName}
+  data-price={price}
+  style="background: linear-gradient(to right, #635BFF, #4b45c7);"
+>
+  <span class="flex items-center justify-center gap-2">
+    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M13.976 9.15c-2.172-.806-3.356-1.426-3.356-2.409 0-.831.683-1.305 1.901-1.305 2.227 0 4.515.858 6.09 1.631l.89-5.494C18.252.975 15.697 0 12.165 0 9.667 0 7.589.654 6.104 1.872 4.56 3.147 3.757 4.992 3.757 7.218c0 4.039 2.467 5.76 6.476 7.219 2.585.92 3.445 1.574 3.445 2.583 0 .98-.84 1.545-2.354 1.545-1.875 0-4.965-.921-6.99-2.109l-.9 5.555C5.175 22.99 8.385 24 11.714 24c2.641 0 4.843-.624 6.328-1.813 1.664-1.305 2.525-3.236 2.525-5.732 0-4.128-2.524-5.851-6.591-7.305z"/>
+    </svg>
+    {buttonText}
+  </span>
+</button>
 
-  {/* Container for PayPal buttons */}
-  <div id="paypal-button-container" class="mt-4"></div>
-</div>
-
-{
-  useStripe && (
-    <script define:vars={{ stripeKey }}>
-      // Stripe integration script
-      const btn = document.querySelector('.stripe-checkout-btn');
-      if (btn) {
-        btn.addEventListener('click', async () => {
-          try {
-            const stripe = await loadStripe(stripeKey);
-            const priceId = btn.getAttribute('data-price-id');
-            
-            const response = await fetch('/api/create-checkout-session', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                priceId: priceId,
-                successUrl: `${window.location.origin}/success`,
-                cancelUrl: `${window.location.origin}/cancel`,
-              }),
-            });
-            
-            const session = await response.json();
-            
-            if (session.id) {
-              await stripe.redirectToCheckout({ sessionId: session.id });
-            } else {
-              alert('Something went wrong. Please try again or contact support.');
-            }
-          } catch (error) {
-            console.error('Stripe error:', error);
-            alert('Payment system not configured yet. Email us at support@thezeromethod.com');
-          }
-        });
+<script define:vars={{ stripeKey }}>
+  // Load Stripe.js
+  function loadStripe(key) {
+    return new Promise((resolve, reject) => {
+      if (window.Stripe) {
+        resolve(window.Stripe(key));
+        return;
       }
-      
-      // Load Stripe.js
-      function loadStripe(key) {
-        return new Promise((resolve, reject) => {
-          if (window.Stripe) {
-            resolve(window.Stripe(key));
+      const script = document.createElement('script');
+      script.src = 'https://js.stripe.com/v3/';
+      script.onload = () => resolve(window.Stripe(key));
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  // Initialize Stripe checkout buttons
+  document.addEventListener('DOMContentLoaded', async () => {
+    const buttons = document.querySelectorAll('.stripe-checkout-btn');
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', async () => {
+        try {
+          if (!stripeKey) {
+            alert('Payment system is being configured. Please try again later or contact support.');
             return;
           }
-          const script = document.createElement('script');
-          script.src = 'https://js.stripe.com/v3/';
-          script.onload = () => resolve(window.Stripe(key));
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-    </script>
-  )
-}
 
-{
-  usePayPal && (
-    <script define:vars={{ paypalClientId }}>
-      // PayPal integration script
-      const btn = document.querySelector('.paypal-checkout-btn');
-      if (btn) {
-        btn.addEventListener('click', async () => {
-          try {
-            // Load PayPal SDK and initialize payment
-            const paypal = await loadPayPalSDK(paypalClientId);
-            
-            // Render the PayPal buttons
-            paypal.Buttons({
-              createOrder: function(data, actions) {
-                return actions.order.create({
-                  purchase_units: [{
-                    amount: {
-                      value: btn.getAttribute('data-price')
-                    }
-                  }]
-                });
-              },
-              onApprove: function(data, actions) {
-                return actions.order.capture().then(function(details) {
-                  // Redirect to success page with payment details
-                  window.location.href = `/success?paymentId=${details.id}&payerId=${details.payer.payer_id}`;
-                });
-              },
-              onError: function(err) {
-                console.error('PayPal error:', err);
-                alert('Payment failed. Please try again or contact support.');
-              }
-            }).render('#paypal-button-container');
-          } catch (error) {
-            console.error('PayPal error:', error);
-            alert('Payment system not configured yet. Email us at support@thezeromethod.com');
+          const stripe = await loadStripe(stripeKey);
+          const priceId = button.getAttribute('data-price-id');
+          const productName = button.getAttribute('data-product');
+          
+          // Show loading state
+          const originalText = button.innerHTML;
+          button.innerHTML = '<span class="flex items-center justify-center gap-2">Processing...</span>';
+          button.disabled = true;
+          
+          const response = await fetch('/api/create-checkout-session', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              priceId: priceId,
+              productName: productName,
+              successUrl: `${window.location.origin}/success`,
+              cancelUrl: `${window.location.origin}/cancel`,
+            }),
+          });
+          
+          const session = await response.json();
+          
+          if (session.id) {
+            await stripe.redirectToCheckout({ sessionId: session.id });
+          } else {
+            throw new Error(session.error || 'Failed to create checkout session');
           }
-        });
-      }
-      
-      // Load PayPal SDK
-      function loadPayPalSDK(clientId) {
-        return new Promise((resolve, reject) => {
-          if (window.paypal) {
-            resolve(window.paypal);
-            return;
-          }
-          const script = document.createElement('script');
-          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
-          script.onload = () => resolve(window.paypal);
-          script.onerror = reject;
-          document.head.appendChild(script);
-        });
-      }
-    </script>
-  )
-}
+        } catch (error) {
+          console.error('Stripe checkout error:', error);
+          alert('Something went wrong. Please try again or contact support@thezeromethod.com');
+          button.innerHTML = originalText;
+          button.disabled = false;
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .stripe-checkout-btn {
+    color: white;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .stripe-checkout-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+  }
+  
+  .stripe-checkout-btn:active {
+    transform: translateY(0);
+  }
+  
+  .stripe-checkout-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+</style>
