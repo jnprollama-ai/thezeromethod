@@ -281,17 +281,16 @@ const whatsIncluded = [
                 ))}
               </ul>
 
-              <StripeButton
-                priceId={tier.priceId}
-                price="19.00"
-                productName="Zero Method Starter Pack"
-                buttonText={tier.cta}
-                class={`w-full py-4 px-6 rounded-lg font-bold text-lg transition-all duration-200 ${
+              <button
+                disabled
+                class={`w-full py-4 px-6 rounded-lg font-bold text-lg transition-all duration-200 opacity-50 cursor-not-allowed ${
                   tier.popular
-                    ? 'bg-gold-500 hover:bg-gold-600 text-navy-900'
-                    : 'bg-navy-800 hover:bg-navy-700 text-white border border-navy-700'
+                    ? 'bg-gold-500 text-navy-900'
+                    : 'bg-navy-800 text-white border border-navy-700'
                 }`}
-              />
+              >
+                Coming Soon
+              </button>
 
               <p class="text-center text-navy-400 text-sm mt-4">
                 {tier.status === 'Available Now' 
@@ -304,7 +303,7 @@ const whatsIncluded = [
 
         <div class="max-w-2xl mx-auto mt-12 text-center">
           <p class="text-navy-400 text-sm">
-            🔒 Secure payment via Stripe • 📧 Delivery via email • 💯 30-day guarantee
+            🔒 Secure payment via Stripe & PayPal • 📧 Delivery via email • 💯 30-day guarantee
           </p>
         </div>
       </div>
