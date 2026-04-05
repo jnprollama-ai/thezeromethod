@@ -1,766 +1,204 @@
 ---
 import Layout from '@layouts/Layout.astro';
-import Header from '@components/Header.astro';
-import Footer from '@components/Footer.astro';
+import Header from '@components/layout/Header.astro';
+import Footer from '@components/layout/Footer.astro';
+import Hero from '@components/sections/Hero.astro';
+import Pricing from '@components/sections/Pricing.astro';
+import FAQ from '@components/sections/FAQ.astro';
+import CTA from '@components/sections/CTA.astro';
 
-const title = "Zero Method | AI Prompts Starter Pack";
-const description = "25 battle-tested AI prompts + 10 professional email templates. Save 5 hours every week with copy-paste ready prompts for ChatGPT and Claude.";
-
-// Typewriter prompt examples
-const promptExamples = [
-  "Write a professional cold email to a potential client...",
-  "Summarize this meeting transcript into action items...",
-  "Create a weekly status report from these bullet points...",
-  "Draft a response to this difficult customer complaint...",
-  "Generate 5 LinkedIn post ideas from this article..."
-];
-
-// Features section
-const features = [
-  {
-    title: "25 Tested Prompts",
-    description: "25 carefully crafted prompts across 5 categories. Each one tested and refined for consistent, high-quality results.",
-    icon: "zap"
-  },
-  {
-    title: "10 Email Templates",
-    description: "Professional email templates for cold outreach, follow-ups, meeting requests, and difficult conversations.",
-    icon: "mail"
-  },
-  {
-    title: "PDF + Markdown",
-    description: "Get both formats. PDF for offline reading, Markdown for easy copying and editing. Works on any device.",
-    icon: "file"
-  },
-  {
-    title: "Instant Access",
-    description: "No waiting. Download immediately after purchase. Start saving time within minutes.",
-    icon: "download"
-  },
-  {
-    title: "Free Updates",
-    description: "Receive updates for a full year. As AI evolves, your prompts stay current and effective.",
-    icon: "refresh"
-  },
-  {
-    title: "30-Day Guarantee",
-    description: "Not satisfied? Get a full refund within 30 days. No questions asked.",
-    icon: "shield"
-  }
-];
-
-// Pain points
-const painPoints = [
-  {
-    icon: "clock",
-    title: "Drowning in Busywork",
-    description: "Hours wasted on emails, reports, and repetitive tasks that should be faster."
-  },
-  {
-    icon: "brain",
-    title: "AI Confusion",
-    description: "Everyone's talking about AI, but you don't know where to start. Prompts feel like guesswork."
-  },
-  {
-    icon: "trending",
-    title: "Inconsistent Results",
-    description: "When you try AI, output is hit-or-miss. No system, no consistency, no time saved."
-  }
-];
-
-// Solutions
-const solutions = [
-  {
-    icon: "zap",
-    title: "25 Battle-Tested Prompts",
-    description: "Proven prompts that eliminate busywork. Copy, paste, and watch the magic happen. Organized by category: Email, Reports, Content, Productivity, Research."
-  },
-  {
-    icon: "template",
-    title: "10 Professional Templates",
-    description: "Done-for-you email templates for every situation. Cold outreach, follow-ups, saying no professionally, and more."
-  },
-  {
-    icon: "target",
-    title: "Clear Instructions",
-    description: "Each prompt includes usage instructions. Know exactly how to customize for your specific situation."
-  }
-];
-
-// How it works steps
-const howItWorks = [
-  {
-    step: "01",
-    title: "Purchase",
-    description: "One-time payment of $19. No subscriptions, no hidden fees."
-  },
-  {
-    step: "02",
-    title: "Download",
-    description: "Get instant access to PDF and Markdown files. Works on any device."
-  },
-  {
-    step: "03",
-    title: "Copy & Paste",
-    description: "Open the file, find what you need, copy the prompt, paste into ChatGPT or Claude."
-  },
-  {
-    step: "04",
-    title: "Save Time",
-    description: "Watch 2-hour tasks become 15-minute tasks. Reclaim your week."
-  }
-];
-
-// Testimonials
-const testimonials = [
-  {
-    quote: "These prompts paid for themselves in the first day. My client emails now take minutes instead of hours.",
-    author: "Sarah Chen",
-    role: "Freelance Consultant",
-    avatar: "SC"
-  },
-  {
-    quote: "Finally, prompts that actually work. No more trial and error. I just copy, paste, and get results.",
-    author: "Marcus Johnson",
-    role: "Marketing Manager",
-    avatar: "MJ"
-  },
-  {
-    quote: "The email templates alone are worth the price. Professional, effective, and save me so much mental energy.",
-    author: "Emily Rodriguez",
-    role: "Startup Founder",
-    avatar: "ER"
-  }
-];
-
-// Pricing tiers
-const pricing = [
-  {
-    name: "Starter",
-    price: "$19",
-    description: "One-time payment",
-    features: [
-      "25 AI prompts",
-      "10 email templates",
-      "PDF + Markdown formats",
-      "Free updates (1 year)",
-      "30-day guarantee"
-    ],
-    cta: "Get Started",
-    highlighted: true
-  }
-];
+const title = "Zero Method | AI Prompts That Actually Work";
+const description = "25 battle-tested AI prompts + 10 professional email templates. Save 10+ hours every week with copy-paste ready prompts for ChatGPT, Claude, and Gemini.";
 ---
 
 <Layout title={title} description={description}>
   <Header />
-
-  <main class="bg-[var(--bg)]">
-    <!-- Section 1: Hero -->
-    <section class="relative min-h-screen flex items-center pt-20 lg:pt-0 overflow-hidden">
-      <!-- Background gradient -->
-      <div class="absolute inset-0 bg-gradient-to-b from-[var(--surface)] via-[var(--bg)] to-[var(--bg)]"></div>
-      
-      <!-- Decorative elements -->
-      <div class="absolute top-1/4 left-0 w-96 h-96 bg-[var(--gold)] opacity-[0.03] rounded-full blur-3xl"></div>
-      <div class="absolute bottom-1/4 right-0 w-80 h-80 bg-[var(--gold)] opacity-[0.02] rounded-full blur-3xl"></div>
-
-      <div class="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <!-- Left: Content -->
-          <div class="text-center lg:text-left animate-on-scroll" data-animation="fadeSlideUp">
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--gold)]/10 border border-[var(--gold)]/20 mb-6 sm:mb-8">
-              <span class="w-2 h-2 rounded-full bg-[var(--gold)] animate-pulse"></span>
-              <span class="font-mono text-sm text-[var(--gold)] tracking-wide">25 PROMPTS + 10 TEMPLATES</span>
+  
+  <main>
+    <Hero />
+    
+    <!-- Problem Section -->
+    <section class="py-24 lg:py-32 bg-[var(--bg)]" data-reveal>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="grid lg:grid-cols-5 gap-12 items-center">
+          <div class="lg:col-span-2">
+            <div class="text-[clamp(120px,15vw,180px)] font-bold text-[var(--gold)] leading-none font-['Playfair_Display']">
+              73%
             </div>
-
-            <!-- Headline -->
-            <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-[var(--text)] leading-[1.1] mb-6">
-              Save <span class="text-[var(--gold)]">5 Hours</span> Every Week
-            </h1>
-
-            <p class="text-lg sm:text-xl text-[var(--text-muted)] mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              25 battle-tested AI prompts and 10 professional email templates. Copy, paste, done. No videos. No fluff. Just results.
+            <p class="text-lg text-[var(--text-muted)] mt-4 max-w-sm">
+              of professionals waste 2+ hours a day on tasks AI could handle in minutes.
             </p>
-
-            <!-- CTAs -->
-            <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-8">
-              <a
-                href="#pricing"
-                class="inline-flex items-center px-8 py-4 bg-[var(--gold)] hover:bg-[var(--gold-dim)] text-[var(--bg)] font-semibold text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[var(--gold)]/20 animate-on-scroll"
-                data-animation="fadeSlideUp"
-                style="animation-delay: 0.1s;"
-              >
-                Get the Pack — $19
-                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                </svg>
-              </a>
-              <a
-                href="#how-it-works"
-                class="inline-flex items-center px-8 py-4 border border-[var(--border)] text-[var(--text)] font-medium rounded-lg hover:bg-[var(--surface-2)] transition-all duration-200"
-              >
-                See How It Works
-              </a>
-            </div>
-
-            <!-- Trust signals -->
-            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 sm:gap-6 text-[var(--text-muted)] text-sm">
-              <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>30-Day Guarantee</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Instant Download</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Free Updates</span>
-              </div>
-            </div>
           </div>
-
-          <!-- Right: Prompt Card -->
-          <div class="animate-on-scroll" data-animation="fadeSlideUp" style="animation-delay: 0.2s;">
-            <div class="relative bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6 sm:p-8 shadow-2xl">
-              <!-- Terminal header -->
-              <div class="flex items-center gap-2 mb-6 pb-4 border-b border-[var(--border)]">
-                <div class="w-3 h-3 rounded-full bg-[var(--red)]"></div>
-                <div class="w-3 h-3 rounded-full bg-[var(--gold)]"></div>
-                <div class="w-3 h-3 rounded-full bg-[var(--green)]"></div>
-                <span class="ml-4 font-mono text-xs text-[var(--text-muted)]">prompt.txt</span>
-              </div>
-
-              <!-- Typewriter content -->
-              <div class="min-h-[120px]">
-                <p class="font-mono text-sm sm:text-base text-[var(--text)] leading-relaxed">
-                  <span class="text-[var(--green)]">➜</span> <span class="text-[var(--gold)]">~</span> 
-                  <span id="typewriter-text"></span><span class="animate-pulse text-[var(--gold)]">|</span>
-                </p>
-              </div>
-
-              <!-- Prompt indicator -->
-              <div class="mt-6 flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-[var(--gold)] animate-pulse"></div>
-                <span id="prompt-indicator" class="font-mono text-xs text-[var(--text-muted)]">Example prompt 1/5</span>
-              </div>
+          
+          <div class="lg:col-span-3 space-y-6">
+            <div class="flex items-start gap-4">
+              <span class="text-[var(--red)] text-2xl mt-1">✕</span>
+              <p class="text-lg text-[var(--text)]">Writing the same prompts from scratch, every single time</p>
             </div>
-
-            <!-- Floating stats -->
-            <div class="absolute -bottom-4 -right-4 sm:bottom-8 sm:-right-8 bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-4 shadow-xl animate-on-scroll" data-animation="fadeSlideUp" style="animation-delay: 0.3s;">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-[var(--gold)]/20 flex items-center justify-center">
-                  <svg class="w-5 h-5 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <p class="text-[var(--text)] font-semibold">5 hours</p>
-                  <p class="text-[var(--text-muted)] text-xs">saved weekly</p>
-                </div>
-              </div>
+            <div class="flex items-start gap-4">
+              <span class="text-[var(--red)] text-2xl mt-1">✕</span>
+              <p class="text-lg text-[var(--text)]">Getting generic AI outputs that need complete rewrites</p>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 2: What's Included -->
-    <section class="py-20 sm:py-24 lg:py-32" id="features">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- Section header -->
-        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-on-scroll" data-animation="fadeSlideUp">
-          <span class="font-mono text-sm text-[var(--gold)] tracking-wider mb-4 block">WHAT'S INCLUDED</span>
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-4">
-            Everything You Need
-          </h2>
-          <p class="text-lg text-[var(--text-muted)]">
-            No fluff. No upsells. Just practical tools that save time.
-          </p>
-        </div>
-
-        <!-- Features grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {features.map((feature, index) => (
-            <div 
-              class="group p-6 sm:p-8 bg-[var(--surface)] border border-[var(--border)] rounded-xl hover:border-[var(--gold)]/30 transition-all duration-300 animate-on-scroll"
-              data-animation="fadeSlideUp"
-              style={`animation-delay: ${index * 0.1}s;`}
-            >
-              <div class="w-12 h-12 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center mb-6 group-hover:bg-[var(--gold)]/20 transition-colors">
-                {feature.icon === 'zap' && (
-                  <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                )}
-                {feature.icon === 'mail' && (
-                  <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                )}
-                {feature.icon === 'file' && (
-                  <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                )}
-                {feature.icon === 'download' && (
-                  <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                  </svg>
-                )}
-                {feature.icon === 'refresh' && (
-                  <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                )}
-                {feature.icon === 'shield' && (
-                  <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                )}
-              </div>
-              <h3 class="font-display text-xl font-semibold text-[var(--text)] mb-3">{feature.title}</h3>
-              <p class="text-[var(--text-muted)] leading-relaxed">{feature.description}</p>
+            <div class="flex items-start gap-4">
+              <span class="text-[var(--red)] text-2xl mt-1">✕</span>
+              <p class="text-lg text-[var(--text)]">Losing all context and starting over when sessions reset</p>
             </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 3: Pain Points -->
-    <section class="py-20 sm:py-24 lg:py-32 bg-[var(--surface)]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-on-scroll" data-animation="fadeSlideUp">
-          <span class="font-mono text-sm text-[var(--gold)] tracking-wider mb-4 block">THE PROBLEM</span>
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-4">
-            Sound Familiar?
-          </h2>
-          <p class="text-lg text-[var(--text-muted)]">
-            You're busy. But are you actually productive?
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {painPoints.map((point, index) => (
-            <div 
-              class="text-center p-8 sm:p-10 border border-[var(--border)] rounded-xl animate-on-scroll"
-              data-animation="fadeSlideUp"
-              style={`animation-delay: ${index * 0.1}s;`}
-            >
-              <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-[var(--surface-2)] flex items-center justify-center">
-                {point.icon === 'clock' && (
-                  <svg class="w-8 h-8 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                )}
-                {point.icon === 'brain' && (
-                  <svg class="w-8 h-8 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
-                )}
-                {point.icon === 'trending' && (
-                  <svg class="w-8 h-8 text-[var(--text-muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                )}
-              </div>
-              <h3 class="font-display text-xl font-semibold text-[var(--text)] mb-3">{point.title}</h3>
-              <p class="text-[var(--text-muted)]">{point.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 4: Solution -->
-    <section class="py-20 sm:py-24 lg:py-32">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-on-scroll" data-animation="fadeSlideUp">
-          <span class="font-mono text-sm text-[var(--gold)] tracking-wider mb-4 block">THE SOLUTION</span>
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-4">
-            A Better Way
-          </h2>
-          <p class="text-lg text-[var(--text-muted)]">
-            Everything you need to turn AI into your personal productivity engine.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {solutions.map((solution, index) => (
-            <div 
-              class="relative p-8 sm:p-10 bg-[var(--surface)] border border-[var(--border)] rounded-xl overflow-hidden group hover:border-[var(--gold)]/30 transition-all duration-300 animate-on-scroll"
-              data-animation="fadeSlideUp"
-              style={`animation-delay: ${index * 0.1}s;`}
-            >
-              <!-- Subtle gradient overlay on hover -->
-              <div class="absolute inset-0 bg-gradient-to-br from-[var(--gold)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              
-              <div class="relative">
-                <div class="w-12 h-12 rounded-lg bg-[var(--gold)]/10 flex items-center justify-center mb-6">
-                  {solution.icon === 'zap' && (
-                    <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                  )}
-                  {solution.icon === 'template' && (
-                    <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
-                    </svg>
-                  )}
-                  {solution.icon === 'target' && (
-                    <svg class="w-6 h-6 text-[var(--gold)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  )}
-                </div>
-                <h3 class="font-display text-xl font-semibold text-[var(--text)] mb-3">{solution.title}</h3>
-                <p class="text-[var(--text-muted)] leading-relaxed">{solution.description}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 5: How It Works -->
-    <section class="py-20 sm:py-24 lg:py-32 bg-[var(--surface)]" id="how-it-works">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-on-scroll" data-animation="fadeSlideUp">
-          <span class="font-mono text-sm text-[var(--gold)] tracking-wider mb-4 block">PROCESS</span>
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-4">
-            How It Works
-          </h2>
-          <p class="text-lg text-[var(--text-muted)]">
-            Four simple steps to reclaim your time.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {howItWorks.map((step, index) => (
-            <div 
-              class="relative animate-on-scroll"
-              data-animation="fadeSlideUp"
-              style={`animation-delay: ${index * 0.1}s;`}
-            >
-              <!-- Step number -->
-              <div class="font-mono text-5xl sm:text-6xl font-bold text-[var(--gold)]/20 mb-4">{step.step}</div>
-              <h3 class="font-display text-xl font-semibold text-[var(--text)] mb-2">{step.title}</h3>
-              <p class="text-[var(--text-muted)]">{step.description}</p>
-              
-              <!-- Connector line (hidden on mobile, visible on lg) -->
-              {index < howItWorks.length - 1 && (
-                <div class="hidden lg:block absolute top-8 left-full w-full h-px bg-gradient-to-r from-[var(--border)] to-transparent"></div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 6: Testimonials -->
-    <section class="py-20 sm:py-24 lg:py-32">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-on-scroll" data-animation="fadeSlideUp">
-          <span class="font-mono text-sm text-[var(--gold)] tracking-wider mb-4 block">TESTIMONIALS</span>
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-4">
-            What People Say
-          </h2>
-          <p class="text-lg text-[var(--text-muted)]">
-            Join thousands who've already saved time.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div 
-              class="p-6 sm:p-8 bg-[var(--surface)] border border-[var(--border)] rounded-xl animate-on-scroll"
-              data-animation="fadeSlideUp"
-              style={`animation-delay: ${index * 0.1}s;`}
-            >
-              <!-- Quote marks -->
-              <svg class="w-8 h-8 text-[var(--gold)]/30 mb-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
-              </svg>
-              
-              <p class="text-[var(--text)] leading-relaxed mb-6">{testimonial.quote}</p>
-              
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-[var(--gold)]/20 flex items-center justify-center">
-                  <span class="font-mono text-sm text-[var(--gold)]">{testimonial.avatar}</span>
-                </div>
-                <div>
-                  <p class="font-medium text-[var(--text)]">{testimonial.author}</p>
-                  <p class="text-sm text-[var(--text-muted)]">{testimonial.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 7: Pricing -->
-    <section class="py-20 sm:py-24 lg:py-32 bg-[var(--surface)]" id="pricing">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16 animate-on-scroll" data-animation="fadeSlideUp">
-          <span class="font-mono text-sm text-[var(--gold)] tracking-wider mb-4 block">PRICING</span>
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-4">
-            Simple Pricing
-          </h2>
-          <p class="text-lg text-[var(--text-muted)]">
-            One payment. Lifetime value.
-          </p>
-        </div>
-
-        <div class="max-w-md mx-auto animate-on-scroll" data-animation="fadeSlideUp" style="animation-delay: 0.1s;">
-          <div class="relative p-8 sm:p-10 bg-[var(--bg)] border-2 border-[var(--gold)] rounded-2xl">
-            <!-- Popular badge -->
-            <div class="absolute -top-4 left-1/2 -translate-x-1/2">
-              <span class="inline-block px-4 py-1 bg-[var(--gold)] text-[var(--bg)] font-mono text-sm font-medium rounded-full">
-                MOST POPULAR
-              </span>
-            </div>
-
-            <div class="text-center mb-8 pt-4">
-              <div class="flex items-baseline justify-center gap-1">
-                <span class="font-display text-5xl sm:text-6xl font-bold text-[var(--text)]">$19</span>
-              </div>
-              <p class="text-[var(--text-muted)] mt-2">One-time payment</p>
-            </div>
-
-            <ul class="space-y-4 mb-8">
-              {pricing[0].features.map(feature => (
-                <li class="flex items-start gap-3">
-                  <svg class="w-5 h-5 text-[var(--gold)] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span class="text-[var(--text)]">{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href="/product"
-              class="block w-full text-center px-8 py-4 bg-[var(--gold)] hover:bg-[var(--gold-dim)] text-[var(--bg)] font-semibold text-lg rounded-lg transition-all duration-200"
-            >
-              Get Started
-            </a>
-
-            <p class="text-center text-sm text-[var(--text-muted)] mt-4">
-              30-day money-back guarantee
+            
+            <p class="text-2xl font-['Playfair_Display'] italic text-[var(--gold)] mt-8">
+              There's a better way.
             </p>
           </div>
         </div>
       </div>
     </section>
-
-    <!-- Section 8: Final CTA -->
-    <section class="py-20 sm:py-24 lg:py-32">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div class="animate-on-scroll" data-animation="fadeSlideUp">
-          <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-[var(--text)] mb-6">
-            Ready to Save 5 Hours Every Week?
+    
+    <!-- What's Inside Section -->
+    <section class="py-24 lg:py-32 bg-[var(--surface)]" data-reveal>
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <div class="text-center mb-16">
+          <span class="inline-block px-4 py-2 border border-[var(--gold)] text-[var(--gold)] text-xs font-mono uppercase tracking-wider rounded-full mb-6">
+            What's Inside
+          </span>
+          <h2 class="text-4xl lg:text-5xl font-bold text-[var(--text)] font-['Playfair_Display'] mb-4">
+            25 Prompts. 5 Categories. Zero Fluff.
           </h2>
-          <p class="text-lg sm:text-xl text-[var(--text-muted)] mb-10 max-w-2xl mx-auto">
-            Join thousands of professionals who've transformed their productivity. Get instant access today.
+          <p class="text-lg text-[var(--text-muted)] max-w-2xl mx-auto">
+            Every prompt is tested, refined, and ready to use.
           </p>
-
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
-            <a
-              href="/product"
-              class="inline-flex items-center px-8 py-4 bg-[var(--gold)] hover:bg-[var(--gold-dim)] text-[var(--bg)] font-semibold text-lg rounded-lg transition-all duration-200 hover:shadow-lg hover:shadow-[var(--gold)]/20"
+        </div>
+        
+        <!-- Category Tabs -->
+        <div class="flex flex-wrap justify-center gap-4 mb-12" id="category-tabs">
+          {['Email', 'Reports', 'Content', 'Productivity', 'Research'].map((cat, i) => (
+            <button 
+              class={`px-6 py-3 text-sm font-medium transition-all ${i === 0 ? 'text-[var(--gold)] border-b-2 border-[var(--gold)]' : 'text-[var(--text-muted)] hover:text-[var(--text)]'}`}
+              data-category={cat.toLowerCase()}
             >
-              Get the Starter Pack — $19
-              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
+              {cat}
+            </button>
+          ))}
+        </div>
+        
+        <!-- Prompt Cards Grid -->
+        <div class="grid md:grid-cols-2 gap-6" id="prompt-cards">
+          <div class="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg p-6 border-l-4 border-l-[var(--gold)]">
+            <span class="font-mono text-xs text-[var(--gold)] uppercase tracking-wider">Email / Prompt 03</span>
+            <h3 class="text-lg font-bold text-[var(--text)] mt-2 mb-3">The 5-Minute Email Polisher</h3>
+            <p class="font-mono text-sm text-[var(--text-muted)] line-clamp-3">
+              I need to send a professional email about: [topic]... Write a clear, professional email that gets straight to the point...
+            </p>
+            <a href="#" class="text-[var(--gold)] text-sm mt-4 inline-block hover:underline">5 prompts in this category →</a>
           </div>
-
-          <!-- Trust badges -->
-          <div class="flex flex-wrap items-center justify-center gap-6 sm:gap-8 text-[var(--text-muted)]">
-            <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-[var(--gold)]" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-sm">Secure Payment</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-[var(--gold)]" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-sm">30-Day Guarantee</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <svg class="w-5 h-5 text-[var(--gold)]" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span class="text-sm">Instant Access</span>
-            </div>
+          
+          <div class="bg-[var(--surface-2)] border border-[var(--border)] rounded-lg p-6 border-l-4 border-l-[var(--gold)]">
+            <span class="font-mono text-xs text-[var(--gold)] uppercase tracking-wider">Email / Prompt 05</span>
+            <h3 class="text-lg font-bold text-[var(--text)] mt-2 mb-3">Difficult Conversation Starter</h3>
+            <p class="font-mono text-sm text-[var(--text-muted)] line-clamp-3">
+              I need to [say no to / push back on / address an issue with]: [situation]... Write a response that is clear and direct...
+            </p>
+            <a href="#" class="text-[var(--gold)] text-sm mt-4 inline-block hover:underline">5 prompts in this category →</a>
+          </div>
+        </div>
+        
+        <p class="text-center text-[var(--text-muted)] mt-12">
+          Plus 10 email templates — cold outreach, follow-ups, status updates, and more.
+        </p>
+      </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="py-24 lg:py-32 bg-[var(--bg)]" data-reveal>
+      <div class="max-w-5xl mx-auto px-6 lg:px-8">
+        <h2 class="text-4xl font-bold text-[var(--text)] font-['Playfair_Display'] text-center mb-16">
+          How It Works
+        </h2>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="text-center">
+            <span class="text-7xl font-bold text-[var(--gold)] opacity-40 font-['Playfair_Display']">01</span>
+            <h3 class="text-xl font-bold text-[var(--text)] mt-4 mb-2">Download</h3>
+            <p class="text-[var(--text-muted)]">Instant delivery. PDF and Markdown files, organized by category.</p>
+          </div>
+          
+          <div class="text-center">
+            <span class="text-7xl font-bold text-[var(--gold)] opacity-40 font-['Playfair_Display']">02</span>
+            <h3 class="text-xl font-bold text-[var(--text)] mt-4 mb-2">Find Your Prompt</h3>
+            <p class="text-[var(--text-muted)]">5 categories, 25 prompts, all indexed. Find what you need in under 30 seconds.</p>
+          </div>
+          
+          <div class="text-center">
+            <span class="text-7xl font-bold text-[var(--gold)] opacity-40 font-['Playfair_Display']">03</span>
+            <h3 class="text-xl font-bold text-[var(--text)] mt-4 mb-2">Paste and Execute</h3>
+            <p class="text-[var(--text-muted)]">Customize the bracket fields. Run it. Save 30–60 minutes per task.</p>
           </div>
         </div>
       </div>
     </section>
+    
+    <!-- Social Proof -->
+    <section class="py-24 lg:py-32 bg-[var(--surface)]" data-reveal>
+      <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+        <div class="bg-[var(--surface-2)] border border-[var(--border)] rounded-xl p-8 lg:p-12 border-t-4 border-t-[var(--gold)]">
+          <p class="text-2xl font-['Playfair_Display'] italic text-[var(--text)] leading-relaxed mb-6">
+            "I used to spend 45 minutes writing executive summaries. Now it takes 8. That's not a feature — that's a refund on my afternoon."
+          </p>
+          <p class="text-sm text-[var(--text-muted)]">— Sarah K., Operations Director</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8 mt-16">
+          <div class="text-center">
+            <div class="text-5xl font-bold text-[var(--gold)] font-['Playfair_Display']">25</div>
+            <p class="text-[var(--text-muted)] mt-2">Prompts across 5 professional categories</p>
+          </div>
+          <div class="text-center">
+            <div class="text-5xl font-bold text-[var(--gold)] font-['Playfair_Display']">10</div>
+            <p class="text-[var(--text-muted)] mt-2">Email templates, ready to send</p>
+          </div>
+          <div class="text-center">
+            <div class="text-5xl font-bold text-[var(--gold)] font-['Playfair_Display']">30</div>
+            <p class="text-[var(--text-muted)] mt-2">Day money-back guarantee</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <Pricing />
+    <FAQ />
+    <CTA />
   </main>
-
+  
   <Footer />
 </Layout>
 
-<script define:vars={{ promptExamples }}>
-  // Typewriter effect
-  const typewriterElement = document.getElementById('typewriter-text');
-  const promptIndicator = document.querySelector('.font-mono.text-xs');
-  let currentExampleIndex = 0;
-  let currentCharIndex = 0;
-  let isDeleting = false;
-  let isPaused = false;
-  
-  const TYPING_SPEED = 50;
-  const DELETING_SPEED = 30;
-  const PAUSE_DURATION = 2000;
-  
-  function typeWriter() {
-    const currentText = promptExamples[currentExampleIndex];
-    
-    if (isPaused) {
-      return;
-    }
-    
-    if (isDeleting) {
-      typewriterElement.textContent = currentText.substring(0, currentCharIndex - 1);
-      currentCharIndex--;
-      
-      if (currentCharIndex === 0) {
-        isDeleting = false;
-        currentExampleIndex = (currentExampleIndex + 1) % promptExamples.length;
-        updatePromptIndicator();
-      }
-    } else {
-      typewriterElement.textContent = currentText.substring(0, currentCharIndex + 1);
-      currentCharIndex++;
-      
-      if (currentCharIndex === currentText.length) {
-        isPaused = true;
-        setTimeout(() => {
-          isPaused = false;
-          isDeleting = true;
-        }, PAUSE_DURATION);
-      }
-    }
-    
-    const speed = isDeleting ? DELETING_SPEED : TYPING_SPEED;
-    setTimeout(typeWriter, speed);
-  }
-  
-  function updatePromptIndicator() {
-    const indicator = document.getElementById('prompt-indicator');
-    if (indicator) {
-      indicator.textContent = `Example prompt ${currentExampleIndex + 1}/5`;
-    }
-  }
-  
-  // Start typewriter
-  if (typewriterElement) {
-    typeWriter();
-  }
-  
-  // Scroll animations with Intersection Observer
-  const observerOptions = {
-    root: null,
-    rootMargin: '0px 0px -100px 0px',
-    threshold: 0.1
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const element = entry.target;
-        const animation = element.getAttribute('data-animation');
-        const delay = element.style.animationDelay || '0s';
-        
-        element.style.animationDelay = delay;
-        element.style.animationFillMode = 'forwards';
-        element.style.animationDuration = '0.6s';
-        element.style.animationTimingFunction = 'cubic-bezier(0.16, 1, 0.3, 1)';
-        element.style.animationName = animation;
-        
-        observer.unobserve(element);
-      }
-    });
-  }, observerOptions);
-  
-  // Observe all animated elements
-  document.querySelectorAll('.animate-on-scroll').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    observer.observe(el);
-  });
-</script>
-
 <style>
-  /* Custom font classes */
-  .font-display {
-    font-family: 'Playfair Display', serif;
-  }
-  
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
-  
-  body {
-    font-family: 'DM Sans', sans-serif;
-  }
-  
-  /* Animation keyframes */
   @keyframes fadeSlideUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
-  /* Mobile-first responsive utilities */
-  @media (max-width: 374px) {
-    .max-w-7xl {
-      padding-left: 1rem;
-      padding-right: 1rem;
-    }
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
   }
   
-  /* Ensure proper spacing at 375px breakpoint */
-  @media (min-width: 375px) {
-    .sm\:px-6 {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-  
-  /* Tablet breakpoint at 768px */
-  @media (min-width: 768px) {
-    .md\:grid-cols-3 {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .md\:flex-row {
-      flex-direction: row;
-    }
-  }
-  
-  /* Desktop breakpoint at 1280px */
-  @media (min-width: 1280px) {
-    .lg\:grid-cols-4 {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+  [data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 </style>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver(
+    entries => entries.forEach(e => { 
+      if (e.isIntersecting) { 
+        e.target.classList.add('revealed'); 
+        observer.unobserve(e.target); 
+      } 
+    }),
+    { threshold: 0.15 }
+  );
+  
+  document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+</script>
