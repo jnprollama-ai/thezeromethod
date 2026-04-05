@@ -5,6 +5,12 @@ import Footer from '@components/Footer.astro';
 
 const title = "Payment Successful | Zero Method";
 const description = "Thank you for your purchase! Access your AI Productivity Suite download here.";
+
+// Get URL parameters to determine payment method
+const { searchParams } = Astro.url;
+const paymentMethod = searchParams.get('method') || 'stripe';
+const paymentId = searchParams.get('paymentId') || '';
+const payerId = searchParams.get('payerId') || '';
 ---
 
 <Layout title={title} description={description}>
@@ -25,7 +31,7 @@ const description = "Thank you for your purchase! Access your AI Productivity Su
           Payment Successful! 🎉
         </h1>
         <p class="text-xl text-navy-300 max-w-2xl mx-auto">
-          Welcome to Zero Method. Your AI Productivity Suite is ready.
+          Welcome to Zero Method. Your purchase is confirmed{paymentMethod === 'paypal' ? ' via PayPal' : ''}.
         </p>
       </div>
 

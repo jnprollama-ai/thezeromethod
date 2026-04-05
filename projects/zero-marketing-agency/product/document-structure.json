@@ -1,0 +1,42 @@
+{
+  "title": "Zero Method Starter Pack",
+  "subtitle": "AI Prompts Professional Edition",
+  "version": "1.0",
+  "sections": [
+    {
+      "heading": "Getting Started",
+      "content": "Welcome to the Zero Method Starter Pack! This collection of 25 carefully crafted AI prompts and 10 professional email templates is designed to help you save 5+ hours every week by working smarter with AI tools like ChatGPT, Claude, and others."
+    },
+    {
+      "heading": "What's Included",
+      "content": "• 25 AI Prompts across 5 categories\n• 10 Professional Email Templates\n• Copy-paste ready format\n• Works with ChatGPT, Claude, and other AI tools\n• Free updates for 1 year"
+    },
+    {
+      "heading": "1. Email & Communication Prompts",
+      "prompts": [
+        {
+          "title": "Prompt #1: Professional Email Polisher",
+          "useCase": "Turn rough notes into professional emails",
+          "template": "I need to send a professional email about: [topic]\n\nHere's what I want to communicate:\n[your rough notes or bullet points]\n\nContext:\n- Recipient: [who you're emailing]\n- Relationship: [formal / casual / client]\n- Goal: [what you want them to do]\n- Urgency: [low / medium / high]\n\nPlease write a clear, professional email that:\n1. Has an appropriate subject line\n2. Gets straight to the point\n3. Includes a clear call-to-action\n4. Matches the tone to the relationship\n5. Is no longer than necessary"
+        },
+        {
+          "title": "Prompt #2: Difficult Conversation Starter",
+          "useCase": "Say no, push back, or address issues professionally",
+          "template": "I need to [say no to / push back on / address an issue with]:\n[situation]\n\nKey points:\n- What's happening: [brief description]\n- Why I can't agree: [your reason]\n- What I can offer instead: [alternative, if any]\n- Relationship importance: [high / medium / low]\n\nWrite a response that is:\n1. Clear and direct (no beating around the bush)\n2. Professional but firm\n3. Brief (2-3 paragraphs max)\n4. Leaves the door open for future collaboration\n5. Doesn't over-explain or apologize excessively"
+        }
+      ]
+    }
+  ],
+  "templates": [
+    {
+      "title": "Template #1: Cold Outreach",
+      "useCase": "Reaching out to someone you don't know",
+      "content": "Subject: [Specific value proposition] + [Their company]\n\nHi [Name],\n\nI came across your [work/post/company] and [specific observation that shows you did your research].\n\n[One sentence about who you are and why you're credible].\n\nI'm reaching out because [specific reason - be clear about what's in it for them].\n\n[Specific value proposition - what do they get?]\n\nWorth a 15-minute conversation? I'm free [Day] or [Day] between [Time] and [Time].\n\nIf not, no worries - [easy out that keeps door open].\n\n[Your name]\n[Your title]\n[One-line about your company if relevant]"
+    }
+  ],
+  "support": {
+    "email": "support@thezeromethod.com",
+    "website": "www.thezeromethod.com",
+    "updates": "Free updates for 1 year after purchase"
+  }
+}

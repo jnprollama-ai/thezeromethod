@@ -1,0 +1,106 @@
+---
+export const prerender = false;
+
+// Dynamic download page that validates tokens and serves files
+import Layout from '@layouts/Layout.astro';
+import Header from '@components/Header.astro';
+import Footer from '@components/Footer.astro';
+
+const { token } = Astro.params;
+const isValidToken = token && token.length > 10;
+---
+
+<Layout title="Download | Zero Method" description="Download your purchased Zero Method Starter Pack">
+  <Header />
+
+  <main class="pt-32 pb-20 min-h-screen">
+    <div class="max-w-2xl mx-auto px-6 lg:px-8">
+      {isValidToken ? (
+        <div class="bg-navy-900 rounded-2xl border border-navy-800 p-8 lg:p-12 text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gold-500/20 mb-6">
+            <svg class="w-10 h-10 text-gold-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Your Professional PDF Starter Pack is Ready!
+          </h1>
+          <p class="text-navy-400 text-lg mb-8 max-w-lg mx-auto">
+            Thank you for your purchase. Your Zero Method Starter Pack (PDF format) is ready for download.
+          </p>
+
+          <div class="mb-8">
+            <a
+              href={`/api/download/${token}`}
+              class="inline-flex items-center px-8 py-4 bg-gold-500 hover:bg-gold-600 text-navy-900 font-bold text-lg rounded-lg transition-all duration-200"
+              download
+            >
+              Download Starter Pack
+              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+            </a>
+          </div>
+
+          <div class="bg-navy-800 rounded-xl p-6 text-left">
+            <h3 class="text-white font-semibold mb-3">Download Instructions</h3>
+            <ul class="space-y-2 text-navy-400 text-sm">
+              <li class="flex items-start">
+                <svg class="w-5 h-5 text-gold-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Click the download button above to get your professional PDF</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="w-5 h-5 text-gold-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Open the PDF on any device (phone, tablet, computer)</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="w-5 h-5 text-gold-500 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <span>Find any prompt and copy it directly into ChatGPT or Claude</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-navy-800">
+            <p class="text-navy-500 text-sm">
+              Having trouble? <a href="mailto:support@thezeromethod.com?subject=Download%20Issue" class="text-gold-500 hover:text-gold-400">Contact support</a>
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div class="bg-navy-900 rounded-2xl border border-navy-800 p-8 lg:p-12 text-center">
+          <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-red-500/20 mb-6">
+            <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+
+          <h1 class="text-3xl sm:text-4xl font-bold text-white mb-4">
+            Invalid Download Link
+          </h1>
+          <p class="text-navy-400 text-lg mb-8 max-w-lg mx-auto">
+            This download link is invalid or has expired. Please check your email for a valid download link.
+          </p>
+
+          <a
+            href="/product"
+            class="inline-flex items-center px-6 py-3 bg-navy-800 hover:bg-navy-700 text-white font-semibold rounded-lg border border-navy-700 transition-colors duration-200"
+          >
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Product Page
+          </a>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</Layout>

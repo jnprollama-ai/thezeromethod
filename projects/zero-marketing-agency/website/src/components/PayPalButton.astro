@@ -1,0 +1,110 @@
+---
+interface Props {
+  price: string; // Price in USD (e.g., "19.00")
+  productName: string; // Name of the product
+  buttonText?: string;
+  class?: string;
+}
+
+const { price, productName, buttonText = "Buy with PayPal", class: className = "" } = Astro.props;
+
+// Check if running in production
+const isProduction = import.meta.env.PROD;
+const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || '';
+---
+
+{
+  isProduction && paypalClientId ? (
+    <button
+      class={`paypal-checkout-btn ${className}`}
+      data-price={price}
+      data-product={productName}
+      type="button"
+    >
+      {buttonText}
+    </button>
+  ) : (
+    <a
+      href="mailto:support@thezeromethod.com?subject=Interested%20in%20Zero%20Method%20Starter%20Pack"
+      class={className}
+    >
+      {buttonText} (Coming Soon)
+    </a>
+  )
+}
+
+{
+  isProduction && paypalClientId && (
+    <script define:vars={{ paypalClientId }}>
+      // PayPal integration script
+      const btn = document.querySelector('.paypal-checkout-btn');
+      if (btn) {
+        btn.addEventListener('click', async () => {
+          try {
+            // Create PayPal order
+            const response = await fetch('/api/create-paypal-order', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                price: btn.getAttribute('data-price'),
+                productName: btn.getAttribute('data-product'),
+              }),
+            });
+            
+            const orderData = await response.json();
+            
+            if (orderData.id) {
+              // Load PayPal SDK and initialize payment
+              const paypal = await loadPayPalSDK(paypalClientId);
+              
+              // Render the PayPal buttons
+              paypal.Buttons({
+                createOrder: function(data, actions) {
+                  return actions.order.create({
+                    purchase_units: [{
+                      amount: {
+                        value: btn.getAttribute('data-price')
+                      }
+                    }]
+                  });
+                },
+                onApprove: function(data, actions) {
+                  return actions.order.capture().then(function(details) {
+                    // Redirect to success page
+                    window.location.href = `/success?paymentId=${details.id}&payerId=${details.payer.payer_id}`;
+                  });
+                },
+                onError: function(err) {
+                  console.error('PayPal error:', err);
+                  alert('Payment failed. Please try again or contact support.');
+                }
+              }).render('#paypal-button-container');
+            } else {
+              alert('Something went wrong. Please try again or contact support.');
+            }
+          } catch (error) {
+            console.error('PayPal error:', error);
+            alert('Payment system not configured yet. Email us at support@thezeromethod.com');
+          }
+        });
+      }
+      
+      // Load PayPal SDK
+      function loadPayPalSDK(clientId) {
+        return new Promise((resolve, reject) => {
+          if (window.paypal) {
+            resolve(window.paypal);
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
+          script.onload = () => resolve(window.paypal);
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+    </script>
+  )
+}

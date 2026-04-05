@@ -1,25 +1,43 @@
 ---
 interface Props {
   priceId: string;
+  price: string; // Price in USD (e.g., "19.00")
+  productName: string; // Name of the product
   buttonText?: string;
   class?: string;
 }
 
-const { priceId, buttonText = "Get Started", class: className = "" } = Astro.props;
+const { priceId, price, productName, buttonText = "Get Started", class: className = "" } = Astro.props;
 
 // Check if running in production
 const isProduction = import.meta.env.PROD;
 const stripeKey = import.meta.env.STRIPE_PUBLISHABLE_KEY || '';
+const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || '';
+
+// Determine which payment processor to use (prefer Stripe if both are configured)
+// For development/testing, we'll show PayPal if it's configured and Stripe isn't
+const useStripe = isProduction && stripeKey;
+const usePayPal = paypalClientId && (!stripeKey || !isProduction);
+const showComingSoon = !useStripe && !usePayPal;
 ---
 
-{
-  isProduction && stripeKey ? (
+<div>
+  {useStripe ? (
     <button
       class={`stripe-checkout-btn ${className}`}
       data-price-id={priceId}
       type="button"
     >
-      {buttonText}
+      {buttonText} with Card
+    </button>
+  ) : usePayPal ? (
+    <button
+      class={`paypal-checkout-btn ${className}`}
+      data-price={price}
+      data-product={productName}
+      type="button"
+    >
+      {buttonText} with PayPal
     </button>
   ) : (
     <a
@@ -28,11 +46,14 @@ const stripeKey = import.meta.env.STRIPE_PUBLISHABLE_KEY || '';
     >
       {buttonText} (Coming Soon)
     </a>
-  )
-}
+  )}
+
+  {/* Container for PayPal buttons */}
+  <div id="paypal-button-container" class="mt-4"></div>
+</div>
 
 {
-  isProduction && stripeKey && (
+  useStripe && (
     <script define:vars={{ stripeKey }}>
       // Stripe integration script
       const btn = document.querySelector('.stripe-checkout-btn');
@@ -78,6 +99,64 @@ const stripeKey = import.meta.env.STRIPE_PUBLISHABLE_KEY || '';
           const script = document.createElement('script');
           script.src = 'https://js.stripe.com/v3/';
           script.onload = () => resolve(window.Stripe(key));
+          script.onerror = reject;
+          document.head.appendChild(script);
+        });
+      }
+    </script>
+  )
+}
+
+{
+  usePayPal && (
+    <script define:vars={{ paypalClientId }}>
+      // PayPal integration script
+      const btn = document.querySelector('.paypal-checkout-btn');
+      if (btn) {
+        btn.addEventListener('click', async () => {
+          try {
+            // Load PayPal SDK and initialize payment
+            const paypal = await loadPayPalSDK(paypalClientId);
+            
+            // Render the PayPal buttons
+            paypal.Buttons({
+              createOrder: function(data, actions) {
+                return actions.order.create({
+                  purchase_units: [{
+                    amount: {
+                      value: btn.getAttribute('data-price')
+                    }
+                  }]
+                });
+              },
+              onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                  // Redirect to success page with payment details
+                  window.location.href = `/success?paymentId=${details.id}&payerId=${details.payer.payer_id}`;
+                });
+              },
+              onError: function(err) {
+                console.error('PayPal error:', err);
+                alert('Payment failed. Please try again or contact support.');
+              }
+            }).render('#paypal-button-container');
+          } catch (error) {
+            console.error('PayPal error:', error);
+            alert('Payment system not configured yet. Email us at support@thezeromethod.com');
+          }
+        });
+      }
+      
+      // Load PayPal SDK
+      function loadPayPalSDK(clientId) {
+        return new Promise((resolve, reject) => {
+          if (window.paypal) {
+            resolve(window.paypal);
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD`;
+          script.onload = () => resolve(window.paypal);
           script.onerror = reject;
           document.head.appendChild(script);
         });

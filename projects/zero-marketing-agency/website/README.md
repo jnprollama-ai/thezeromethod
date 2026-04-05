@@ -133,6 +133,43 @@ vercel
 - Time to Interactive: <2s
 - Cumulative Layout Shift: <0.1
 
+## PayPal Integration
+
+The website supports PayPal payments using personal accounts. To set up:
+
+1. Create a PayPal developer account at https://developer.paypal.com/
+2. Create a new app and get your Client ID and Secret
+3. Add these to your .env file
+4. Configure webhooks in your PayPal dashboard to point to:
+   `https://your-domain.com/api/paypal-webhook`
+
+## Email Delivery Setup
+
+To enable automatic email delivery after purchase:
+
+1. Set up Gmail SMTP with App Password, OR
+2. Use SendGrid with API key
+3. Add credentials to your .env file
+
+For Gmail:
+- Enable 2-factor authentication on your Google account
+- Generate an App Password at https://myaccount.google.com/apppasswords
+- Use that App Password instead of your regular password
+
+## Testing Payments
+
+Use PayPal's sandbox mode for testing:
+1. Go to PayPal Developer Dashboard
+2. Use sandbox accounts for testing
+3. No real money will be transferred
+
+## Product Delivery
+
+After payment, customers automatically receive:
+1. A download link via email
+2. Access to the starter pack ZIP file
+3. 7-day link expiration for security
+
 ## Contact
 
 Built by Zero Marketing Agency

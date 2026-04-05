@@ -5,6 +5,10 @@ import Footer from '@components/Footer.astro';
 
 const title = "Payment Cancelled | Zero Method";
 const description = "Your payment was cancelled. No worries — you can try again whenever you're ready.";
+
+// Get URL parameters to determine payment method
+const { searchParams } = Astro.url;
+const paymentMethod = searchParams.get('method') || 'stripe';
 ---
 
 <Layout title={title} description={description}>
@@ -25,7 +29,7 @@ const description = "Your payment was cancelled. No worries — you can try agai
           Payment Cancelled
         </h1>
         <p class="text-navy-400 text-lg mb-8 max-w-lg mx-auto">
-          No worries! Your payment was cancelled and no charges were made. 
+          No worries! Your payment was cancelled and no charges were made{paymentMethod === 'paypal' ? ' via PayPal' : ''}. 
           You can complete your purchase whenever you're ready.
         </p>
 
