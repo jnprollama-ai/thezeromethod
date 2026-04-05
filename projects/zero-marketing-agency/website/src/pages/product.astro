@@ -5,520 +5,212 @@ import Footer from '@components/Footer.astro';
 import StripeButton from '@components/StripeButton.astro';
 import PayPalButton from '@components/PayPalButton.astro';
 
-const title = "Zero Method Starter Pack | AI Prompts + Email Templates";
-const description = "25 battle-tested AI prompts + 10 professional email templates for $19. Save 5 hours every week with copy-paste ready prompts for ChatGPT and Claude. Instant download.";
-const keywords = "AI prompts, email templates, ChatGPT prompts, Claude prompts, productivity, automation, AI tools, business templates";
-
-const features = [
-  {
-    icon: "🚀",
-    title: "25 Battle-Tested Prompts",
-    description: "25 carefully crafted prompts across 5 categories: Email, Reports, Content, Productivity, and Research. Each tested for consistent results."
-  },
-  {
-    icon: "📄",
-    title: "10 Email Templates",
-    description: "Professional email templates for cold outreach, follow-ups, meeting requests, declining politely, and relationship maintenance."
-  },
-  {
-    icon: "📖",
-    title: "PDF + Markdown Formats",
-    description: "Download as a clean PDF for offline access, or use the markdown version. Copy-paste ready for immediate use."
-  },
-  {
-    icon: "🔄",
-    title: "Free Updates for 1 Year",
-    description: "Get all updates and additions for a full year after purchase. As we expand the library, you get the new content."
-  },
-  {
-    icon: "⚡",
-    title: "Immediate Download",
-    description: "No waiting. Get instant access to everything right after purchase. Start saving time in the next 5 minutes."
-  },
-  {
-    icon: "💯",
-    title: "30-Day Guarantee",
-    description: "Not satisfied? Email us within 30 days for a full refund. No questions asked. We only want happy customers."
-  }
-];
-
-const painPoints = [
-  {
-    icon: "⏰",
-    title: "Drowning in Busywork",
-    description: "Hours wasted on emails, reports, and repetitive tasks that should be faster."
-  },
-  {
-    icon: "🤔",
-    title: "AI Confusion",
-    description: "Everyone's talking about AI, but you don't know where to start. Prompts feel like guesswork."
-  },
-  {
-    icon: "📉",
-    title: "Inconsistent Results",
-    description: "When you try AI, output is hit-or-miss. No system, no consistency, no time saved."
-  }
-];
-
-const solutions = [
-  {
-    icon: "⚡",
-    title: "25 Battle-Tested Prompts",
-    description: "Proven prompts that eliminate busywork. Copy, paste, and watch the magic happen. Organized by category: Email, Reports, Content, Productivity, Research."
-  },
-  {
-    icon: "📋",
-    title: "10 Professional Templates",
-    description: "Done-for-you email templates for every situation. Cold outreach, follow-ups, saying no professionally, and more."
-  },
-  {
-    icon: "🎯",
-    title: "Clear Instructions",
-    description: "Each prompt includes usage instructions. Know exactly how to customize for your specific situation."
-  }
-];
-
-const tiers = [
-  {
-    name: "Starter Pack",
-    price: "19",
-    priceId: "price_1TFwCiB0SuyNKPsMshKW4Qp8",
-    tier: "starter",
-    description: "Perfect for individuals getting started with AI productivity",
-    features: [
-      "25 AI Prompts (5 categories)",
-      "10 Email Templates",
-      "PDF + Markdown formats",
-      "Usage instructions",
-      "Email Support",
-      "1 year of updates"
-    ],
-    cta: "Buy Now",
-    popular: true
-  }
-];
-
-// 8 FAQs: 5 from homepage + 3 new
-const faqs = [
-  {
-    question: "What's actually included?",
-    answer: "You get 25 AI prompts organized into 5 categories (Email, Reports, Content, Productivity, Research) plus 10 professional email templates. Everything is delivered as both PDF and Markdown files for immediate use. No videos, no worksheets, no community—just solid, tested prompts that work."
-  },
-  {
-    question: "Do I need technical skills?",
-    answer: "Not at all. If you can copy and paste, you can use these prompts. Simply copy the prompt template, fill in your specific details where indicated, and paste into ChatGPT, Claude, or any AI tool. Each prompt includes clear instructions on how to customize it."
-  },
-  {
-    question: "How will I receive the product?",
-    answer: "Immediate download after purchase. You'll get a ZIP file containing the PDF version and Markdown version. Extract and start using right away. No login portals, no waiting, no complexity."
-  },
-  {
-    question: "What format is the product in?",
-    answer: "PDF (for easy reading and offline access) and Markdown (for easy copying and editing). The PDF is professionally formatted and printable. The Markdown files work in any text editor or note-taking app."
-  },
-  {
-    question: "Are there video tutorials?",
-    answer: "No. We don't offer video tutorials at this time. Each prompt includes written usage instructions. If you're looking for video content, this product may not be for you. We're focused on written, copy-paste-ready resources."
-  },
-  // 3 NEW FAQs
-  {
-    question: "Which AI tools do these prompts work with?",
-    answer: "All prompts work with ChatGPT (GPT-3.5 and GPT-4), Claude (all versions), Google Gemini, and any other AI chatbot that accepts text input. The prompts are model-agnostic and designed to work across platforms."
-  },
-  {
-    question: "Can I share these with my team?",
-    answer: "The Starter Pack license is for personal use only. If you need to share with your team or use for client work, please contact us at support@thezeromethod.com for team licensing options."
-  },
-  {
-    question: "What if I don't see results?",
-    answer: "We offer a 30-day money-back guarantee. If you don't save time or find value in the prompts within 30 days of purchase, email us for a full refund. No questions asked, no hoops to jump through."
-  }
-];
-
-const whatsIncluded = [
-  { name: "25 AI Prompts Collection", desc: "Email, Reports, Content, Productivity, Research" },
-  { name: "10 Email Templates", desc: "Cold outreach, follow-ups, professional communication" },
-  { name: "PDF Version", desc: "Formatted and printable" },
-  { name: "Markdown Version", desc: "Editable and copy-paste ready" },
-  { name: "Usage Instructions", desc: "How to customize each prompt" },
-  { name: "1 Year of Updates", desc: "New content as we add it" }
-];
-
-const stripeKey = import.meta.env.STRIPE_PUBLISHABLE_KEY || '';
-const paypalClientId = import.meta.env.PAYPAL_CLIENT_ID || '';
+const title = "Zero Method Starter Pack — 25 AI Prompts + 10 Templates";
+const description = "25 AI prompts + 10 email templates. One-time $19. 30-day guarantee. Works with ChatGPT, Claude, and Gemini.";
 ---
 
-<Layout title={title} description={description} keywords={keywords}>
+<Layout title={title} description={description}>
   <Header />
 
-  <main class="font-sans">
-    <!-- Section 1: Hero -->
-    <section class="relative pt-24 sm:pt-32 pb-16 sm:pb-20 lg:pt-40 lg:pb-32 overflow-hidden" style="background: var(--bg);">
-      <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(15,23,42,0.5) 0%, var(--bg) 100%);"></div>
-
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-4xl mx-auto">
-          <!-- Badge -->
-          <div class="inline-flex items-center px-3 sm:px-4 py-2 rounded-full mb-6 sm:mb-8" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
-            <span class="w-2 h-2 rounded-full mr-2" style="background: var(--gold);"></span>
-            <span class="text-sm font-medium" style="color: var(--gold);">25 AI Prompts + 10 Email Templates</span>
-          </div>
-
-          <!-- Headline -->
-          <h1 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight mb-4 sm:mb-6" style="color: var(--text); font-family: 'Playfair Display', serif;">
-            Save <span style="background: linear-gradient(to right, #fbbf24, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">5 Hours Every Week</span>
-            <br />With Battle-Tested AI Prompts
-          </h1>
-
-          <!-- Subhead -->
-          <p class="text-base sm:text-lg lg:text-xl mb-8 sm:mb-10 max-w-2xl mx-auto leading-relaxed" style="color: var(--text-muted);">
-            25 proven prompts and 10 professional email templates for just $19. No videos, no fluff—just copy-paste ready resources that actually save time.
-          </p>
-
-          <!-- CTA Buttons -->
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-12">
-            <a
-              href="#pricing"
-              class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition-all duration-200 hover:shadow-lg"
-              style="background: var(--gold); color: var(--bg); box-shadow: 0 0 40px rgba(245,158,11,0.15);"
-            >
-              Get the Pack — $19
-              <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </a>
-          </div>
-
-          <!-- Trust Signals -->
-          <div class="flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-6 text-sm" style="color: var(--text-muted);">
-            <div class="flex items-center">
-              <svg class="w-5 h-5 mr-2" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span>30-Day Guarantee</span>
-            </div>
-            <div class="flex items-center">
-              <svg class="w-5 h-5 mr-2" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span>Instant Download</span>
-            </div>
-            <div class="flex items-center">
-              <svg class="w-5 h-5 mr-2" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-              </svg>
-              <span>Free Updates (1 Year)</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 2: The Problem -->
-    <section class="py-16 sm:py-20" style="background: var(--bg);">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4" style="color: var(--text); font-family: 'Playfair Display', serif;">
-            Sound Familiar?
-          </h2>
-          <p class="text-base sm:text-lg" style="color: var(--text-muted);">
-            You're busy. But are you actually productive?
-          </p>
+  <main class="pt-24 lg:pt-32">
+    <!-- Product Hero -->
+    <section class="py-16 lg:py-24" style="background: var(--bg);">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        
+        <div class="text-sm mb-4" style="color: var(--text-muted);">
+          <a href="/" style="color: var(--text-muted);" class="hover:text-[var(--gold)]">Home</a> → Starter Pack
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {painPoints.map(point => (
-            <div class="p-6 sm:p-8 rounded-2xl" style="background: var(--surface); border: 1px solid var(--border);">
-              <div class="text-3xl sm:text-4xl mb-4">{point.icon}</div>
-              <h3 class="text-lg sm:text-xl font-semibold mb-3" style="color: var(--text);">{point.title}</h3>
-              <p class="leading-relaxed text-sm sm:text-base" style="color: var(--text-muted);">{point.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 3: The Solution -->
-    <section class="py-16 sm:py-20" style="background: var(--surface);">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-          <div class="inline-flex items-center px-3 sm:px-4 py-2 rounded-full mb-4 sm:mb-6" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
-            <span class="text-sm font-medium" style="color: var(--gold);">The Solution</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4" style="color: var(--text); font-family: 'Playfair Display', serif;">
-            A Better Way
-          </h2>
-          <p class="text-base sm:text-lg" style="color: var(--text-muted);">
-            Everything you need to turn AI into your personal productivity engine.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {solutions.map(solution => (
-            <div class="p-6 sm:p-8 rounded-2xl transition-all duration-300 hover:border-opacity-100" style="background: var(--surface-2); border: 1px solid var(--border);">
-              <div class="text-3xl sm:text-4xl mb-4">{solution.icon}</div>
-              <h3 class="text-lg sm:text-xl font-semibold mb-3" style="color: var(--text);">{solution.title}</h3>
-              <p class="leading-relaxed text-sm sm:text-base" style="color: var(--text-muted);">{solution.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- Section 4: What's Included -->
-    <section class="py-16 sm:py-20" style="background: var(--bg);">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4" style="color: var(--text); font-family: 'Playfair Display', serif;">
-            What's Included
-          </h2>
-          <p class="text-base sm:text-lg" style="color: var(--text-muted);">
-            Everything you need, nothing you don't. Just tested prompts that save time.
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-          {features.map(feature => (
-            <div class="p-6 sm:p-8 rounded-2xl transition-all duration-300" style="background: var(--surface); border: 1px solid var(--border);">
-              <div class="text-3xl sm:text-4xl mb-4">{feature.icon}</div>
-              <h3 class="text-lg sm:text-xl font-semibold mb-3" style="color: var(--text);">{feature.title}</h3>
-              <p class="leading-relaxed text-sm sm:text-base" style="color: var(--text-muted);">{feature.description}</p>
-            </div>
-          ))}
-        </div>
-
-        <!-- Detailed breakdown -->
-        <div class="mt-12 sm:mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <h3 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6" style="color: var(--text); font-family: 'Playfair Display', serif;">
-              The Complete Package
-            </h3>
-            <p class="text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed" style="color: var(--text-muted);">
-              25 carefully crafted prompts across 5 essential categories, plus 10 professional email templates. Everything is copy-paste ready and includes clear instructions.
+            <h1 class="text-4xl lg:text-6xl font-bold mb-6 font-display" style="color: var(--text);">
+              The Zero Method<br>Starter Pack
+            </h1>
+
+            <p class="text-xl mb-8 max-w-lg" style="color: var(--text-muted);">
+              25 prompts + 10 templates. $19 one-time. Instant download.
             </p>
-            <div class="space-y-3 sm:space-y-4">
-              {whatsIncluded.map(item => (
-                <div class="flex items-start space-x-3 sm:space-x-4">
-                  <div class="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center mt-0.5" style="background: rgba(245,158,11,0.2);">
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="font-medium text-sm sm:text-base" style="color: var(--text);">{item.name}</h4>
-                    <p class="text-xs sm:text-sm" style="color: var(--text-muted);">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
+
+            <!-- Payment Buttons -->
+            <div class="space-y-4">
+              <button 
+                id="stripe-checkout"
+                class="w-full max-w-md px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300"
+                style="background: var(--gold); color: var(--bg);"
+              >
+                Pay with Card — $19
+              </button>
+
+              <div id="paypal-button-container" class="w-full max-w-md"></div>
+
+              <p class="text-sm text-center max-w-md" style="color: var(--text-muted);">
+                Or pay with <span style="color: var(--gold); cursor: pointer;" id="paypal-link">PayPal</span>
+              </p>
+            </div>
+
+            <div class="flex items-center gap-6 mt-8 text-sm" style="color: var(--text-muted);">
+              <span>🔒 SSL Secured</span>
+              <span>✓ 30-Day Guarantee</span>
+              <span>⚡ Instant Download</span>
             </div>
           </div>
 
           <div class="relative">
-            <div class="absolute inset-0 rounded-2xl" style="background: linear-gradient(to bottom right, rgba(245,158,11,0.2), transparent);"></div>
-            <div class="relative rounded-2xl p-6 sm:p-8" style="background: var(--surface); border: 1px solid var(--border);">
-              <div class="space-y-4 sm:space-y-6">
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center" style="background: rgba(245,158,11,0.2);">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="font-medium text-sm sm:text-base" style="color: var(--text);">PDF Format</h4>
-                    <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Clean, printable, offline access</p>
-                  </div>
-                </div>
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center" style="background: rgba(245,158,11,0.2);">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="font-medium text-sm sm:text-base" style="color: var(--text);">Markdown Format</h4>
-                    <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Easy to edit and customize</p>
-                  </div>
-                </div>
-                <div class="flex items-center space-x-3 sm:space-x-4">
-                  <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center" style="background: rgba(245,158,11,0.2);">
-                    <svg class="w-5 h-5 sm:w-6 sm:h-6" style="color: var(--gold);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 class="font-medium text-sm sm:text-base" style="color: var(--text);">ZIP Download</h4>
-                    <p class="text-xs sm:text-sm" style="color: var(--text-muted);">Both formats in one file</p>
-                  </div>
+            <div class="rounded-xl p-8" style="background: var(--surface-2); border: 1px solid var(--border);">
+              <div class="aspect-[3/4] rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--surface), var(--bg));">
+                <div class="text-center">
+                  <div class="text-6xl font-bold mb-2 font-display" style="color: var(--gold);">ZERO</div>
+                  <div class="text-xl font-mono" style="color: var(--text-muted);">METHOD</div>
+                  <div class="mt-4 text-sm" style="color: var(--text-muted);">Starter Pack</div>
                 </div>
               </div>
             </div>
+
+            <!-- Decorative cards -->
+            <div class="absolute -top-4 -right-4 w-32 h-40 rounded-lg opacity-50 -z-10 transform rotate-6" style="background: var(--surface-2); border: 1px solid var(--border);"></div>
+            <div class="absolute -bottom-4 -left-4 w-32 h-40 rounded-lg opacity-30 -z-10 transform -rotate-6" style="background: var(--surface-2); border: 1px solid var(--border);"></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 5: Pricing with Live Payment -->
-    <section id="pricing" class="py-16 sm:py-20" style="background: var(--surface);">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4" style="color: var(--text); font-family: 'Playfair Display', serif;">
-            Simple Pricing
-          </h2>
-          <p class="text-base sm:text-lg" style="color: var(--text-muted);">
-            One product, one price. No tiers, no subscriptions, no surprises.
-          </p>
-        </div>
+    <!-- What You Get -->
+    <section class="py-16 lg:py-24" style="background: var(--surface);">
+      <div class="max-w-7xl mx-auto px-6 lg:px-8">
+        <h2 class="text-3xl lg:text-4xl font-bold text-center mb-16 font-display" style="color: var(--text);">
+          What You Get
+        </h2>
 
-        <div class="max-w-md mx-auto">
-          {tiers.map(tier => (
-            <div class="relative p-6 sm:p-8 rounded-2xl" style="background: var(--surface-2); border: 2px solid var(--gold);">
-              <div class="absolute -top-3 sm:-top-4 left-1/2 transform -translate-x-1/2">
-                <span class="px-3 sm:px-4 py-1 rounded-full text-xs sm:text-sm font-bold" style="background: var(--gold); color: var(--bg);">
-                  Available Now
-                </span>
-              </div>
-              
-              <div class="text-center mb-6 sm:mb-8">
-                <h3 class="text-xl sm:text-2xl font-bold mb-2" style="color: var(--text);">{tier.name}</h3>
-                <p class="text-sm sm:text-base mb-4" style="color: var(--text-muted);">{tier.description}</p>
-                <div class="flex items-baseline justify-center">
-                  <span class="text-4xl sm:text-5xl font-bold" style="color: var(--text);">${tier.price}</span>
-                  <span class="ml-2 text-sm sm:text-base" style="color: var(--text-muted);">one-time</span>
-                </div>
-              </div>
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4" style="color: var(--gold);">25 AI Prompts</h3>
+            <ul class="space-y-2" style="color: var(--text-muted);">
+              <li>✓ Email & Communication (5)</li>
+              <li>✓ Reports & Documentation (5)</li>
+              <li>✓ Content Creation (5)</li>
+              <li>✓ Productivity & Organization (5)</li>
+              <li>✓ Research & Analysis (5)</li>
+            </ul>
+          </div>
 
-              <ul class="space-y-3 sm:space-y-4 mb-6 sm:mb-8">
-                {tier.features.map(feature => (
-                  <li class="flex items-start space-x-2 sm:space-x-3">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5" style="color: var(--gold);" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                    <span class="text-sm sm:text-base" style="color: var(--text-muted);">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+          <div>
+            <h3 class="text-xl font-bold mb-4" style="color: var(--gold);">10 Email Templates</h3>
+            <ul class="space-y-2" style="color: var(--text-muted);">
+              <li>✓ Cold outreach (2)</li>
+              <li>✓ Follow-up sequences (3)</li>
+              <li>✓ Status updates (2)</li>
+              <li>✓ Meeting requests (2)</li>
+              <li>✓ Thank you / close (1)</li>
+            </ul>
+          </div>
 
-              <!-- Payment Buttons -->
-              <div class="space-y-3">
-                <StripeButton 
-                  priceId={tier.priceId}
-                  price={tier.price}
-                  productName="Zero Method Starter Pack"
-                  buttonText="Pay with Card"
-                  class="w-full py-3 sm:py-4 px-6 rounded-lg font-bold text-sm sm:text-base transition-all duration-200 hover:shadow-lg"
-                />
-                <div class="relative">
-                  <div class="absolute inset-0 flex items-center">
-                    <div class="w-full" style="border-top: 1px solid var(--border);"></div>
-                  </div>
-                  <div class="relative flex justify-center">
-                    <span class="px-2 text-xs sm:text-sm" style="background: var(--surface-2); color: var(--text-muted);">or</span>
-                  </div>
-                </div>
-                <PayPalButton 
-                  price={tier.price}
-                  productName="Zero Method Starter Pack"
-                  buttonText="Pay with PayPal"
-                  class="w-full py-3 sm:py-4 px-6 rounded-lg font-bold text-sm sm:text-base transition-all duration-200"
-                />
-              </div>
-
-              <p class="text-center text-xs sm:text-sm mt-4" style="color: var(--text-muted);">
-                Instant download after purchase
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div class="max-w-2xl mx-auto mt-8 sm:mt-12 text-center">
-          <p class="text-xs sm:text-sm" style="color: var(--text-muted);">
-            🔒 Secure payment via Stripe & PayPal • 📧 Instant email delivery • 💯 30-day guarantee
-          </p>
+          <div>
+            <h3 class="text-xl font-bold mb-4" style="color: var(--gold);">Included Free</h3>
+            <ul class="space-y-2" style="color: var(--text-muted);">
+              <li>✓ Markdown source files</li>
+              <li>✓ Organized by category</li>
+              <li>✓ 1 year of updates</li>
+              <li>✓ 30-day money-back guarantee</li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Section 6: FAQ -->
-    <section id="faq" class="py-16 sm:py-20" style="background: var(--bg);">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-10 sm:mb-12" style="color: var(--text); font-family: 'Playfair Display', serif;">
+    <!-- FAQ -->
+    <section class="py-16 lg:py-24" style="background: var(--bg);">
+      <div class="max-w-4xl mx-auto px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-center mb-12 font-display" style="color: var(--text);">
           Frequently Asked Questions
         </h2>
-        <div class="space-y-4 sm:space-y-6">
-          {faqs.map(faq => (
-            <div class="rounded-xl p-5 sm:p-6" style="background: var(--surface); border: 1px solid var(--border);">
-              <h3 class="text-base sm:text-lg font-semibold mb-2 sm:mb-3" style="color: var(--text);">{faq.question}</h3>
-              <p class="text-sm sm:text-base leading-relaxed" style="color: var(--text-muted);">{faq.answer}</p>
+
+        <div class="space-y-4">
+          {[
+            {
+              q: "What's actually included?",
+              a: "You get 25 AI prompts organized into 5 categories (Email, Reports, Content, Productivity, Research) plus 10 professional email templates. Everything is delivered as both PDF and Markdown files for immediate use."
+            },
+            {
+              q: "Do I need technical skills?",
+              a: "Not at all. If you can copy and paste, you can use these prompts. Simply copy the prompt template, fill in your specific details where indicated, and paste into ChatGPT, Claude, or any AI tool."
+            },
+            {
+              q: "How will I receive the product?",
+              a: "Immediate download after purchase. You'll get a ZIP file containing the PDF version and Markdown version. Extract and start using right away. No login portals, no waiting."
+            },
+            {
+              q: "What if I'm not satisfied?",
+              a: "30-day money-back guarantee. If these prompts don't save you time, email us at support@thezeromethod.com within 30 days for a full refund. No questions asked."
+            }
+          ].map((faq, i) => (
+            <div class="rounded-lg overflow-hidden" style="background: var(--surface-2); border: 1px solid var(--border);">
+              <button 
+                class="w-full px-6 py-4 flex justify-between items-center text-left"
+                onclick="this.nextElementSibling.classList.toggle('hidden')"
+              >
+                <span class="text-lg font-bold" style="color: var(--text);">{faq.q}</span>
+                <span style="color: var(--gold);">+</span>
+              </button>
+              <div class="hidden px-6 pb-4" style="border-top: 1px solid var(--border);">
+                <p class="mt-4" style="color: var(--text-muted);">{faq.a}</p>
+              </div>
             </div>
           ))}
         </div>
       </div>
     </section>
 
-    <!-- Final CTA -->
-    <section class="py-16 sm:py-20" style="background: var(--surface);">
-      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6" style="color: var(--text); font-family: 'Playfair Display', serif;">
-          Ready to Save 5 Hours This Week?
+    <!-- Guarantee -->
+    <section class="py-16 lg:py-24" style="background: var(--surface-2);">
+      <div class="max-w-3xl mx-auto px-6 lg:px-8 text-center">
+        <h2 class="text-3xl font-bold mb-6 font-display" style="color: var(--text);">
+          30-Day No-Questions-Asked Refund
         </h2>
-        <p class="text-base sm:text-lg mb-6 sm:mb-8" style="color: var(--text-muted);">
-          Get 25 proven prompts and 10 email templates. Copy, paste, and start saving time today.
+
+        <p class="text-lg mb-8" style="color: var(--text-muted);">
+          If you open the pack and it doesn't save you time in the first 30 days,
+          email support@thezeromethod.com. You'll get a full refund within 24 hours.
+          No forms. No explanations required.
         </p>
-        <a
-          href="#pricing"
-          class="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-bold text-base sm:text-lg transition-all duration-200 hover:shadow-lg"
-          style="background: var(--gold); color: var(--bg); box-shadow: 0 0 40px rgba(245,158,11,0.15);"
+
+        <button 
+          id="guarantee-cta"
+          class="inline-block px-8 py-4 font-bold text-lg rounded-lg transition-all duration-300"
+          style="background: var(--gold); color: var(--bg);"
         >
-          Get Started — $19
-          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </a>
-        <p class="mt-3 sm:mt-4 text-xs sm:text-sm" style="color: var(--text-muted);">
-          30-day money-back guarantee
-        </p>
+          Get the Pack — $19
+        </button>
       </div>
     </section>
   </main>
 
   <Footer />
+
+  <script>
+    // Stripe Checkout
+    document.getElementById('stripe-checkout')?.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/api/create-checkout-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        const data = await response.json();
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      } catch (error) {
+        alert('Payment initialization failed. Please try again.');
+      }
+    });
+
+    // Guarantee CTA
+    document.getElementById('guarantee-cta')?.addEventListener('click', () => {
+      document.getElementById('stripe-checkout')?.click();
+    });
+
+    // PayPal placeholder
+    document.getElementById('paypal-link')?.addEventListener('click', () => {
+      alert('PayPal integration coming soon. Use card payment for now.');
+    });
+  </script>
 </Layout>
-
-<!-- Stripe and PayPal SDK Scripts -->
-{stripeKey && (
-  <script define:vars={{ stripeKey }}>
-    // Load Stripe.js
-    function loadStripe(key) {
-      return new Promise((resolve, reject) => {
-        if (window.Stripe) {
-          resolve(window.Stripe(key));
-          return;
-        }
-        const script = document.createElement('script');
-        script.src = 'https://js.stripe.com/v3/';
-        script.onload = () => resolve(window.Stripe(key));
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }
-  </script>
-)}
-
-{paypalClientId && (
-  <script define:vars={{ paypalClientId }}>
-    // Load PayPal SDK
-    function loadPayPalSDK(clientId) {
-      return new Promise((resolve, reject) => {
-        if (window.paypal) {
-          resolve(window.paypal);
-          return;
-        }
-        const script = document.createElement('script');
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=USD&intent=capture`;
-        script.onload = () => resolve(window.paypal);
-        script.onerror = reject;
-        document.head.appendChild(script);
-      });
-    }
-  </script>
-)}
